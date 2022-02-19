@@ -6,6 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SQLParser.Classes {
+
+    /// <summary>
+    /// The visitor visits the tree that is produced from ScriptDom and adds the
+    /// nodes on the top level of the tree into the Statements list. This list will be 
+    /// used from a translator to begin the parsing based on the node class
+    /// </summary>
     internal class Visitor : TSqlConcreteFragmentVisitor {
         public readonly List<TSqlFragment> Statements = new List<TSqlFragment>();
 

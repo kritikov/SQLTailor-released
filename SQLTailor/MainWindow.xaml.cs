@@ -5,20 +5,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static SQLTailor.Classes.Functions;
 
 namespace SQLTailor {
     /// <summary>
@@ -122,13 +113,6 @@ namespace SQLTailor {
             }
         }
 
-        //private CollectionViewSource queryParametersSource = new CollectionViewSource();
-        //public ICollectionView QueryParametersView {
-        //    get {
-        //        return this.queryParametersSource.View;
-        //    }
-        //}
-
         private bool tokensDisplayWhiteSpaces = false;
         public bool TokensDisplayWhiteSpaces {
             get { return tokensDisplayWhiteSpaces; }
@@ -172,7 +156,6 @@ namespace SQLTailor {
         }
 
         private string sqlSource = $@"";
-
         public FlowDocument SQLSourceDocument {
             get {
                 return GetFlowDocument(sqlSource);

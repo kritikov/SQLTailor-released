@@ -67,7 +67,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Classes\BindableRichTextBox.cs" />
-    <Compile Include="Classes\Functions.cs" />
     <Compile Include="Classes\Logs.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

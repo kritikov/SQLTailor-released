@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static SQLTailor.Classes.Functions;
+using System.Windows;
 
 namespace SQLTailor.Classes {
     public static class Logs {
@@ -37,6 +34,16 @@ namespace SQLTailor.Classes {
             }
 
             list.Add($@"{DateTime.Now:dd/MM/yyyy hh:mm:ss}:: {message}");
+        }
+
+        /// <summary>
+        /// do an action in the application main thread
+        /// </summary>
+        /// <param name="action"></param>
+        public static void DispatcherDo(Action action) {
+            if (Application.Current != null) {
+                Application.Current.Dispatcher.Invoke(action);
+            }
         }
     }
 }

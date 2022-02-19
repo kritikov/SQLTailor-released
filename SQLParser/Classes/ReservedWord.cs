@@ -7,8 +7,10 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace SQLParser.Classes {
+
     /// <summary>
-    /// Class for text with properties for FlowDocument formations as color of font weight etc.
+    /// This class is for words that will be formatted after the translation of a query.
+    /// It contains properties needed for FlowDocument formations as color or font weight etc.
     /// </summary>
     internal class ReservedWord {
         internal string Text = "";

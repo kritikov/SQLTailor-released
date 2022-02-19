@@ -15,6 +15,12 @@ using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace SQLParser {
+
+    /// <summary>
+    /// Parser reads a SQL query and produces a tree with components using the ScriptDom library.
+    /// The tree contains the tokens found in the query with the form of the many classes of ScriptDom.
+    /// The parser then uses the translator classes to trasform the tree back to SQL or some other script that produces SQL.
+    /// </summary>
     public class Parser : INotifyPropertyChanged {
 
         #region VARIABLES AND NESTED CLASSES
@@ -282,7 +288,7 @@ namespace SQLParser {
 
         }
 
-        public Parser(string sqlSource) : base() {
+        public Parser(string sqlSource) {
             this.SQLSource = sqlSource;
         }
 
@@ -291,9 +297,13 @@ namespace SQLParser {
 
         #region METHODS
 
+        /// <summary>
+        /// Gets a SQL query in text form and returns a tree with components of ScriptDom
+        /// </summary>
+        /// <param name="procText"></param>
+        /// <returns></returns>
         private static (TSqlFragment sqlTree, IList<ParseError> errors) ProcessSql(string procText) {
             TSql150Parser parser = new TSql150Parser(false); // false tells to parser whether you have quoted identifiers on or not
-
 
             using (StringReader textReader = new StringReader(procText)) {
                 TSqlFragment sqlTree = parser.Parse(textReader, out IList<ParseError> errors);
@@ -303,7 +313,7 @@ namespace SQLParser {
         }
 
         /// <summary>
-        /// read the sql script and parse it all the available forms
+        /// Read the sql script and parse it all the available forms
         /// </summary>
         public void Process() {
             (TSqlFragment sqlTree, IList<ParseError> errors) processed = ProcessSql(this.sqlSource);
@@ -313,7 +323,7 @@ namespace SQLParser {
         }
 
         /// <summary>
-        /// get the tokens of the script in a formatted list for display as grid
+        /// Writes the tokens of the script in a formatted list to display it with a grid grid
         /// </summary>
         /// <returns></returns>
         public List<string[]> GetTokensList() {
@@ -328,7 +338,7 @@ namespace SQLParser {
         }
 
         /// <summary>
-        /// get the formatted SQL using the native method of the Microsoft libary
+        /// Get the formatted SQL using the native method of the ScriptDom libary
         /// </summary>
         /// <returns></returns>
         public string GetTSQL() {
@@ -341,8 +351,11 @@ namespace SQLParser {
             return result;
         }
 
+        /// <summary>
+        /// Add colors to SQL query using the settings of the Translator class
+        /// </summary>
+        /// <returns></returns>
         public FlowDocument GetTSQLAsFlowDocument() {
-
             string text = GetTSQL();
 
             // use the formation of the Translator
@@ -351,7 +364,7 @@ namespace SQLParser {
         }
 
         /// <summary>
-        /// get the translated sql tree to a T-SQL form
+        /// Transform the sql tree into plain text using the basic Translator
         /// </summary>
         /// <returns></returns>
         public string GetSQLStructure() {
@@ -396,13 +409,20 @@ namespace SQLParser {
             return result;
         }
 
-
+        /// <summary>
+        /// Transform the sql tree into a formatted text using the basic Translator
+        /// </summary>
+        /// <returns></returns>
         public FlowDocument GetSQLStructureAsFlowDocument() {
             string result = GetSQLStructure();
             Translator translator = new Translator(Options);
             return translator.GetFlowDocument(result);
         }
 
+        /// <summary>
+        /// Create the script in SqlOM and C# that produces the given SQL query using the SqlOMTranslator. The result is a plain text.
+        /// </summary>
+        /// <returns></returns>
         public string GetSqlOM() {
             string result = "";
 
@@ -430,12 +450,22 @@ namespace SQLParser {
             return result;
         }
 
+        /// <summary>
+        /// Create the script in SqlOM and C# that produces the given SQL query using the SqlOMTranslator. The result is a formatted text.
+        /// </summary>
+        /// <returns></returns>
         public FlowDocument GetSqlOMAsFlowDocument() {
             string result = GetSqlOM();
             SqlOMTranslator translator = new SqlOMTranslator(Options);
             return translator.GetFlowDocument(result);
         }
 
+        /// <summary>
+        /// Create the script in PoVariation and C# that produces the given SQL query using the PoVariationTranslator.
+        /// The PoVariationTranslator is a simple inheritance from SqlOMTranslator and just adds the prefix 'po' before some objects.
+        /// The result is a plain text.
+        /// </summary>
+        /// <returns></returns>
         public string GetPoVariation() {
             string result = "";
 
@@ -462,6 +492,12 @@ namespace SQLParser {
             return result;
         }
 
+        /// <summary>
+        /// Create the script in PoVariation and C# that produces the given SQL query using the PoVariationTranslator.
+        /// The PoVariationTranslator is a simple inheritance from SqlOMTranslator and just adds the prefix 'po' before some objects.
+        /// The result is a formatted text.
+        /// </summary>
+        /// <returns></returns>
         public FlowDocument GetPoVariationAsFlowDocument() {
             string result = GetPoVariation();
             PoVariationTranslator translator = new PoVariationTranslator(Options);
