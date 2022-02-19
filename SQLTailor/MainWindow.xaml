@@ -1,0 +1,431 @@
+﻿<Window x:Class="SQLTailor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SQLTailor"
+        xmlns:classes="clr-namespace:SQLTailor.Classes"
+        mc:Ignorable="d"
+        Title="SQL parser" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA">
+
+    <Window.Resources>
+
+    </Window.Resources>
+
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="{Binding Message}"/>
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+
+        <TabControl>
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="SQL editor" ToolTip="Write here the SQL qyery to parse"/>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <classes:BindableRichTextBox Grid.Row="1" IsReadOnly="False" Document="{Binding SQLSourceDocument, Mode=OneWay}" x:Name="SQLSourceEditor" 
+                                                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+                    <DockPanel Grid.Column="2">
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <GroupBox Header="Query options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Grid.Column="2" Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <CheckBox Grid.Row="0" Content="Use test query" IsChecked="{Binding UseFixedQuery, Mode=TwoWay}" HorizontalAlignment="Left"/>
+                                    <ListView Grid.Row="1" ItemsSource="{Binding Queries}" VirtualizingStackPanel.IsVirtualizing="True" SelectionMode="Single"
+                                  SelectedIndex="5" MaxHeight="300"
+                                  SelectionChanged="FixedQuerySelected" IsEnabled="{Binding UseFixedQuery, Mode=OneWay}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Type, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="SQL source errors" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <ListView ItemsSource="{Binding Errors}" VirtualizingStackPanel.IsVirtualizing="True" SelectionChanged="ErrorSelected"
+                                          MinHeight="100" MaxHeight="300">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Message, Mode=OneWay}"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </GroupBox>
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="Microsoft T-SQL" ToolTip="Microsoft T-SQL format that comes directly from the ScriptDom library. This format is standard and cannot be altered by code."/>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="3*" MaxWidth="400"/>
+                    </Grid.ColumnDefinitions>
+
+                    <classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
+                                                 Document="{Binding MicrosoftTSQLDocument, Mode=OneWay}"
+                                                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+                    <DockPanel Grid.Column="2" >
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Vertical">
+                            <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.SqlVersion, Mode=TwoWay}">
+                                        <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
+                                        <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
+                                        <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
+                                        <ComboBoxItem Tag="3">SQL Server 2012</ComboBoxItem>
+                                        <ComboBoxItem Tag="4">SQL Server 2014</ComboBoxItem>
+                                        <ComboBoxItem Tag="5">SQL Server 2016</ComboBoxItem>
+                                        <ComboBoxItem Tag="6">SQL Server 2017</ComboBoxItem>
+                                        <ComboBoxItem Tag="7">SQL Server 2019</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Format options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Keyword Casing"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" SelectedIndex="{Binding Parser.KeywordCasing, Mode=TwoWay}">
+                                        <ComboBoxItem >LowerCase</ComboBoxItem>
+                                        <ComboBoxItem>UpperCase</ComboBoxItem>
+                                        <ComboBoxItem>PascalCase</ComboBoxItem>
+                                    </ComboBox>
+
+                                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="400">
+                                        <ScrollViewer  VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" Margin="4">
+                                            <StackPanel>
+                                                <CheckBox Content="Align Clause Bodies" IsChecked="{Binding Parser.AlignClauseBodies, Mode=TwoWay}"/>
+                                                <CheckBox Content="Align Column Definition Fields" IsChecked="{Binding Parser.AlignColumnDefinitionFields, Mode=TwoWay}"/>
+                                                <CheckBox Content="Align Set Clause Item" IsChecked="{Binding Parser.AlignSetClauseItem, Mode=TwoWay}"/>
+                                                <CheckBox Content="As Keyword On Own Line" IsChecked="{Binding Parser.AsKeywordOnOwnLine, Mode=TwoWay}"/>
+                                                <CheckBox Content="Include Semicolons" IsChecked="{Binding Parser.IncludeSemicolons, Mode=TwoWay}"/>
+                                                <CheckBox Content="Indent Set Clause" IsChecked="{Binding Parser.IndentSetClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="Indent View Body" IsChecked="{Binding Parser.IndentViewBody, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Insert Sources List" IsChecked="{Binding Parser.MultilineInsertSourcesList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Insert Targets List" IsChecked="{Binding Parser.MultilineInsertTargetsList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Select Elements List" IsChecked="{Binding Parser.MultilineSelectElementsList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Set Clause Items" IsChecked="{Binding Parser.MultilineSetClauseItems, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline View Columns List" IsChecked="{Binding Parser.MultilineViewColumnsList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Where Predicates List" IsChecked="{Binding Parser.MultilineWherePredicatesList, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Close Parenthesis In Multiline List" IsChecked="{Binding Parser.NewLineBeforeCloseParenthesisInMultilineList, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before From Clause" IsChecked="{Binding Parser.NewLineBeforeFromClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Group By Clause" IsChecked="{Binding Parser.NewLineBeforeGroupByClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Having Clause" IsChecked="{Binding Parser.NewLineBeforeHavingClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Join Clause" IsChecked="{Binding Parser.NewLineBeforeJoinClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Offset Clause" IsChecked="{Binding Parser.NewLineBeforeOffsetClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Open Parenthesis In Multiline List" IsChecked="{Binding Parser.NewLineBeforeOpenParenthesisInMultilineList, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Order By Clause" IsChecked="{Binding Parser.NewLineBeforeOrderByClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Output Clause" IsChecked="{Binding Parser.NewLineBeforeOutputClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Where Clause" IsChecked="{Binding Parser.NewLineBeforeWhereClause, Mode=TwoWay}"/>
+                                            </StackPanel>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </GroupBox>
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="Structure" ToolTip="SQL format with the basic structure. This format can be fully altered by code."/>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True"  
+                                                 Document="{Binding SQLStructureDocument, Mode=OneWay}"
+                                                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+                    <DockPanel Grid.Column="2">
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical">
+                            <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.SqlVersion, Mode=TwoWay}">
+                                        <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
+                                        <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
+                                        <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
+                                        <ComboBoxItem Tag="3">SQL Server 2012</ComboBoxItem>
+                                        <ComboBoxItem Tag="4">SQL Server 2014</ComboBoxItem>
+                                        <ComboBoxItem Tag="5">SQL Server 2016</ComboBoxItem>
+                                        <ComboBoxItem Tag="6">SQL Server 2017</ComboBoxItem>
+                                        <ComboBoxItem Tag="7">SQL Server 2019</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Format options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Keyword Casing"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.KeywordCasing, Mode=TwoWay}">
+                                        <ComboBoxItem >LowerCase</ComboBoxItem>
+                                        <ComboBoxItem>UpperCase</ComboBoxItem>
+                                        <ComboBoxItem>PascalCase</ComboBoxItem>
+                                    </ComboBox>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Indentation Size"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding Parser.IndentationSize, Mode=TwoWay}"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Query parameters" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <StackPanel Orientation="Vertical">
+                                    <ListView ItemsSource="{Binding QueryParameters, Mode=TwoWay}" VirtualizingStackPanel.IsVirtualizing="True" 
+                                          Height="200" VerticalAlignment="Top">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Key, Mode=OneWay}"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                    <CheckBox Content="Get parameters of query" IsChecked="{Binding Parser.UpdateQueryParametersList, Mode=TwoWay}"
+                                          ToolTip="If checked then the list will be filled with the parameters of the query after analysing"/>
+
+                                    <CheckBox Content="Use values of parameters" IsChecked="{Binding Parser.ReplaceQueryParametersWithValues, Mode=TwoWay}"
+                                          ToolTip="If checked then the parameters of the query will be replaced with the values of the corresponing parameters in the list"/>
+
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="SqlOM" ToolTip="C# code to create the query with SqlOM format. This format can be fully altered by code."/>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
+                                                 Document="{Binding ReebSqlOMDocument, Mode=OneWay}"
+                                                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+                    <DockPanel Grid.Column="2" >
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical">
+                            <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.SqlVersion, Mode=TwoWay}">
+                                        <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
+                                        <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
+                                        <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
+                                        <ComboBoxItem Tag="3">SQL Server 2012</ComboBoxItem>
+                                        <ComboBoxItem Tag="4">SQL Server 2014</ComboBoxItem>
+                                        <ComboBoxItem Tag="5">SQL Server 2016</ComboBoxItem>
+                                        <ComboBoxItem Tag="6">SQL Server 2017</ComboBoxItem>
+                                        <ComboBoxItem Tag="7">SQL Server 2019</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                            </GroupBox>
+                            
+                            <GroupBox Header="Format options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Indentation Size"/>
+                                    <TextBox Grid.Row="0" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding Parser.IndentationSize, Mode=TwoWay}"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Variations" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <StackPanel Orientation="Vertical">
+                                    <CheckBox Content="po Variation" IsChecked="{Binding PoVariation, Mode=TwoWay}"
+                                              ToolTip="This variation is a sample of a translator inheritance. The specific variaton inherits from the SqlOmTranslator class and adds the 'po' prefix on some objects"/>
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="Tokens" ToolTip="The token that are parts of the source query"/>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ListView Grid.Column="0" ItemsSource="{Binding TokensView}" VirtualizingStackPanel.IsVirtualizing="True">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Line" DisplayMemberBinding="{Binding [0]}" Width="50"/>
+                                <GridViewColumn Header="Column" DisplayMemberBinding="{Binding [1]}" Width="50"/>
+                                <GridViewColumn Header="Offset" DisplayMemberBinding="{Binding [2]}" Width="50"/>
+                                <GridViewColumn Header="Token" DisplayMemberBinding="{Binding [3]}" Width="200"/>
+                                <GridViewColumn Header="Type" DisplayMemberBinding="{Binding [4]}" Width="200"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+                    <DockPanel Grid.Column="2" >
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                        </StackPanel>
+
+                        <GroupBox Header="Display options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                            <Grid Style="{DynamicResource CriteriaGrid}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="BurlyWood" BorderThickness="2">
+                                    <ScrollViewer  VerticalScrollBarVisibility="Visible"
+                                      VerticalAlignment="Stretch" Margin="4">
+                                        <StackPanel>
+                                            <CheckBox Content="Display white identifiers" IsChecked="{Binding TokensDisplayIdentifiers, Mode=TwoWay}" HorizontalAlignment="Left"/>
+                                            <CheckBox Content="Display white commas" IsChecked="{Binding TokensDisplayCommas, Mode=TwoWay}" HorizontalAlignment="Left"/>
+                                            <CheckBox Content="Display white dots" IsChecked="{Binding TokensDisplayDots, Mode=TwoWay}" HorizontalAlignment="Left"/>
+                                            <CheckBox Content="Display white spaces" IsChecked="{Binding TokensDisplayWhiteSpaces, Mode=TwoWay}" HorizontalAlignment="Left"/>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </GroupBox>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="logs"/>
+                </TabItem.Header>
+                <ListBox ItemsSource="{Binding LogsView}"/>
+            </TabItem>
+
+        </TabControl>
+    </DockPanel>
+</Window>

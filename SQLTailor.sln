@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLTailor", "SQLTailor\SQLTailor.csproj", "{9488ACD9-A36E-4E2D-B4AF-1762DFE524B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLParser", "SQLParser\SQLParser.csproj", "{C60C8513-DD0A-4470-8BCE-1411ABEDF59B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9488ACD9-A36E-4E2D-B4AF-1762DFE524B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9488ACD9-A36E-4E2D-B4AF-1762DFE524B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9488ACD9-A36E-4E2D-B4AF-1762DFE524B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9488ACD9-A36E-4E2D-B4AF-1762DFE524B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C60C8513-DD0A-4470-8BCE-1411ABEDF59B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C60C8513-DD0A-4470-8BCE-1411ABEDF59B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C60C8513-DD0A-4470-8BCE-1411ABEDF59B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C60C8513-DD0A-4470-8BCE-1411ABEDF59B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {770E021C-959D-49B0-A1BB-997328068141}
+	EndGlobalSection
+EndGlobal
