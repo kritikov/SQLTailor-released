@@ -41,6 +41,209 @@ namespace SQLTailor {
 
         public SQLParser.Parser Parser { get; set; } = new SQLParser.Parser();
 
+        public bool AlignClauseBodies {
+            get => Parser.Options.AlignClauseBodies;
+            set {
+                Parser.Options.AlignClauseBodies = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlignClauseBodies"));
+            }
+        }
+        public bool NewLineBeforeOffsetClause {
+            get => Parser.Options.NewLineBeforeOffsetClause;
+            set {
+                Parser.Options.NewLineBeforeOffsetClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeOffsetClause"));
+            }
+        }
+        public bool MultilineInsertSourcesList {
+            get => Parser.Options.MultilineInsertSourcesList;
+            set {
+                Parser.Options.MultilineInsertSourcesList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MultilineInsertSourcesList"));
+            }
+        }
+        public bool MultilineInsertTargetsList {
+            get => Parser.Options.MultilineInsertTargetsList;
+            set {
+                Parser.Options.MultilineInsertTargetsList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MultilineInsertTargetsList"));
+            }
+        }
+        public bool MultilineSetClauseItems {
+            get => Parser.Options.MultilineSetClauseItems;
+            set {
+                Parser.Options.MultilineSetClauseItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MultilineSetClauseItems"));
+            }
+        }
+        public bool AlignSetClauseItem {
+            get => Parser.Options.AlignSetClauseItem;
+            set {
+                Parser.Options.AlignSetClauseItem = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlignSetClauseItem"));
+            }
+        }
+        public bool IndentSetClause {
+            get => Parser.Options.IndentSetClause;
+            set {
+                Parser.Options.IndentSetClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IndentSetClause"));
+            }
+        }
+        public bool AsKeywordOnOwnLine {
+            get => Parser.Options.AsKeywordOnOwnLine;
+            set {
+                Parser.Options.AsKeywordOnOwnLine = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AsKeywordOnOwnLine"));
+            }
+        }
+        public bool MultilineViewColumnsList {
+            get => Parser.Options.MultilineViewColumnsList;
+            set {
+                Parser.Options.MultilineViewColumnsList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MultilineViewColumnsList"));
+            }
+        }
+        public bool IndentViewBody {
+            get => Parser.Options.IndentViewBody;
+            set {
+                Parser.Options.IndentViewBody = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IndentViewBody"));
+            }
+        }
+        public bool MultilineWherePredicatesList {
+            get => Parser.Options.MultilineWherePredicatesList;
+            set {
+                Parser.Options.MultilineWherePredicatesList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MultilineWherePredicatesList"));
+            }
+        }
+        public bool MultilineSelectElementsList {
+            get => Parser.Options.MultilineSelectElementsList;
+            set {
+                Parser.Options.MultilineSelectElementsList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MultilineSelectElementsList"));
+            }
+        }
+        public bool NewLineBeforeOutputClause {
+            get => Parser.Options.NewLineBeforeOutputClause;
+            set {
+                Parser.Options.NewLineBeforeOutputClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeOutputClause"));
+            }
+        }
+        public bool NewLineBeforeCloseParenthesisInMultilineList {
+            get => Parser.Options.NewLineBeforeCloseParenthesisInMultilineList;
+            set {
+                Parser.Options.NewLineBeforeCloseParenthesisInMultilineList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeCloseParenthesisInMultilineList"));
+            }
+        }
+        public bool NewLineBeforeJoinClause {
+            get => Parser.Options.NewLineBeforeJoinClause;
+            set {
+                Parser.Options.NewLineBeforeJoinClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeJoinClause"));
+            }
+        }
+        public bool NewLineBeforeHavingClause {
+            get => Parser.Options.NewLineBeforeHavingClause;
+            set {
+                Parser.Options.NewLineBeforeHavingClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeHavingClause"));
+            }
+        }
+        public bool NewLineBeforeOrderByClause {
+            get => Parser.Options.NewLineBeforeOrderByClause;
+            set {
+                Parser.Options.NewLineBeforeOrderByClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeOrderByClause"));
+            }
+        }
+        public bool NewLineBeforeGroupByClause {
+            get => Parser.Options.NewLineBeforeGroupByClause;
+            set {
+                Parser.Options.NewLineBeforeGroupByClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeGroupByClause"));
+            }
+        }
+        public bool NewLineBeforeWhereClause {
+            get => Parser.Options.NewLineBeforeWhereClause;
+            set {
+                Parser.Options.NewLineBeforeWhereClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeWhereClause"));
+            }
+        }
+        public bool NewLineBeforeFromClause {
+            get => Parser.Options.NewLineBeforeFromClause;
+            set {
+                Parser.Options.NewLineBeforeFromClause = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeFromClause"));
+            }
+        }
+        public bool AlignColumnDefinitionFields {
+            get => Parser.Options.AlignColumnDefinitionFields;
+            set {
+                Parser.Options.AlignColumnDefinitionFields = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlignColumnDefinitionFields"));
+            }
+        }
+        public bool IncludeSemicolons {
+            get => Parser.Options.IncludeSemicolons;
+            set {
+                Parser.Options.IncludeSemicolons = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeSemicolons"));
+            }
+        }
+        public bool NewLineBeforeOpenParenthesisInMultilineList {
+            get => Parser.Options.NewLineBeforeOpenParenthesisInMultilineList;
+            set {
+                Parser.Options.NewLineBeforeOpenParenthesisInMultilineList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewLineBeforeOpenParenthesisInMultilineList"));
+            }
+        }
+        public int IndentationSize {
+            get => Parser.Options.IndentationSize;
+            set {
+                Parser.Options.IndentationSize = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IndentationSize"));
+            }
+        }
+        public int SqlVersion {
+            get => Parser.Options.SqlVersion;
+            set {
+                Parser.Options.SqlVersion = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SqlVersion"));
+            }
+        }
+
+        public bool UpdateQueryParametersList {
+            get => Parser.Options.UpdateQueryParametersList;
+            set {
+                Parser.Options.UpdateQueryParametersList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UpdateQueryParametersList"));
+            }
+        }
+
+        public bool ReplaceQueryParametersWithValues {
+            get => Parser.Options.ReplaceQueryParametersWithValues;
+            set {
+                Parser.Options.ReplaceQueryParametersWithValues = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ReplaceQueryParametersWithValues"));
+            }
+        }
+
+        public int KeywordCasing {
+            get => Parser.Options.KeywordCasing;
+            set {
+                Parser.Options.KeywordCasing = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KeywordCasing"));
+            }
+        }
+
+        //public SqlEngineType SqlEngineType { get; set; }
+
+
         public class SQLError : INotifyPropertyChanged {
 
             public event PropertyChangedEventHandler PropertyChanged;
@@ -224,9 +427,9 @@ namespace SQLTailor {
             tokensSource.Source = Tokens;
             TokensView.Filter = TokensFilter;
 
-            Parser.SqlVersion = 7;
-            Parser.NewLineBeforeJoinClause = false;
-            Parser.IndentationSize = 7;
+            Parser.Options.SqlVersion = 7;
+            Parser.Options.NewLineBeforeJoinClause = false;
+            Parser.Options.IndentationSize = 7;
 
             FillFixedQueries();
         }
@@ -236,7 +439,7 @@ namespace SQLTailor {
 
         #region EVENTS
 
-        private void AnalyzeSqlClick(object sender, RoutedEventArgs e) {
+        private void AnalyzeSql(object sender, RoutedEventArgs e) {
 
             if (string.IsNullOrWhiteSpace(sqlSource)) {
                 return;
@@ -245,7 +448,7 @@ namespace SQLTailor {
             // clear formatting of the text in the sql editor
             ClearEditorFormat(SQLSourceEditor);
 
-            if (Parser.ReplaceQueryParametersWithValues) {
+            if (Parser.Options.ReplaceQueryParametersWithValues) {
                 FillParserQueryParametersFromList();
             }
 
@@ -257,9 +460,9 @@ namespace SQLTailor {
             MicrosoftTSQLDocument = Parser.GetTSQLAsFlowDocument();
             SQLStructureDocument = Parser.GetSQLStructureAsFlowDocument();
 
-            if (Parser.UpdateQueryParametersList) {
+            if (Parser.Options.UpdateQueryParametersList) {
                 QueryParameters.Clear();
-                foreach (KeyValuePair<string, string> parameter in Parser.QueryParameters) {
+                foreach (KeyValuePair<string, string> parameter in Parser.Options.QueryParameters) {
                     QueryParameters.Add(new QueryParameter(parameter.Key, parameter.Value));
                 }
             }
@@ -315,19 +518,20 @@ namespace SQLTailor {
 
             string query;
 
-            query = $@"SELECT AAA.a
-FROM AAA, BBB
-    INNER JOIN (SELECT BBB.b
-FROM BBB) AS CCC ON a = n";
+            query = $@"SELECT table1.a
+FROM table1, table2
+    INNER JOIN (SELECT table3.b
+FROM table3) AS table3 ON table3.b = table2.c
+WHERE  table1.d = table2.f;";
             Queries.Add(new FixedQuery("select with join 1", query));
 
             query = $@"SELECT a    
-FROM (select a as col4 from table3) b
-    INNER JOIN TABLE4 ON A=B";
+FROM (select a as col4 from table1) b
+    INNER JOIN TABLE2 ON c = f";
             Queries.Add(new FixedQuery("select with join 2", query));
 
             query = $@"SELECT col1 
- FROM table1 INNER JOIN table2 ON a=2 and f=5";
+ FROM table1 INNER JOIN table2 ON a=2 and f='name'";
             Queries.Add(new FixedQuery("select with join 3", query));
 
             query = $@"SELECT CASE
@@ -599,10 +803,10 @@ ADD Email varchar(255),
         /// update the parser query parameters list with the parameters of the GUI
         /// </summary>
         private void FillParserQueryParametersFromList() {
-            Parser.QueryParameters.Clear();
+            Parser.Options.QueryParameters.Clear();
 
             foreach (QueryParameter parameter in QueryParameters) {
-                Parser.QueryParameters.Add(parameter.Key, parameter.Value);
+                Parser.Options.QueryParameters.Add(parameter.Key, parameter.Value);
             }
         }
 

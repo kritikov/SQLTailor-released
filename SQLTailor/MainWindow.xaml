@@ -45,7 +45,7 @@
 
                     <DockPanel Grid.Column="2">
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
 
                         <StackPanel>
@@ -105,7 +105,7 @@
 
                     <DockPanel Grid.Column="2" >
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Orientation="Vertical">
@@ -121,7 +121,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.SqlVersion, Mode=TwoWay}">
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding SqlVersion, Mode=TwoWay}">
                                         <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
                                         <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
                                         <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
@@ -145,38 +145,38 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Keyword Casing"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" SelectedIndex="{Binding Parser.KeywordCasing, Mode=TwoWay}">
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" SelectedIndex="{Binding KeywordCasing, Mode=TwoWay}">
                                         <ComboBoxItem >LowerCase</ComboBoxItem>
                                         <ComboBoxItem>UpperCase</ComboBoxItem>
                                         <ComboBoxItem>PascalCase</ComboBoxItem>
                                     </ComboBox>
 
-                                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="400">
+                                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="350">
                                         <ScrollViewer  VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" Margin="4">
                                             <StackPanel>
-                                                <CheckBox Content="Align Clause Bodies" IsChecked="{Binding Parser.AlignClauseBodies, Mode=TwoWay}"/>
-                                                <CheckBox Content="Align Column Definition Fields" IsChecked="{Binding Parser.AlignColumnDefinitionFields, Mode=TwoWay}"/>
-                                                <CheckBox Content="Align Set Clause Item" IsChecked="{Binding Parser.AlignSetClauseItem, Mode=TwoWay}"/>
-                                                <CheckBox Content="As Keyword On Own Line" IsChecked="{Binding Parser.AsKeywordOnOwnLine, Mode=TwoWay}"/>
-                                                <CheckBox Content="Include Semicolons" IsChecked="{Binding Parser.IncludeSemicolons, Mode=TwoWay}"/>
-                                                <CheckBox Content="Indent Set Clause" IsChecked="{Binding Parser.IndentSetClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="Indent View Body" IsChecked="{Binding Parser.IndentViewBody, Mode=TwoWay}"/>
-                                                <CheckBox Content="Multiline Insert Sources List" IsChecked="{Binding Parser.MultilineInsertSourcesList, Mode=TwoWay}"/>
-                                                <CheckBox Content="Multiline Insert Targets List" IsChecked="{Binding Parser.MultilineInsertTargetsList, Mode=TwoWay}"/>
-                                                <CheckBox Content="Multiline Select Elements List" IsChecked="{Binding Parser.MultilineSelectElementsList, Mode=TwoWay}"/>
-                                                <CheckBox Content="Multiline Set Clause Items" IsChecked="{Binding Parser.MultilineSetClauseItems, Mode=TwoWay}"/>
-                                                <CheckBox Content="Multiline View Columns List" IsChecked="{Binding Parser.MultilineViewColumnsList, Mode=TwoWay}"/>
-                                                <CheckBox Content="Multiline Where Predicates List" IsChecked="{Binding Parser.MultilineWherePredicatesList, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Close Parenthesis In Multiline List" IsChecked="{Binding Parser.NewLineBeforeCloseParenthesisInMultilineList, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before From Clause" IsChecked="{Binding Parser.NewLineBeforeFromClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Group By Clause" IsChecked="{Binding Parser.NewLineBeforeGroupByClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Having Clause" IsChecked="{Binding Parser.NewLineBeforeHavingClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Join Clause" IsChecked="{Binding Parser.NewLineBeforeJoinClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Offset Clause" IsChecked="{Binding Parser.NewLineBeforeOffsetClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Open Parenthesis In Multiline List" IsChecked="{Binding Parser.NewLineBeforeOpenParenthesisInMultilineList, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Order By Clause" IsChecked="{Binding Parser.NewLineBeforeOrderByClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Output Clause" IsChecked="{Binding Parser.NewLineBeforeOutputClause, Mode=TwoWay}"/>
-                                                <CheckBox Content="New Line Before Where Clause" IsChecked="{Binding Parser.NewLineBeforeWhereClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="Align Clause Bodies" IsChecked="{Binding AlignClauseBodies, Mode=TwoWay}"/>
+                                                <CheckBox Content="Align Column Definition Fields" IsChecked="{Binding AlignColumnDefinitionFields, Mode=TwoWay}"/>
+                                                <CheckBox Content="Align Set Clause Item" IsChecked="{Binding AlignSetClauseItem, Mode=TwoWay}"/>
+                                                <CheckBox Content="As Keyword On Own Line" IsChecked="{Binding AsKeywordOnOwnLine, Mode=TwoWay}"/>
+                                                <CheckBox Content="Include Semicolons" IsChecked="{Binding IncludeSemicolons, Mode=TwoWay}"/>
+                                                <CheckBox Content="Indent Set Clause" IsChecked="{Binding IndentSetClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="Indent View Body" IsChecked="{Binding IndentViewBody, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Insert Sources List" IsChecked="{Binding MultilineInsertSourcesList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Insert Targets List" IsChecked="{Binding MultilineInsertTargetsList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Select Elements List" IsChecked="{Binding MultilineSelectElementsList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Set Clause Items" IsChecked="{Binding MultilineSetClauseItems, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline View Columns List" IsChecked="{Binding MultilineViewColumnsList, Mode=TwoWay}"/>
+                                                <CheckBox Content="Multiline Where Predicates List" IsChecked="{Binding MultilineWherePredicatesList, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Close Parenthesis In Multiline List" IsChecked="{Binding NewLineBeforeCloseParenthesisInMultilineList, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before From Clause" IsChecked="{Binding NewLineBeforeFromClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Group By Clause" IsChecked="{Binding NewLineBeforeGroupByClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Having Clause" IsChecked="{Binding NewLineBeforeHavingClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Join Clause" IsChecked="{Binding NewLineBeforeJoinClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Offset Clause" IsChecked="{Binding NewLineBeforeOffsetClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Open Parenthesis In Multiline List" IsChecked="{Binding NewLineBeforeOpenParenthesisInMultilineList, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Order By Clause" IsChecked="{Binding NewLineBeforeOrderByClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Output Clause" IsChecked="{Binding NewLineBeforeOutputClause, Mode=TwoWay}"/>
+                                                <CheckBox Content="New Line Before Where Clause" IsChecked="{Binding NewLineBeforeWhereClause, Mode=TwoWay}"/>
                                             </StackPanel>
                                         </ScrollViewer>
                                     </Border>
@@ -206,7 +206,7 @@
 
                     <DockPanel Grid.Column="2">
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Vertical">
@@ -222,7 +222,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.SqlVersion, Mode=TwoWay}">
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding SqlVersion, Mode=TwoWay}">
                                         <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
                                         <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
                                         <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
@@ -246,14 +246,14 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Keyword Casing"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.KeywordCasing, Mode=TwoWay}">
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left" SelectedIndex="{Binding KeywordCasing, Mode=TwoWay}">
                                         <ComboBoxItem >LowerCase</ComboBoxItem>
                                         <ComboBoxItem>UpperCase</ComboBoxItem>
                                         <ComboBoxItem>PascalCase</ComboBoxItem>
                                     </ComboBox>
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Indentation Size"/>
-                                    <TextBox Grid.Row="1" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding Parser.IndentationSize, Mode=TwoWay}"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding IndentationSize, Mode=TwoWay}"/>
                                 </Grid>
                             </GroupBox>
                             <GroupBox Header="Query parameters" HorizontalAlignment="Stretch" VerticalAlignment="Top">
@@ -274,10 +274,10 @@
                                         </ListView.ItemTemplate>
                                     </ListView>
 
-                                    <CheckBox Content="Get parameters of query" IsChecked="{Binding Parser.UpdateQueryParametersList, Mode=TwoWay}"
+                                    <CheckBox Content="Get parameters of query" IsChecked="{Binding UpdateQueryParametersList, Mode=TwoWay}"
                                           ToolTip="If checked then the list will be filled with the parameters of the query after analysing"/>
 
-                                    <CheckBox Content="Use values of parameters" IsChecked="{Binding Parser.ReplaceQueryParametersWithValues, Mode=TwoWay}"
+                                    <CheckBox Content="Use values of parameters" IsChecked="{Binding ReplaceQueryParametersWithValues, Mode=TwoWay}"
                                           ToolTip="If checked then the parameters of the query will be replaced with the values of the corresponing parameters in the list"/>
 
                                 </StackPanel>
@@ -308,7 +308,7 @@
 
                     <DockPanel Grid.Column="2" >
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Vertical">
@@ -324,7 +324,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding Parser.SqlVersion, Mode=TwoWay}">
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding SqlVersion, Mode=TwoWay}">
                                         <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
                                         <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
                                         <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
@@ -348,7 +348,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Indentation Size"/>
-                                    <TextBox Grid.Row="0" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding Parser.IndentationSize, Mode=TwoWay}"/>
+                                    <TextBox Grid.Row="0" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding IndentationSize, Mode=TwoWay}"/>
                                 </Grid>
                             </GroupBox>
 
@@ -392,7 +392,7 @@
 
                     <DockPanel Grid.Column="2" >
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSqlClick"/>
+                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
 
                         <GroupBox Header="Display options" HorizontalAlignment="Stretch" VerticalAlignment="Top">

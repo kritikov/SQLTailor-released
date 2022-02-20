@@ -384,15 +384,15 @@ namespace SQLParser.Translators {
             string FormattedText(string word) {
                 string formattedWord;
 
-                if (FormatOptions.KeywordCasing == KeywordCasing.Lowercase) {
+                if (FormatOptions.KeywordCasing == (int)KeywordCasing.Lowercase) {
                     formattedWord = word.ToLower();
                 }
-                else if (FormatOptions.KeywordCasing == KeywordCasing.Uppercase) {
+                else if (FormatOptions.KeywordCasing == (int)KeywordCasing.Uppercase) {
                     formattedWord = word.ToUpper();
                 }
-                else if (FormatOptions.KeywordCasing == KeywordCasing.PascalCase) {
+                else if (FormatOptions.KeywordCasing == (int)KeywordCasing.PascalCase) {
                     TextInfo info = CultureInfo.CurrentCulture.TextInfo;
-                    formattedWord = info.ToTitleCase(word).Replace(" ", string.Empty);
+                    formattedWord = info.ToTitleCase(word.ToLower()).Replace(" ", string.Empty);
                 }
                 else {
                     formattedWord = word;
