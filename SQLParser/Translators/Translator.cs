@@ -406,7 +406,7 @@ namespace SQLParser.Translators {
                 if (startPosition != 0 && !char.IsWhiteSpace(text[startPosition - 1]) && char.IsLetterOrDigit(text[startPosition - 1]))
                     return false;
 
-                if (startPosition + word.Length < length - 1 && !char.IsWhiteSpace(text[startPosition + +word.Length]) && char.IsLetterOrDigit(text[startPosition + +word.Length]))
+                if (startPosition + word.Length <= length - 1 && !char.IsWhiteSpace(text[startPosition + +word.Length]) && char.IsLetterOrDigit(text[startPosition + +word.Length]))
                     return false;
 
                 return true;
@@ -604,25 +604,25 @@ namespace SQLParser.Translators {
                 //// COLUMNS /////
                 string columnName;
                 foreach (AssignmentSetClause assignmentSetClause in expression.SetClauses) {
-                    if (assignmentSetClause.Column is ColumnReferenceExpression columnReferenceExpression) {
-                        columnName = ColumnReferenceExpressionParse(columnReferenceExpression);
-                    }
+                    if (assignmentSetClause.Column is ColumnReferenceExpression columnReferenceExpression1) {
+                        columnName = ColumnReferenceExpressionParse(columnReferenceExpression1);
+                    } 
                     else {
                         columnName = "~UNKNOWN ColumnReferenceExpression~";
                     }
 
                     if (assignmentSetClause.NewValue is StringLiteral stringLiteral) {
                         columnName += $" = '{stringLiteral.Value}'";
-                    }
+                    } 
                     else if (assignmentSetClause.NewValue is IntegerLiteral integerLiteral) {
                         columnName += $" = {integerLiteral.Value}";
-                    }
+                    } 
                     else if (assignmentSetClause.NewValue is NumericLiteral numericLiteral) {
                         columnName += $" = {numericLiteral.Value}";
-                    }
+                    } 
                     else if (assignmentSetClause.NewValue is NullLiteral) {
                         columnName += " = NULL";
-                    }
+                    } 
                     else if (assignmentSetClause.NewValue is VariableReference variableReference) {
                         string variableName = FormatOptions.ReplaceQueryParametersWithValues ? GetQueryParameterFromList(variableReference.Name) : variableReference.Name;
 
@@ -631,6 +631,9 @@ namespace SQLParser.Translators {
                         if (FormatOptions.UpdateQueryParametersList) {
                             InsertIntoQueryParametersList(variableReference.Name);
                         }
+                    } 
+                    else if (assignmentSetClause.NewValue is ColumnReferenceExpression columnReferenceExpression2) {
+                        columnName += $" = {ColumnReferenceExpressionParse(columnReferenceExpression2)}";
                     }
                     else {
                         columnName += $" = ~UNKNOWN ScalarExpression~";
@@ -2751,6 +2754,37 @@ namespace SQLParser.Translators {
             return result;
         }
 
+        public string DropTableStatementParse(DropTableStatement expression, object data = null) {
+            string result = "";
+
+            try {
+                List<string> tables = new List<string>();
+
+                foreach (SchemaObjectName table in expression.Objects) {
+                    string tableName = table.BaseIdentifier.Value;
+                    tables.Add(tableName);
+                }
+
+                result += $"{Indentation(Data.Level)}DROP ";
+
+                if (expression.IsIfExists) {
+                    result += "IF EXISTS ";
+                }
+
+                if (tables.Count > 0) {
+                    result += $"{tables[0]}";
+                }
+                for (int i = 1; i < tables.Count; i++) {
+                    result += $", \n{Indentation(Data.Level + 1)}{tables[i]}";
+                }
+
+                result += "\n\n";
+            } catch {
+                result = "~DropTableStatement ERROR~";
+            }
+
+            return result;
+        }
         #endregion
 
     }

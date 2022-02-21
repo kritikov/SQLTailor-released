@@ -174,6 +174,9 @@ namespace SQLParser {
                 }
                 else if (statement is AlterTableAlterColumnStatement alterTableAlterColumnStatement) {
                     result += translator.AlterTableAlterColumnStatementParse(alterTableAlterColumnStatement);
+                } 
+                else if (statement is DropTableStatement dropTableStatement) {
+                    result += translator.DropTableStatementParse(dropTableStatement);
                 }
             }
 

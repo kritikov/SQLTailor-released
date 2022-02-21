@@ -692,6 +692,12 @@ ADD Email varchar(255),
     column3 integer,
     column4 date not null";
             Queries.Add(new FixedQuery("alter table", query));
+
+            query = $@"DROP TABLE table1, table2";
+            Queries.Add(new FixedQuery("drop table", query));
+
+            query = $@"DROP TABLE IF EXISTS table1, table2";
+            Queries.Add(new FixedQuery("drop table if exists", query));
         }
 
         /// <summary>

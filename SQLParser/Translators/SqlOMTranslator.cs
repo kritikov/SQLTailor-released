@@ -2799,6 +2799,19 @@ namespace SQLParser.Translators {
             return result;
         }
 
+        public virtual string DropTableStatementParse(DropTableStatement expression, object data = null) {
+            string result = "";
+            Informations currentData = (Informations)data;
+
+            try {
+                currentData.TermString = "~UNDEVELOPED DropTableStatement~";
+            } catch {
+                currentData.TermString = "~DropTableStatement ERROR~";
+            }
+
+            return result;
+        }
+
         #endregion
 
     }

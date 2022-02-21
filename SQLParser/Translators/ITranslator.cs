@@ -265,7 +265,13 @@ namespace SQLParser.Translators {
         /// <returns></returns>
         string ColumnDefinitionParse(ColumnDefinition expression, object data = null);
 
-
+        /// <summary>
+        /// Translates the DROP TABLE
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        string DropTableStatementParse(DropTableStatement expression, object data = null);
     }
 
 }
