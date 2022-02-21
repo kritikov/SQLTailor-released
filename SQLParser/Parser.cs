@@ -48,8 +48,6 @@ namespace SQLParser {
             set => options = value;
         }
 
-       
-
         #endregion
 
 

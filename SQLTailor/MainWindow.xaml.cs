@@ -304,10 +304,10 @@ namespace SQLTailor {
             }
         }
 
-        public ObservableCollection<FixedQuery> Queries { get; set; }
-        public ObservableCollection<SQLError> Errors { get; set; }
-        public ObservableCollection<string[]> Tokens { get; set; }
-        public ObservableCollection<QueryParameter> QueryParameters { get; set; }
+        public ObservableCollection<FixedQuery> Queries { get; set; } = new ObservableCollection<FixedQuery>();
+        public ObservableCollection<SQLError> Errors { get; set; } = new ObservableCollection<SQLError>();
+        public ObservableCollection<string[]> Tokens { get; set; } = new ObservableCollection<string[]>();
+        public ObservableCollection<QueryParameter> QueryParameters { get; set; } = new ObservableCollection<QueryParameter>();
 
         private CollectionViewSource tokensSource = new CollectionViewSource();
         public ICollectionView TokensView {
@@ -418,18 +418,37 @@ namespace SQLTailor {
             this.DataContext = this;
 
             logsSource.Source = Logs.List;
-
-            Queries = new ObservableCollection<FixedQuery>();
-            Errors = new ObservableCollection<SQLError>();
-            Tokens = new ObservableCollection<string[]>();
-            QueryParameters = new ObservableCollection<QueryParameter>();
-
             tokensSource.Source = Tokens;
             TokensView.Filter = TokensFilter;
 
-            Parser.Options.SqlVersion = 7;
-            Parser.Options.NewLineBeforeJoinClause = false;
-            Parser.Options.IndentationSize = 7;
+            AlignClauseBodies = false;
+            AlignColumnDefinitionFields = false;
+            AlignSetClauseItem = false;
+            AsKeywordOnOwnLine = false;
+            IncludeSemicolons = false;
+            IndentSetClause = false;
+            IndentViewBody = false;
+            MultilineInsertSourcesList = false;
+            MultilineInsertTargetsList = false;
+            MultilineSelectElementsList = false;
+            MultilineSetClauseItems = false;
+            MultilineViewColumnsList = false;
+            MultilineWherePredicatesList = true;
+            NewLineBeforeCloseParenthesisInMultilineList = false;
+            NewLineBeforeFromClause = true;
+            NewLineBeforeGroupByClause = true;
+            NewLineBeforeHavingClause = true;
+            NewLineBeforeJoinClause = true;
+            NewLineBeforeOffsetClause = false;
+            NewLineBeforeOpenParenthesisInMultilineList = false;
+            NewLineBeforeOrderByClause = true;
+            NewLineBeforeOutputClause = false;
+            NewLineBeforeWhereClause = true;
+            IndentationSize = 7;
+            UpdateQueryParametersList = true;
+            ReplaceQueryParametersWithValues = false;
+            KeywordCasing = 1;
+            SqlVersion = 7;
 
             FillFixedQueries();
         }
