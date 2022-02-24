@@ -1120,7 +1120,12 @@ namespace SQLParser.Translators {
                                 }
                                 else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
                                     columnName += $"({ColumnReferenceExpressionParse(columnReferenceExpression2)})";
-                                }
+                                } 
+                                else if (parameter is SearchedCaseExpression searchedCaseExpression3) {
+                                    Data.Level++;
+                                    columnName += $"({SearchedCaseExpressionParse(searchedCaseExpression3)})";
+                                    Data.Level--;
+                                } 
                                 else {
                                     columnName += $"(~UNKNOWN ScalarExpression~)";
                                 }
@@ -1430,7 +1435,10 @@ namespace SQLParser.Translators {
 
                 if (expression.FirstExpression is ColumnReferenceExpression columnReferenceExpression1) {
                     firstExpression = ColumnReferenceExpressionParse(columnReferenceExpression1);
-                }
+                } 
+                else if (expression.FirstExpression is ParenthesisExpression parenthesisExpression1) {
+                    firstExpression = $"({ParenthesisExpressionParse(parenthesisExpression1)})";
+                } 
                 else if (expression.FirstExpression is StringLiteral stringLiteral1) {
                     firstExpression = $"'{stringLiteral1.Value}'";
                 }
@@ -1449,7 +1457,10 @@ namespace SQLParser.Translators {
 
                 if (expression.SecondExpression is ColumnReferenceExpression columnReferenceExpression2) {
                     secondExpression = ColumnReferenceExpressionParse(columnReferenceExpression2);
-                }
+                } 
+                else if (expression.SecondExpression is ParenthesisExpression parenthesisExpression2) {
+                    secondExpression = $"({ParenthesisExpressionParse(parenthesisExpression2)})";
+                } 
                 else if (expression.SecondExpression is IntegerLiteral integerLiteral2) {
                     secondExpression = integerLiteral2.Value;
                 }
@@ -2410,7 +2421,10 @@ namespace SQLParser.Translators {
 
                 if (expression.ThenExpression is ColumnReferenceExpression columnReferenceExpression) {
                     result += $" THEN {ColumnReferenceExpressionParse(columnReferenceExpression)}";
-                }
+                } 
+                else if (expression.ThenExpression is ParenthesisExpression parenthesisExpression) {
+                    result += $" THEN {ParenthesisExpressionParse(parenthesisExpression)}";
+                } 
                 else if (expression.ThenExpression is StringLiteral stringLiteral) {
                     result += $" THEN '{stringLiteral.Value}'";
                 }
