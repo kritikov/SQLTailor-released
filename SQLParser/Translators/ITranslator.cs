@@ -220,6 +220,14 @@ namespace SQLParser.Translators {
         string SearchedCaseExpressionParse(SearchedCaseExpression expression, object data = null);
 
         /// <summary>
+        /// Translates the Unary expressions as -1
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        string UnaryExpressionParse(UnaryExpression expression, object data = null);
+
+        /// <summary>
         /// Translates a search condition in CASE
         /// </summary>
         /// <param name="expression"></param>

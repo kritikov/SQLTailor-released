@@ -1354,8 +1354,14 @@ namespace SQLParser.Translators {
 
         public virtual string FunctionCallParse(FunctionCall expression, object data = null) {
             string result = $"{expression.FunctionName.Value}";
+            string parameters = "";
 
             foreach (ScalarExpression parameter in expression.Parameters) {
+
+                if (parameters != "") {
+                    parameters += ", ";
+                }
+
                 if (parameter is CastCall castCall) {
                     string dataType;
                     if (castCall.DataType is SqlDataTypeReference) {
@@ -1365,23 +1371,47 @@ namespace SQLParser.Translators {
                     }
 
                     string parameter2;
-                    if (castCall.Parameter is SearchedCaseExpression searchedCaseExpression2) {
-                        parameter2 = SearchedCaseExpressionParse(searchedCaseExpression2);
+                    if (castCall.Parameter is SearchedCaseExpression searchedCaseExpression) {
+                        parameter2 = SearchedCaseExpressionParse(searchedCaseExpression);
                     } else {
                         parameter2 = "~UNKNOWN ScalarExpression~";
                     }
 
-                    result += $"(CAST({parameter2} AS {dataType}))";
-                } else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
-                    result += $"({ColumnReferenceExpressionParse(columnReferenceExpression2)})";
-                } else if (parameter is SearchedCaseExpression searchedCaseExpression3) {
+                    parameters += $"CAST({parameter2} AS {dataType})";
+                } 
+                else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
+                    parameters += $"{ColumnReferenceExpressionParse(columnReferenceExpression2)}";
+                } 
+                else if (parameter is SearchedCaseExpression searchedCaseExpression) {
                     Data.Level++;
-                    result += $"({SearchedCaseExpressionParse(searchedCaseExpression3)})";
+                    result += $"{SearchedCaseExpressionParse(searchedCaseExpression)}";
                     Data.Level--;
-                } else {
-                    result += $"(~UNKNOWN ScalarExpression~)";
+                } 
+                else if (parameter is ParenthesisExpression parenthesisExpression2) {
+                    parameters += $"({ParenthesisExpressionParse(parenthesisExpression2)})";
+                } 
+                else if (parameter is IntegerLiteral integerLiteral2) {
+                    parameters += integerLiteral2.Value;
+                } 
+                else if (parameter is StringLiteral stringLiteral2) {
+                    parameters += $"'{stringLiteral2.Value}'";
+                } 
+                else if (parameter is NumericLiteral numericLiteral2) {
+                    parameters += $"{numericLiteral2.Value}";
+                } 
+                else if (parameter is NullLiteral nullLiteral2) {
+                    parameters += $"NULL";
+                } 
+                else if (parameter is BinaryExpression binaryExpression2) {
+                    parameters += BinaryExpressionParse(binaryExpression2);
+                } 
+                else {
+                    parameters += $"~UNKNOWN ScalarExpression~";
                 }
+
             }
+
+            result += $"({parameters})";
 
             return result;
         }
@@ -2374,7 +2404,10 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.ElseExpression is CastCall castCall) {
                     result += $"\n{Indentation(Data.Level + 2)} ELSE {CastCallParse(castCall)}";
-                }
+                } 
+                else if (expression.ElseExpression is UnaryExpression unaryExpression) {
+                    result += $"\n{Indentation(Data.Level + 2)} ELSE {UnaryExpressionParse(unaryExpression)}";
+                } 
                 else {
                     result += $"\n{Indentation(Data.Level + 2)} ELSE ~UNKNOWN ScalarExpression~";
                 }
@@ -2383,6 +2416,49 @@ namespace SQLParser.Translators {
             }
             catch {
                 result = "~SearchedCaseExpression ERROR~";
+            }
+
+            return result;
+        }
+
+        public virtual string UnaryExpressionParse(UnaryExpression expression, object data = null) {
+            string result;
+
+            try {
+                string value;
+
+                if (expression.Expression is StringLiteral stringLiteral) {
+                    value = $"'{stringLiteral.Value}'";
+                } 
+                else if (expression.Expression is IntegerLiteral integerLiteral) {
+                    value = $"{integerLiteral.Value}";
+                } 
+                else if (expression.Expression is NumericLiteral numericLiteral) {
+                    value = $"{numericLiteral.Value}";
+                } 
+                else if (expression.Expression is NullLiteral nullLiteral) {
+                    value = $"NULL";
+                } 
+                else if (expression.Expression is VariableReference variableReference) {
+                    string variableName = FormatOptions.ReplaceQueryParametersWithValues ? GetQueryParameterFromList(variableReference.Name) : variableReference.Name;
+
+                    value = $"{variableName}";
+
+                    if (FormatOptions.UpdateQueryParametersList) {
+                        InsertIntoQueryParametersList(variableReference.Name);
+                    }
+                } else {
+                    value = $"~UNKNOWN Expression~";
+                }
+
+                if (expression.UnaryExpressionType == UnaryExpressionType.Negative) {
+                    value = $"-{value}";
+                }
+
+                result = value;
+            }
+            catch {
+                result = "~UnaryExpressionParse ERROR~";
             }
 
             return result;
