@@ -1225,20 +1225,6 @@ namespace SQLParser.Translators {
                             result += SearchedCaseExpressionParse(searchedCaseExpression, childData);
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
                         } 
-                        //else if (expression is FunctionCall functionCall) {
-
-                        //    //string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
-
-                        //    //Translator translator = new Translator();
-                        //    //translator.Data.Level = currentData.Level + 1;
-                        //    //translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
-
-                        //    //string subQuery = $"{translator.FunctionCallParse(functionCall)}, {alias}";
-
-                        //    //currentData.SqlExpressionString = $"SqlExpression.Raw(\"{subQuery}\")";
-                        //    //result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(new SelectColumn({subQuery}));\n";
-                        //    result += "";
-                        //} 
                         else if (expression is IntegerLiteral integerLiteral) {
                             string columnName = $"new SelectColumn(SqlExpression.Number({integerLiteral.Value})";
 
@@ -1301,61 +1287,15 @@ namespace SQLParser.Translators {
                         }
                         else if (expression is FunctionCall functionCall) {
 
-                            foreach (var parameter in functionCall.Parameters) {
-                                if (parameter is CastCall castCall) {
-                                    string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
+                            string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
 
-                                    Translator translator = new Translator();
-                                    translator.Data.Level = currentData.Level + 1;
-                                    translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+                            Informations childData = currentData.CopyLite();
+                            childData.BelongsTo = currentData;
+                            childData.Alias = alias;
 
-                                    currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.CastCallParse(castCall)}\"), \"{alias}\"";
+                            result += FunctionCallParse(functionCall, childData);
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
 
-                                    result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(new SelectColumn({currentData.SqlExpressionString}));\n";
-                                }
-                                else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
-                                    string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
-                                    string function = functionCall.FunctionName.Value;
-
-                                    if (function.ToLower() == "Sum".ToLower()) {
-                                        function = $"SqlAggregationFunction.Sum";
-                                    } else if (function.ToLower() == "Count".ToLower()) {
-                                        function = $"SqlAggregationFunction.Count";
-                                    } else if (function.ToLower() == "Avg".ToLower()) {
-                                        function = $"SqlAggregationFunction.Avg";
-                                    } else if (function.ToLower() == "Min".ToLower()) {
-                                        function = $"SqlAggregationFunction.Min";
-                                    } else if (function.ToLower() == "Max".ToLower()) {
-                                        function = $"SqlAggregationFunction.Max";
-                                    } else if (function.ToLower() == "Grouping".ToLower()) {
-                                        function = $"SqlAggregationFunction.Grouping";
-                                    } else {
-                                        function = $"SqlAggregationFunction.~UNKNOWN function~";
-                                    }
-
-                                    Informations childData = currentData.CopyLite();
-                                    childData.BelongsTo = currentData;
-                                    childData.Alias = alias;
-                                    childData.FunctionName = function;
-
-                                    result += ColumnReferenceExpressionParse(columnReferenceExpression2, childData);
-                                    result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
-                                } 
-                                else if (parameter is SearchedCaseExpression searchedCaseExpression2) {
-                                    string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
-
-                                    Translator translator = new Translator();
-                                    translator.Data.Level = currentData.Level + 1;
-                                    translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
-
-                                    currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(functionCall)}\"), \"{alias}\"";
-
-                                    result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(new SelectColumn({currentData.SqlExpressionString}));\n";
-                                }
-                                else {
-                                    result += $"(UNKNOWN parameter)";
-                                }
-                            }
                         }
                         else if (expression is ParenthesisExpression parenthesisExpression) {
                             string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
@@ -2855,7 +2795,53 @@ namespace SQLParser.Translators {
             Informations currentData = (Informations)data;
 
             try {
-                currentData.TermString = "~UNDEVELOPED FunctionCall~";
+                foreach (var parameter in expression.Parameters) {
+                    if (parameter is CastCall castCall) {
+
+                        Translator translator = new Translator();
+                        translator.Data.Level = currentData.Level + 1;
+                        translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+
+                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.CastCallParse(castCall)}\")";
+                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                    } 
+                    else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
+                        string function = expression.FunctionName.Value;
+
+                        if (function.ToLower() == "Sum".ToLower()) {
+                            function = $"SqlAggregationFunction.Sum";
+                        } else if (function.ToLower() == "Count".ToLower()) {
+                            function = $"SqlAggregationFunction.Count";
+                        } else if (function.ToLower() == "Avg".ToLower()) {
+                            function = $"SqlAggregationFunction.Avg";
+                        } else if (function.ToLower() == "Min".ToLower()) {
+                            function = $"SqlAggregationFunction.Min";
+                        } else if (function.ToLower() == "Max".ToLower()) {
+                            function = $"SqlAggregationFunction.Max";
+                        } else if (function.ToLower() == "Grouping".ToLower()) {
+                            function = $"SqlAggregationFunction.Grouping";
+                        } else {
+                            function = $"SqlAggregationFunction.~UNKNOWN function~";
+                        }
+
+                        Informations childData = currentData.CopyLite();
+                        childData.BelongsTo = currentData;
+                        childData.Alias = currentData.Alias;
+                        childData.FunctionName = function;
+
+                        result += ColumnReferenceExpressionParse(columnReferenceExpression2, childData);
+                    } else if (parameter is SearchedCaseExpression searchedCaseExpression2) {
+
+                        Translator translator = new Translator();
+                        translator.Data.Level = currentData.Level + 1;
+                        translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+
+                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                    } else {
+                        result += $"(UNKNOWN parameter)";
+                    }
+                }
             } catch {
                 currentData.TermString = "~FunctionCall ERROR~";
             }
