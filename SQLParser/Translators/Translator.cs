@@ -1096,40 +1096,7 @@ namespace SQLParser.Translators {
                             columns.Add(columnName);
                         }
                         else if (expression is FunctionCall functionCall) {
-                            string columnName = $"{functionCall.FunctionName.Value}";
-
-                            foreach (ScalarExpression parameter in functionCall.Parameters) {
-                                if (parameter is CastCall castCall) {
-                                    string dataType;
-                                    if (castCall.DataType is SqlDataTypeReference) {
-                                        dataType = castCall.DataType.Name.BaseIdentifier.Value;
-                                    }
-                                    else {
-                                        dataType = "~UNKNOWN DataType~";
-                                    }
-
-                                    string parameter2;
-                                    if (castCall.Parameter is SearchedCaseExpression searchedCaseExpression2) {
-                                        parameter2 = SearchedCaseExpressionParse(searchedCaseExpression2);
-                                    }
-                                    else {
-                                        parameter2 = "~UNKNOWN ScalarExpression~";
-                                    }
-
-                                    columnName += $"(CAST({parameter2} AS {dataType}))";
-                                }
-                                else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
-                                    columnName += $"({ColumnReferenceExpressionParse(columnReferenceExpression2)})";
-                                } 
-                                else if (parameter is SearchedCaseExpression searchedCaseExpression3) {
-                                    Data.Level++;
-                                    columnName += $"({SearchedCaseExpressionParse(searchedCaseExpression3)})";
-                                    Data.Level--;
-                                } 
-                                else {
-                                    columnName += $"(~UNKNOWN ScalarExpression~)";
-                                }
-                            }
+                            string columnName = FunctionCallParse(functionCall);
 
                             if (selectScalarExpression.ColumnName is IdentifierOrValueExpression identifierOrValueExpression) {
                                 columnName += $" AS {identifierOrValueExpression.Value}";
@@ -1380,6 +1347,40 @@ namespace SQLParser.Translators {
             }
             catch {
                 result = "~QuerySpecification ERROR~";
+            }
+
+            return result;
+        }
+
+        public virtual string FunctionCallParse(FunctionCall expression, object data = null) {
+            string result = $"{expression.FunctionName.Value}";
+
+            foreach (ScalarExpression parameter in expression.Parameters) {
+                if (parameter is CastCall castCall) {
+                    string dataType;
+                    if (castCall.DataType is SqlDataTypeReference) {
+                        dataType = castCall.DataType.Name.BaseIdentifier.Value;
+                    } else {
+                        dataType = "~UNKNOWN DataType~";
+                    }
+
+                    string parameter2;
+                    if (castCall.Parameter is SearchedCaseExpression searchedCaseExpression2) {
+                        parameter2 = SearchedCaseExpressionParse(searchedCaseExpression2);
+                    } else {
+                        parameter2 = "~UNKNOWN ScalarExpression~";
+                    }
+
+                    result += $"(CAST({parameter2} AS {dataType}))";
+                } else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
+                    result += $"({ColumnReferenceExpressionParse(columnReferenceExpression2)})";
+                } else if (parameter is SearchedCaseExpression searchedCaseExpression3) {
+                    Data.Level++;
+                    result += $"({SearchedCaseExpressionParse(searchedCaseExpression3)})";
+                    Data.Level--;
+                } else {
+                    result += $"(~UNKNOWN ScalarExpression~)";
+                }
             }
 
             return result;

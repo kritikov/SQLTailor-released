@@ -89,6 +89,14 @@ namespace SQLParser.Translators {
         string QuerySpecificationParse(QuerySpecification querySpecification, object data = null);
 
         /// <summary>
+        /// Translates a function call into a formatted string
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        string FunctionCallParse(FunctionCall expression, object data = null);
+
+        /// <summary>
         /// Translates a parenthesis that contains a Select query
         /// </summary>
         /// <param name="expression"></param>
