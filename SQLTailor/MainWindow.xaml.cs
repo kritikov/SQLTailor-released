@@ -748,6 +748,39 @@ WHERE ([ACDT2].[HEEAVATACCOUNT] = [ACCS].[HECODE] and [ACDT2].[HEACSMID] = [ACCS
 ";
             Queries.Add(new FixedQuery("select complex 2", query));
 
+            query = $@"
+            SELECT[ACDT].[HEVTPERCENTAGE][VATPERC], [ACDT].[HEID], case when([ACDT].[ORDR] = 0) then 'Inflows' when([ACDT].[ORDR] = 1) then 'Inflows VAT Not Deductible' when([ACDT].[ORDR] = 2) then 'VAT Inflow' when([ACDT].[ORDR] = 10) then 'Outflows' when([ACDT].[ORDR] = 11) then 'VAT Outflow' else '' end[ORDRDESCR], case when([ACDT].[HEBEHAVIOUR] in ('0', '6') and[ACDT].[REALBEHAVIOUR] in ('0', '6', '7')) then cast(-1 as decimal(19, 7))*Trns.heBBalance else[HEBBALANCE] end[TRNSBALANCE], case when([ACDT].[HEBEHAVIOUR] in ('0') and[ACDT].[REALBEHAVIOUR] in ('0')) then cast(-1 as decimal(19, 7))*cast(Trns.heBBalance as decimal(19, 7)) * cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) when([ACDT].[HEBEHAVIOUR] in ('1')) then cast(Trns.heBBalance as decimal(19, 7))*cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) when([ACDT].[HEBEHAVIOUR] in ('0') and[ACDT].[REALBEHAVIOUR] in ('1')) then cast(Trns.heBBalance as decimal(19, 7))*cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) else 0 end[VATRESULT], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], [ACDT].[HEBEHAVIOUR], [ACDT].[ORDR], [ACDT].[BEHV]
+FROM[HEARTICLETRANSACTIONS][TRNS] WITH(NOLOCK)
+INNER JOIN[HEARTICLES] [ARTS] WITH(NOLOCK) on([TRNS].[HEARTSID] = [ARTS].[HEID])
+INNER JOIN(SELECT isnull([DETS].[HEVTPERCENTAGE], 0) [HEVTPERCENTAGE], [DETS].[HESTARTDATE], [DETS].[HEENDDATE], [DETS].[HEID], [DETS].[HEBEHAVIOUR], [DETS].[HEACCTID], [DETS].[HEVATACCOUNT], [DETS].[HEEAVATACCOUNT], [DETS].[ORDR], [DETS].[BEHV], [DETS].[REALBEHAVIOUR]
+FROM(
+       SELECT  isnull([ACDT].[HEVTPERCENTAGE], 0)[HEVTPERCENTAGE], [ACDT].[HESTARTDATE], [ACDT].[HEENDDATE], [ACDT].[HEID], [ACDT].[HEACCTID], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], case when(([KND].[HEBEHAVIOUR] = 0 or([KND].[HEBEHAVIOUR] = 1 and[ACDT].[HEEAVATACCOUNT] is not null and [ACDT].[HEVATACCOUNT] is not null))) then 0 when(([KND].[HEBEHAVIOUR] = 6 or([KND].[HEBEHAVIOUR] = 7
+AND EXISTS(SELECT distinct 1[COL1]
+FROM[HEACCOUNTSDETAIL][EADET] WITH(NOLOCK)
+INNER JOIN[HEKINDACGL][KND] WITH(NOLOCK) on([EADET].[HEKINDID] = [KND].[HEID])
+WHERE([KND].[HEBEHAVIOUR] = 1 and[EADET].[HEACSMID] = [ACCS].[HEACSMID] and[EADET].[HEEAVATACCOUNT] = [ACCS].[HECODE] and[EADET].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894'))))) then 6 when([KND].[HEBEHAVIOUR] = 1) then 1 when([KND].[HEBEHAVIOUR] = 7) then 7 else -1 end[HEBEHAVIOUR], [KND].[HEBEHAVIOUR][REALBEHAVIOUR], 10[ORDR], case when([KND].[HEBEHAVIOUR] = 0) then 'Outflow' when([KND].[HEBEHAVIOUR] = 1) then 'Inflow' when([KND].[HEBEHAVIOUR] = 2) then 'Customer' when([KND].[HEBEHAVIOUR] = 3) then 'Supplier' when([KND].[HEBEHAVIOUR] = 4) then 'Debtor' when([KND].[HEBEHAVIOUR] = 5) then 'Creditor' when([KND].[HEBEHAVIOUR] = 6) then 'VAT Outflow' when([KND].[HEBEHAVIOUR] = 7) then 'VAT Inflow' when([KND].[HEBEHAVIOUR] = 100) then 'Other' else null end[BEHV]
+FROM[HEACCOUNTSDETAIL][ACDT] WITH(NOLOCK)
+INNER JOIN[HEKINDACGL] [KND] WITH(NOLOCK) on([ACDT].[HEKINDID] = [KND].[HEID])
+INNER JOIN[HEACCOUNTS] [ACCS] WITH(NOLOCK) on([ACDT].[HEACSMID] = [ACCS].[HEACSMID] and[ACDT].[HEACCTID] = [ACCS].[HEID])
+WHERE([ACDT].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ACCS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and([KND].[HEBEHAVIOUR] = 0 or([KND].[HEBEHAVIOUR] = 1 and[ACDT].[HEEAVATACCOUNT] is not null )))
+UNION
+
+SELECT isnull([ACDT].[HEVTPERCENTAGE], 0) [HEVTPERCENTAGE], [ACDT].[HESTARTDATE], [ACDT].[HEENDDATE], [ACDT].[HEID], [ACDT].[HEACCTID], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], case when(([KND].[HEBEHAVIOUR] = 0 or([KND].[HEBEHAVIOUR] = 1 and[ACDT].[HEEAVATACCOUNT] is not null and [ACDT].[HEVATACCOUNT] is not null))) then 0 when(([KND].[HEBEHAVIOUR] = 6 or([KND].[HEBEHAVIOUR] = 7
+AND EXISTS(SELECT distinct 1[COL1]
+FROM[HEACCOUNTSDETAIL][EADET] WITH(NOLOCK)
+INNER JOIN[HEKINDACGL][KND] WITH(NOLOCK) on([EADET].[HEKINDID] = [KND].[HEID])
+WHERE([KND].[HEBEHAVIOUR] = 1 and[EADET].[HEACSMID] = [ACCS].[HEACSMID] and[EADET].[HEEAVATACCOUNT] = [ACCS].[HECODE] and[EADET].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894'))))) then 6 when([KND].[HEBEHAVIOUR] = 1) then 1 when([KND].[HEBEHAVIOUR] = 7) then 7 else -1 end[HEBEHAVIOUR], [KND].[HEBEHAVIOUR][REALBEHAVIOUR], 11[ORDR], case when([KND].[HEBEHAVIOUR] = 0) then 'Outflow' when([KND].[HEBEHAVIOUR] = 1) then 'Inflow' when([KND].[HEBEHAVIOUR] = 2) then 'Customer' when([KND].[HEBEHAVIOUR] = 3) then 'Supplier' when([KND].[HEBEHAVIOUR] = 4) then 'Debtor' when([KND].[HEBEHAVIOUR] = 5) then 'Creditor' when([KND].[HEBEHAVIOUR] = 6) then 'VAT Outflow' when([KND].[HEBEHAVIOUR] = 7) then 'VAT Inflow' when([KND].[HEBEHAVIOUR] = 100) then 'Other' else null end[BEHV]
+FROM[HEACCOUNTSDETAIL][ACDT] WITH(NOLOCK)
+INNER JOIN[HEKINDACGL] [KND] WITH(NOLOCK) on([ACDT].[HEKINDID] = [KND].[HEID])
+INNER JOIN[HEACCOUNTS] [ACCS] WITH(NOLOCK) on([ACDT].[HEACSMID] = [ACCS].[HEACSMID] and[ACDT].[HEACCTID] = [ACCS].[HEID])
+WHERE([ACDT].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ACCS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and(([KND].[HEBEHAVIOUR] = 6) or([KND].[HEBEHAVIOUR] = 7
+AND EXISTS(SELECT top 1 1[INDX]
+FROM[HEACCOUNTSDETAIL][ACDT2] WITH(NOLOCK)
+WHERE([ACDT2].[HEEAVATACCOUNT] = [ACCS].[HECODE] and[ACDT2].[HEACSMID] = [ACCS].[HEACSMID]))))) ) [DETS] ) [ACDT] on([TRNS].[HEACDTID] = [ACDT].[HEID])
+INNER JOIN[HECOMPANIES] [COMP] WITH(NOLOCK) on([ARTS].[HECOMPID] = [COMP].[HEID])
+WHERE([ARTS].[HECOMPID] = 'b168a7be-3201-ea11-827f-d8cb8a162c61' and[ARTS].[HEDATE] between isnull([ACDT].[HESTARTDATE], [ARTS].[HEDATE]) and isnull([ACDT].[HEENDDATE], [ARTS].[HEDATE]) and[ACDT].[HEBEHAVIOUR] in ('0', '1', '6', '7') and[TRNS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ARTS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ARTS].[HEDATE] between '2022-01-02' and '2022-02-02')
+";
+            Queries.Add(new FixedQuery("select complex 3", query));
         }
 
         /// <summary>
