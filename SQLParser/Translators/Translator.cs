@@ -1440,7 +1440,9 @@ namespace SQLParser.Translators {
                     result = $"({ParenthesisExpressionParse(parenthesisExpression)})";
                 }
                 else if (expression.Expression is SearchedCaseExpression searchedCaseExpression) {
+                    Data.Level++;
                     result = $"({SearchedCaseExpressionParse(searchedCaseExpression)})";
+                    Data.Level--;
                 }
                 else if (expression.Expression is BinaryExpression binaryExpression) {
                     result = $"({BinaryExpressionParse(binaryExpression)})";
@@ -2369,51 +2371,54 @@ namespace SQLParser.Translators {
         }
 
         public virtual string SearchedCaseExpressionParse(SearchedCaseExpression expression, object data = null) {
-            string result = $"\n{Indentation(Data.Level + 1)}CASE";
+            string result = $"CASE";
 
             try {
+                this.Data.Level++;
                 foreach (SearchedWhenClause whenClause in expression.WhenClauses) {
                     if (whenClause is SearchedWhenClause searchedWhenClause) {
-                        result += $"\n{Indentation(Data.Level + 2)}{SearchedWhenClauseParse(searchedWhenClause)} ";
+                        result += $"\n{Indentation(Data.Level)}{SearchedWhenClauseParse(searchedWhenClause)} ";
                     }
                     else {
-                        result += $"\n{Indentation(Data.Level + 2)}~UNKNOWN SearchedWhenClause~";
+                        result += $"\n{Indentation(Data.Level)}~UNKNOWN SearchedWhenClause~";
                     }
                 }
 
                 if (expression.ElseExpression is StringLiteral stringLiteral) {
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE '{stringLiteral.Value}'";
+                    result += $"\n{Indentation(Data.Level)} ELSE '{stringLiteral.Value}'";
                 }
                 else if (expression.ElseExpression is IntegerLiteral integerLiteral) {
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE {integerLiteral.Value}";
+                    result += $"\n{Indentation(Data.Level)} ELSE {integerLiteral.Value}";
                 }
                 else if (expression.ElseExpression is NumericLiteral numericLiteral) {
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE {numericLiteral.Value}";
+                    result += $"\n{Indentation(Data.Level)} ELSE {numericLiteral.Value}";
                 }
                 else if (expression.ElseExpression is NullLiteral) {
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE NULL";
+                    result += $"\n{Indentation(Data.Level)} ELSE NULL";
                 }
                 else if (expression.ElseExpression is VariableReference variableReference) {
                     string variableName = FormatOptions.ReplaceQueryParametersWithValues ? GetQueryParameterFromList(variableReference.Name) : variableReference.Name;
 
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE {variableName}";
+                    result += $"\n{Indentation(Data.Level)} ELSE {variableName}";
 
                     if (FormatOptions.UpdateQueryParametersList) {
                         InsertIntoQueryParametersList(variableReference.Name);
                     }
                 }
                 else if (expression.ElseExpression is CastCall castCall) {
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE {CastCallParse(castCall)}";
+                    result += $"\n{Indentation(Data.Level)} ELSE {CastCallParse(castCall)}";
                 } 
                 else if (expression.ElseExpression is UnaryExpression unaryExpression) {
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE {UnaryExpressionParse(unaryExpression)}";
+                    result += $"\n{Indentation(Data.Level)} ELSE {UnaryExpressionParse(unaryExpression)}";
                 } 
                 else {
-                    result += $"\n{Indentation(Data.Level + 2)} ELSE ~UNKNOWN ScalarExpression~";
+                    result += $"\n{Indentation(Data.Level)} ELSE ~UNKNOWN ScalarExpression~";
                 }
 
-                result += $"\n{Indentation(Data.Level + 1)}END";
-            }
+                this.Data.Level--;
+
+                result += $"\n{Indentation(Data.Level)}END";
+            } 
             catch {
                 result = "~SearchedCaseExpression ERROR~";
             }
