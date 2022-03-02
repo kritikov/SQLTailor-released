@@ -221,7 +221,7 @@ namespace SQLParser.Translators {
                         word.Text = current.Substring(1);
 
                         int nextPos = word.Text.IndexOf('\"');
-                        if (nextPos > 0) {
+                        if (nextPos >= 0) {
                             word.Text = current.Substring(0, nextPos + 2);
                             isText = false;
                         }
@@ -744,7 +744,7 @@ namespace SQLParser.Translators {
             return result;
         }
 
-        public string CreateViewStatementParse(CreateViewStatement expression, object data = null) {
+        public virtual string CreateViewStatementParse(CreateViewStatement expression, object data = null) {
             string result = "";
             Informations currentData = (Informations)data;
 
@@ -1628,7 +1628,12 @@ namespace SQLParser.Translators {
                     Informations childData = currentData.CopyLite();
                     result += BooleanTernaryExpressionParse(booleanTernaryExpression1, childData);
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
-                }
+                } 
+                else if (expression.FirstExpression is InPredicate inPredicate1) {
+                    Informations childData = currentData.CopyLite();
+                    result += InPredicateParse(inPredicate1, childData);
+                    result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
+                } 
                 else {
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add(~UNKNOWN BooleanExpression~);\n";
                 }
@@ -1677,7 +1682,12 @@ namespace SQLParser.Translators {
                     Informations childData = currentData.CopyLite();
                     result += BooleanTernaryExpressionParse(booleanTernaryExpression2, childData);
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
-                }
+                } 
+                else if (expression.SecondExpression is InPredicate inPredicate2) {
+                    Informations childData = currentData.CopyLite();
+                    result += InPredicateParse(inPredicate2, childData);
+                    result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
+                } 
                 else {
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add(~UNKNOWN BooleanExpression~);\n";
                 }
@@ -2805,6 +2815,14 @@ namespace SQLParser.Translators {
                 else if (expression.ThenExpression is CastCall castCall) {
                     sqlExpression = $"SqlExpression.Parameter(~SqlOM doesnt support CastCall~)";
                 }
+                else if (expression.ThenExpression is BinaryExpression binaryExpression) {
+
+                    Translator translator = new Translator();
+                    translator.Data.Level = currentData.Level + 1;
+                    translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+
+                    sqlExpression = $"SqlExpression.Raw(\"{translator.BinaryExpressionParse(binaryExpression)}\")";
+                } 
                 else {
                     sqlExpression = "~UNKNOWN ScalarExpression~";
                 }
