@@ -1446,8 +1446,16 @@ namespace SQLParser.Translators {
                         currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
                         currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
                     } 
+                    else if (parameter is UnaryExpression unaryExpression) {
+                        BaseTranslator translator = new BaseTranslator();
+                        translator.Data.Level = currentData.Level + 1;
+                        translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+
+                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.UnaryExpressionParse(unaryExpression)}\")";
+                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                    } 
                     else {
-                        result += $"(UNKNOWN parameter)";
+                        result += $"(~UNKNOWN parameter~)";
                     }
                 }
             } catch {
@@ -1743,7 +1751,11 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.FirstExpression is VariableReference variableReference1) {
                     firstExpression = $"SqlExpression.Parameter(\"{variableReference1.Name}\")";
-                }
+                } 
+                else if (expression.FirstExpression is FunctionCall functionCall1) {
+                    Informations childData = currentData.CopyLite();
+                    firstExpression = FunctionCallParse(functionCall1, childData);
+                } 
                 else {
                     firstExpression = "~UNKNOWN FirstExpression~";
                 }
@@ -2696,6 +2708,8 @@ namespace SQLParser.Translators {
                 currentData.TermString = "~UnaryExpressionParse ERROR~";
             }
 
+            currentData.SqlExpressionString = currentData.TermString;
+
             return result;
         }
 
@@ -2730,7 +2744,7 @@ namespace SQLParser.Translators {
                     result += $"{Indentation(childData.Level)}WhereClause {whereClause} = new WhereClause(WhereClauseRelationship.And);\n";
                     result += BooleanParenthesisExpressionParse(booleanParenthesisExpression, childData);
                     if (childData.VariableName != "") {
-                        result += $"{Indentation(childData.Level)}{whereClause}.WherePhrase.SubClauses.Add({childData.VariableName});\n";
+                        result += $"{Indentation(childData.Level)}{whereClause}.SubClauses.Add({childData.VariableName});\n";
                     }
                     else {
                         result += $"{Indentation(childData.Level)}{whereClause}.Terms.Add({childData.TermString});\n";

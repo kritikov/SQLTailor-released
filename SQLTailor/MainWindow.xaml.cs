@@ -445,7 +445,7 @@ namespace SQLTailor {
             NewLineBeforeOrderByClause = true;
             NewLineBeforeOutputClause = false;
             NewLineBeforeWhereClause = true;
-            IndentationSize = 7;
+            IndentationSize = 3;
             UpdateQueryParametersList = true;
             ReplaceQueryParametersWithValues = false;
             KeywordCasing = 1;
