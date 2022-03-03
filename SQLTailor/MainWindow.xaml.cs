@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace SQLTailor {
@@ -430,7 +431,7 @@ namespace SQLTailor {
             IndentViewBody = false;
             MultilineInsertSourcesList = false;
             MultilineInsertTargetsList = false;
-            MultilineSelectElementsList = false;
+            MultilineSelectElementsList = true;
             MultilineSetClauseItems = false;
             MultilineViewColumnsList = false;
             MultilineWherePredicatesList = true;
@@ -464,49 +465,57 @@ namespace SQLTailor {
                 return;
             }
 
-            // clear formatting of the text in the sql editor
-            ClearEditorFormat(SQLSourceEditor);
+            try {
+                Mouse.OverrideCursor = Cursors.Wait;
 
-            if (Parser.Options.ReplaceQueryParametersWithValues) {
-                FillParserQueryParametersFromList();
-            }
+                // clear formatting of the text in the sql editor
+                ClearEditorFormat(SQLSourceEditor);
 
-            SQLSourceDocument = SQLSourceEditor.Document;
-
-            Parser.SQLSource = sqlSource;
-            Parser.Process();
-
-            MicrosoftTSQLDocument = Parser.GetTSQLAsFlowDocument();
-            SQLStructureDocument = Parser.GetSQLStructureAsFlowDocument();
-
-            if (Parser.Options.UpdateQueryParametersList) {
-                QueryParameters.Clear();
-                foreach (KeyValuePair<string, string> parameter in Parser.Options.QueryParameters) {
-                    QueryParameters.Add(new QueryParameter(parameter.Key, parameter.Value));
+                if (Parser.Options.ReplaceQueryParametersWithValues) {
+                    FillParserQueryParametersFromList();
                 }
-            }
 
-            if (PoVariation) {
-                ReebSqlOMDocument = Parser.GetPoVariationAsFlowDocument();
-            }
-            else {
-                ReebSqlOMDocument = Parser.GetSqlOMAsFlowDocument();
-            }
+                SQLSourceDocument = SQLSourceEditor.Document;
 
-            MicrosoftTSQLDocument.PageWidth = documentWidth;
-            SQLStructureDocument.PageWidth = documentWidth;
-            ReebSqlOMDocument.PageWidth = documentWidth;
+                Parser.SQLSource = sqlSource;
+                Parser.Process();
 
-            FillErrorsList(Parser.Errors);
-            FillTokensList(Parser.GetTokensList());
+                MicrosoftTSQLDocument = Parser.GetTSQLAsFlowDocument();
+                SQLStructureDocument = Parser.GetSQLStructureAsFlowDocument();
 
-            if (Parser.Errors.Count > 0) {
-                Message = "there are errors parsing the query";
-                Logs.Write(Message);
-            }
-            else {
-                Message = "the query parsed successfully";
-                Logs.Write(Message);
+                if (Parser.Options.UpdateQueryParametersList) {
+                    QueryParameters.Clear();
+                    foreach (KeyValuePair<string, string> parameter in Parser.Options.QueryParameters) {
+                        QueryParameters.Add(new QueryParameter(parameter.Key, parameter.Value));
+                    }
+                }
+
+                if (PoVariation) {
+                    ReebSqlOMDocument = Parser.GetPoVariationAsFlowDocument();
+                } else {
+                    ReebSqlOMDocument = Parser.GetSqlOMAsFlowDocument();
+                }
+
+                MicrosoftTSQLDocument.PageWidth = documentWidth;
+                SQLStructureDocument.PageWidth = documentWidth;
+                ReebSqlOMDocument.PageWidth = documentWidth;
+
+                FillErrorsList(Parser.Errors);
+                FillTokensList(Parser.GetTokensList());
+
+                if (Parser.Errors.Count > 0) {
+                    Message = "there are errors parsing the query";
+                    Logs.Write(Message);
+                } else {
+                    Message = "the query parsed successfully";
+                    Logs.Write(Message);
+                }
+            } 
+            catch {
+
+            } 
+            finally {
+                Mouse.OverrideCursor = null;
             }
         }
 
@@ -671,52 +680,7 @@ FROM table1 AS a
 WHERE(a.CompanyID = 1000
     AND a.Document IS NOT NULL
     AND c.Kind = 0);";
-            Queries.Add(new FixedQuery("select complex", query));
-
-            query = $@"INSERT INTO table_name (column0, column1, columnN) 
-VALUES 
-    ('value10', 11, 'value12'),
-    ('value20', 21, 'value22'),
-    ('value20', 21, 'value22')";
-            Queries.Add(new FixedQuery("insert", query));
-
-            query = $@"UPDATE table1
-SET a = table1.b
-WHERE b > 5";
-            Queries.Add(new FixedQuery("update", query));
-
-            query = $@"DELETE
-FROM Customers
-WHERE CustomerName='Alfreds Futterkiste'";
-            Queries.Add(new FixedQuery("delete", query));
-
-            query = $@"CREATE VIEW[Brazil Customers] AS
-SELECT CustomerName, ContactName
-FROM Customers
-WHERE Country = 'Brazil';";
-            Queries.Add(new FixedQuery("create view", query));
-
-            query = $@"CREATE TABLE table_name (
-    column1 VARCHAR(50) not null unique,
-    column2 VARCHAR(50),
-    column3 integer,
-    column4 date not null)";
-            Queries.Add(new FixedQuery("create table", query));
-
-
-            query = $@"ALTER TABLE Customers
-ADD Email varchar(255),
-    column1 VARCHAR(50) not null unique,
-    column2 VARCHAR(50),
-    column3 integer,
-    column4 date not null";
-            Queries.Add(new FixedQuery("alter table", query));
-
-            query = $@"DROP TABLE table1, table2";
-            Queries.Add(new FixedQuery("drop table", query));
-
-            query = $@"DROP TABLE IF EXISTS table1, table2";
-            Queries.Add(new FixedQuery("drop table if exists", query));
+            Queries.Add(new FixedQuery("select complex 1", query));
 
             query = $@"SELECT isnull([DETS].[HEVTPERCENTAGE], 0) [HEVTPERCENTAGE], [DETS].[HESTARTDATE], 
     [DETS].[HEENDDATE], [DETS].[HEID], [DETS].[HEBEHAVIOUR], [DETS].[HEACCTID], [DETS].[HEVATACCOUNT], 
@@ -781,6 +745,52 @@ INNER JOIN[HECOMPANIES] [COMP] WITH(NOLOCK) on([ARTS].[HECOMPID] = [COMP].[HEID]
 WHERE([ARTS].[HECOMPID] = 'b168a7be-3201-ea11-827f-d8cb8a162c61' and[ARTS].[HEDATE] between isnull([ACDT].[HESTARTDATE], [ARTS].[HEDATE]) and isnull([ACDT].[HEENDDATE], [ARTS].[HEDATE]) and[ACDT].[HEBEHAVIOUR] in ('0', '1', '6', '7') and[TRNS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ARTS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ARTS].[HEDATE] between '2022-01-02' and '2022-02-02')
 ";
             Queries.Add(new FixedQuery("select complex 3", query));
+
+            query = $@"INSERT INTO table_name (column0, column1, columnN) 
+VALUES 
+    ('value10', 11, 'value12'),
+    ('value20', 21, 'value22'),
+    ('value20', 21, 'value22')";
+            Queries.Add(new FixedQuery("insert", query));
+
+            query = $@"UPDATE table1
+SET a = table1.b
+WHERE b > 5";
+            Queries.Add(new FixedQuery("update", query));
+
+            query = $@"DELETE
+FROM Customers
+WHERE CustomerName='Alfreds Futterkiste'";
+            Queries.Add(new FixedQuery("delete", query));
+
+            query = $@"CREATE VIEW[Brazil Customers] AS
+SELECT CustomerName, ContactName
+FROM Customers
+WHERE Country = 'Brazil';";
+            Queries.Add(new FixedQuery("create view", query));
+
+            query = $@"CREATE TABLE table_name (
+    column1 VARCHAR(50) not null unique,
+    column2 VARCHAR(50),
+    column3 integer,
+    column4 date not null)";
+            Queries.Add(new FixedQuery("create table", query));
+
+
+            query = $@"ALTER TABLE Customers
+ADD Email varchar(255),
+    column1 VARCHAR(50) not null unique,
+    column2 VARCHAR(50),
+    column3 integer,
+    column4 date not null";
+            Queries.Add(new FixedQuery("alter table", query));
+
+            query = $@"DROP TABLE table1, table2";
+            Queries.Add(new FixedQuery("drop table", query));
+
+            query = $@"DROP TABLE IF EXISTS table1, table2";
+            Queries.Add(new FixedQuery("drop table if exists", query));
+
         }
 
         /// <summary>

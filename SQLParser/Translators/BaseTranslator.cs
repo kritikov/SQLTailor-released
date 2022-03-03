@@ -12,7 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace SQLParser.Translators {
-    public class Translator : ITranslator {
+    public class BaseTranslator : ITranslator {
 
         #region VARIABLES AND NESTED CLASSES
 
@@ -234,7 +234,17 @@ namespace SQLParser.Translators {
             new ReservedWord("WHILE", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("WITH", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("WITHIN GROUP", Colors.DarkGreen, FontWeights.SemiBold),
-            new ReservedWord("WRITETEXT", Colors.DarkGreen, FontWeights.SemiBold)
+            new ReservedWord("WRITETEXT", Colors.DarkGreen, FontWeights.SemiBold),
+
+            // functions
+            new ReservedWord("ISNULL", Colors.DarkBlue, FontWeights.SemiBold),
+            new ReservedWord("CAST", Colors.DarkBlue, FontWeights.SemiBold),
+            new ReservedWord("AVG", Colors.DarkBlue, FontWeights.SemiBold),
+            new ReservedWord("SUM", Colors.DarkBlue, FontWeights.SemiBold),
+            new ReservedWord("MIN", Colors.DarkBlue, FontWeights.SemiBold),
+            new ReservedWord("MAX", Colors.DarkBlue, FontWeights.SemiBold),
+            new ReservedWord("ROUND", Colors.DarkBlue, FontWeights.SemiBold)
+
         };
 
 
@@ -243,11 +253,11 @@ namespace SQLParser.Translators {
 
         #region CONSTRUCTORS
 
-        public Translator() {
+        public BaseTranslator() {
             Reset();
         }
 
-        public Translator(TranslateOptions formatOptions) {
+        public BaseTranslator(TranslateOptions formatOptions) {
             Reset();
             FormatOptions = formatOptions;
         }
@@ -1925,7 +1935,7 @@ namespace SQLParser.Translators {
                     secondExpression = integerLiteral2.Value;
                 }
                 else if (expression.SecondExpression is StringLiteral stringLiteral2) {
-                    secondExpression = stringLiteral2.Value;
+                    secondExpression = $"'{stringLiteral2.Value}'";
                 }
                 else if (expression.SecondExpression is NumericLiteral numericLiteral2) {
                     secondExpression = numericLiteral2.Value;
@@ -1957,7 +1967,7 @@ namespace SQLParser.Translators {
                     thirdExpression = integerLiteral3.Value;
                 }
                 else if (expression.ThirdExpression is StringLiteral stringLiteral3) {
-                    thirdExpression = stringLiteral3.Value;
+                    thirdExpression = $"'{stringLiteral3.Value}'";
                 }
                 else if (expression.ThirdExpression is NumericLiteral numericLiteral3) {
                     thirdExpression = numericLiteral3.Value;

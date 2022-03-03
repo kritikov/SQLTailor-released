@@ -71,7 +71,7 @@
     <Compile Include="Parser.cs" />
     <Compile Include="Translators\PoVariationTranslator.cs" />
     <Compile Include="Translators\SqlOMTranslator.cs" />
-    <Compile Include="Translators\Translator.cs" />
+    <Compile Include="Translators\BaseTranslator.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

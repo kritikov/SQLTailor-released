@@ -128,7 +128,7 @@ namespace SQLParser {
             string text = GetTSQL();
 
             // use the formation of the Translator
-            Translator translator = new Translator(this.Options);
+            BaseTranslator translator = new BaseTranslator(this.Options);
             return translator.GetFlowDocument(text);
         }
 
@@ -146,7 +146,7 @@ namespace SQLParser {
                 Options.QueryParameters.Clear();
             }
 
-            Translator translator = new Translator(Options);
+            BaseTranslator translator = new BaseTranslator(Options);
 
             foreach (TSqlFragment statement in visitor.Statements) {
                 if (statement is SelectStatement selectStatement) {
@@ -187,7 +187,7 @@ namespace SQLParser {
         /// <returns></returns>
         public FlowDocument GetSQLStructureAsFlowDocument() {
             string result = GetSQLStructure();
-            Translator translator = new Translator(Options);
+            BaseTranslator translator = new BaseTranslator(Options);
             return translator.GetFlowDocument(result);
         }
 
