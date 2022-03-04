@@ -60,7 +60,7 @@
                                     </Grid.RowDefinitions>
                                     <CheckBox Grid.Row="0" Content="Use test query" IsChecked="{Binding UseFixedQuery, Mode=TwoWay}" HorizontalAlignment="Left"/>
                                     <ListView Grid.Row="1" ItemsSource="{Binding Queries}" VirtualizingStackPanel.IsVirtualizing="True" SelectionMode="Single"
-                                              SelectedIndex="13" MaxHeight="300" SelectionChanged="FixedQuerySelected" IsEnabled="{Binding UseFixedQuery, Mode=OneWay}">
+                                              SelectedIndex="10" MaxHeight="300" SelectionChanged="FixedQuerySelected" IsEnabled="{Binding UseFixedQuery, Mode=OneWay}">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Type, Mode=OneWay}"/>
