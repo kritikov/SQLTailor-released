@@ -1297,7 +1297,6 @@ namespace SQLParser.Translators {
 
                             result += FunctionCallParse(functionCall, childData);
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
-
                         }
                         else if (expression is ParenthesisExpression parenthesisExpression) {
                             string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
@@ -1307,9 +1306,7 @@ namespace SQLParser.Translators {
                             childData.Alias = alias;
 
                             result += ParenthesisExpressionParse(parenthesisExpression, childData);
-
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
-
                         }
                         else if (expression is BinaryExpression binaryExpression) {
                             Informations childData = currentData.CopyLite();
@@ -1354,112 +1351,135 @@ namespace SQLParser.Translators {
             Informations currentData = (Informations)data;
 
             try {
+
+                string function = expression.FunctionName.Value;
+                string functionEnum = $"~UNSUPPORTED functionEnum~";
+                string functionType = $"~UNSUPPORTED functionType~"; ;
+
+                // create a general SqlExpressionRaw from the BaseTranslator to create Column if must
+                BaseTranslator translator = new BaseTranslator();
+                translator.Data.Level = currentData.Level + 1;
+                translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+                currentData.TermString = $"new SelectColumn(SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\"), \"{currentData.Alias}\")";
+
+                if (function.ToLower() == "sum".ToLower()) {
+                    functionEnum = $"SqlAggregationFunction.Sum";
+                } 
+                else if (function.ToLower() == "count".ToLower()) {
+                    functionEnum = $"SqlAggregationFunction.Count";
+                } 
+                else if (function.ToLower() == "avg".ToLower()) {
+                    functionEnum = $"SqlAggregationFunction.Avg";
+                } 
+                else if (function.ToLower() == "min".ToLower()) {
+                    functionEnum = $"SqlAggregationFunction.Min";
+                } 
+                else if (function.ToLower() == "max".ToLower()) {
+                    functionEnum = $"SqlAggregationFunction.Max";
+                } 
+                else if (function.ToLower() == "grouping".ToLower()) {
+                    functionEnum = $"SqlAggregationFunction.Grouping";
+                } 
+                else if (function.ToLower() == "isnull".ToLower()) {
+                    functionType = $"SqlExpression.IfNull";
+                } 
+                else if (function.ToLower() == "null".ToLower()) {
+                    functionType = $"SqlExpression.Null";
+                }
+
+                currentData.SqlExpressionString = $"{functionType}(";
+
                 foreach (var parameter in expression.Parameters) {
+
+                    if (!currentData.SqlExpressionString.EndsWith("(")){
+                        currentData.SqlExpressionString += ", ";
+                    }
+
                     if (parameter is CastCall castCall) {
 
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.CastCallParse(castCall)}\")";
-                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.CastCallParse(castCall)}\")";
                     } 
                     else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
-                        string function = expression.FunctionName.Value;
-
-                        if (function.ToLower() == "Sum".ToLower()) {
-                            function = $"SqlAggregationFunction.Sum";
-                        } else if (function.ToLower() == "Count".ToLower()) {
-                            function = $"SqlAggregationFunction.Count";
-                        } else if (function.ToLower() == "Avg".ToLower()) {
-                            function = $"SqlAggregationFunction.Avg";
-                        } else if (function.ToLower() == "Min".ToLower()) {
-                            function = $"SqlAggregationFunction.Min";
-                        } else if (function.ToLower() == "Max".ToLower()) {
-                            function = $"SqlAggregationFunction.Max";
-                        } else if (function.ToLower() == "Grouping".ToLower()) {
-                            function = $"SqlAggregationFunction.Grouping";
-                        } else {
-                            function = $"SqlAggregationFunction.~UNKNOWN function~";
-                        }
-
                         Informations childData = currentData.CopyLite();
                         childData.BelongsTo = currentData;
                         childData.Alias = currentData.Alias;
-                        childData.FunctionName = function;
+                        childData.FunctionName = functionEnum;
 
                         result += ColumnReferenceExpressionParse(columnReferenceExpression2, childData);
+                        currentData.SqlExpressionString += childData.SqlExpressionString;
+                        //currentData.TermString = childData.TermString;
                     } 
                     else if (parameter is SearchedCaseExpression searchedCaseExpression2) {
 
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
                         currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
-                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
                     } 
                     else if (parameter is ParenthesisExpression parenthesisExpression) {
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
                         currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
                     } 
                     else if (parameter is IntegerLiteral integerLiteral) {
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
-                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is StringLiteral stringLiteral) {
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
                         currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
-                    } else if (parameter is NumericLiteral numericLiteral) {
-                        BaseTranslator translator = new BaseTranslator();
+                    } 
+                    else if (parameter is NumericLiteral numericLiteral) {
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
-                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is NullLiteral nullLiteral) {
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
-                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is BinaryExpression binaryExpression) {
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
-                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is UnaryExpression unaryExpression) {
-                        BaseTranslator translator = new BaseTranslator();
+                        translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.UnaryExpressionParse(unaryExpression)}\")";
-                        currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.UnaryExpressionParse(unaryExpression)}\")";
                     } 
                     else {
                         result += $"(~UNKNOWN parameter~)";
                     }
                 }
+
+                currentData.SqlExpressionString += ")";
             } catch {
-                currentData.TermString = "~FunctionCall ERROR~";
+                currentData.SqlExpressionString = "~FunctionCall ERROR~";
             }
 
             return result;
@@ -2055,7 +2075,12 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.SecondExpression is VariableReference variableReference2) {
                     secondExpression = $"SqlExpression.Parameter(\"{variableReference2.Name}\")";
-                }
+                } 
+                else if (expression.SecondExpression is FunctionCall functionCall2) {
+                    Informations childData = currentData.CopyLite();
+                    result += FunctionCallParse(functionCall2, childData);
+                    secondExpression = childData.SqlExpressionString;
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2089,7 +2114,12 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.ThirdExpression is VariableReference variableReference3) {
                     thirdExpression = $"SqlExpression.Parameter(\"{variableReference3.Name}\")";
-                }
+                } 
+                else if (expression.ThirdExpression is FunctionCall functionCall3) {
+                    Informations childData = currentData.CopyLite();
+                    result += FunctionCallParse(functionCall3, childData);
+                    thirdExpression = childData.SqlExpressionString;
+                } 
                 else {
                     thirdExpression = "~UNKNOWN ScalarExpression~";
                 }
