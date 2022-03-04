@@ -383,7 +383,7 @@ namespace SQLParser.Translators {
 
                             // check if the string is date
                             if (DateTime.TryParse(stringLiteral.Value, out DateTime date2)) {
-                                rowValue = $"SqlExpression.Date(\"{stringLiteral.Value}\")";
+                                rowValue = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
                             }
                             else {
                                 rowValue = $"SqlExpression.String(\"{stringLiteral.Value}\")";
@@ -490,9 +490,9 @@ namespace SQLParser.Translators {
 
                         // check if the string is date
                         if (DateTime.TryParse(stringLiteral.Value, out DateTime date2)) {
-                            setValue = $"SqlExpression.Date(\"{stringLiteral.Value}\")";
-                        }
-                        else {
+                            setValue = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
+
+                        } else {
                             setValue = $"SqlExpression.String(\"{stringLiteral.Value}\")";
                         }
                     }
@@ -803,6 +803,11 @@ namespace SQLParser.Translators {
                     Informations childData = currentData.CopyLite();
 
                     result += QueryParenthesisExpressionParse(queryParenthesisExpression, childData);
+
+                    currentData.TermString = childData.TermString;
+                    currentData.SqlExpressionString = childData.SqlExpressionString;
+                    currentData.VariableName = childData.VariableName;
+
                 }
                 else if (expression is BinaryQueryExpression binaryQueryExpression) {
                     Informations childData = currentData.CopyLite();
@@ -817,6 +822,10 @@ namespace SQLParser.Translators {
                     else {
                         result = "~SqlOM doesn support nested unions~\n";
                     }
+
+                    currentData.TermString = childData.TermString;
+                    currentData.SqlExpressionString = childData.SqlExpressionString;
+                    currentData.VariableName = childData.VariableName;
                 }
                 else {
                     result = "~UNKNOWN QueryExpression~\n";
@@ -1757,7 +1766,7 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral1.Value, out DateTime date2)) {
-                        firstExpression = $"SqlExpression.Date(\"{stringLiteral1.Value}\")";
+                        firstExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral1.Value}\"))";
                     }
                     else {
                         firstExpression = $"SqlExpression.String(\"{stringLiteral1.Value}\")";
@@ -1774,7 +1783,8 @@ namespace SQLParser.Translators {
                 } 
                 else if (expression.FirstExpression is FunctionCall functionCall1) {
                     Informations childData = currentData.CopyLite();
-                    firstExpression = FunctionCallParse(functionCall1, childData);
+                    FunctionCallParse(functionCall1, childData);
+                    firstExpression = childData.SqlExpressionString;
                 } 
                 else {
                     firstExpression = "~UNKNOWN FirstExpression~";
@@ -1801,9 +1811,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral2.Value, out DateTime date2)) {
-                        secondExpression = $"SqlExpression.Date(\"{stringLiteral2.Value}\")";
-                    }
-                    else {
+                        secondExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral2.Value}\"))";
+
+                    } else {
                         secondExpression = $"SqlExpression.String(\"{stringLiteral2.Value}\")";
                     }
                 }
@@ -1888,9 +1898,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral.Value, out DateTime date1)) {
-                        currentData.SqlExpressionString = $"SqlExpression.Date(\"{stringLiteral.Value}\")";
-                    }
-                    else {
+                        currentData.SqlExpressionString = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
+
+                    } else {
                         currentData.SqlExpressionString = $"SqlExpression.String(\"{stringLiteral.Value}\")";
                     }
                 }
@@ -2026,9 +2036,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral1.Value, out DateTime date1)) {
-                        firstExpression = $"SqlExpression.Date(\"{stringLiteral1.Value}\")";
-                    }
-                    else {
+                        firstExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral1.Value}\"))";
+
+                    } else {
                         firstExpression = $"SqlExpression.String(\"{stringLiteral1.Value}\")";
                     }
                 }
@@ -2061,9 +2071,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral2.Value, out DateTime date2)) {
-                        secondExpression = $"SqlExpression.Date(\"{stringLiteral2.Value}\")";
-                    }
-                    else {
+                        secondExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral2.Value}\"))";
+
+                    } else {
                         secondExpression = $"SqlExpression.String(\"{stringLiteral2.Value}\")";
                     }
                 }
@@ -2100,9 +2110,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral3.Value, out DateTime date3)) {
-                        thirdExpression = $"SqlExpression.Date(\"{stringLiteral3.Value}\")";
-                    }
-                    else {
+                        thirdExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral3.Value}\"))";
+
+                    } else {
                         thirdExpression = $"SqlExpression.String(\"{stringLiteral3.Value}\")";
                     }
                 }
@@ -2236,9 +2246,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        searchExpression = $"SqlExpression.Date(\"{stringLiteral.Value}\")";
-                    }
-                    else {
+                        searchExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
+
+                    } else {
                         searchExpression = $"SqlExpression.String(\"{stringLiteral.Value}\")";
                     }
                 }
@@ -2645,9 +2655,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        elseExpression = $"SqlExpression.Date(\"{stringLiteral.Value}\")";
-                    }
-                    else {
+                        elseExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
+
+                    } else {
                         elseExpression = $"SqlExpression.String(\"{stringLiteral.Value}\")";
                     }
                 }
@@ -2719,9 +2729,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        currentData.TermString = $"SqlExpression.Date(\"{stringLiteral.Value}\")";
-                    } 
-                    else {
+                        currentData.TermString = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
+
+                    } else {
                         currentData.TermString = $"SqlExpression.String(\"{stringLiteral.Value}\")";
                     }
                 } 
@@ -2843,9 +2853,9 @@ namespace SQLParser.Translators {
 
                     // check if the string is date
                     if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        sqlExpression = $"SqlExpression.Date(\"{stringLiteral.Value}\")";
-                    }
-                    else {
+                        sqlExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
+
+                    } else {
                         sqlExpression = $"SqlExpression.String(\"{stringLiteral.Value}\")";
                     }
                 }
