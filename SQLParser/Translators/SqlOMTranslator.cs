@@ -377,26 +377,19 @@ namespace SQLParser.Translators {
                     foreach (ScalarExpression value in row.ColumnValues) {
 
                         if (value is IntegerLiteral integerLiteral) {
-                            rowValue = $"SqlExpression.Number({integerLiteral.Value})";
+                            rowValue = LiteralsSqlExpression(value);
                         }
                         else if (value is StringLiteral stringLiteral) {
-
-                            // check if the string is date
-                            if (DateTime.TryParse(stringLiteral.Value, out DateTime date2)) {
-                                rowValue = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
-                            }
-                            else {
-                                rowValue = $"SqlExpression.String(\"{stringLiteral.Value}\")";
-                            }
+                            rowValue = LiteralsSqlExpression(value);
                         }
                         else if (value is NumericLiteral numericLiteral) {
-                            rowValue = $"SqlExpression.Number({numericLiteral.Value})";
+                            rowValue = LiteralsSqlExpression(value);
                         }
                         else if (value is NullLiteral nullLiteral1) {
-                            rowValue = $"SqlExpression.Null()";
+                            rowValue = LiteralsSqlExpression(value);
                         }
                         else if (value is VariableReference variableReference) {
-                            rowValue = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+                            rowValue = LiteralsSqlExpression(value);
                         }
                         else {
                             rowValue = $"~UNKNOWN ScalarExpression~";
@@ -483,34 +476,26 @@ namespace SQLParser.Translators {
                         result += ColumnReferenceExpressionParse(columnReferenceExpression2, childData);
                         setValue = childData.SqlExpressionString;
                     }
-                    else if (assignmentSetClause.NewValue is IntegerLiteral integerLiteral) {
-                        setValue = $"SqlExpression.Number({integerLiteral.Value})";
+                    else if (assignmentSetClause.NewValue is IntegerLiteral) {
+                        setValue = LiteralsSqlExpression(assignmentSetClause.NewValue);
                     }
-                    else if (assignmentSetClause.NewValue is StringLiteral stringLiteral) {
-
-                        // check if the string is date
-                        if (DateTime.TryParse(stringLiteral.Value, out DateTime date2)) {
-                            setValue = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
-
-                        } else {
-                            setValue = $"SqlExpression.String(\"{stringLiteral.Value}\")";
-                        }
+                    else if (assignmentSetClause.NewValue is StringLiteral) {
+                        setValue = LiteralsSqlExpression(assignmentSetClause.NewValue);
                     }
-                    else if (assignmentSetClause.NewValue is NumericLiteral numericLiteral) {
-                        setValue = $"SqlExpression.Number({numericLiteral.Value})";
+                    else if (assignmentSetClause.NewValue is NumericLiteral) {
+                        setValue = LiteralsSqlExpression(assignmentSetClause.NewValue);
                     }
-                    else if (assignmentSetClause.NewValue is NullLiteral nullLiteral1) {
-                        setValue = $"SqlExpression.Null()";
+                    else if (assignmentSetClause.NewValue is NullLiteral) {
+                        setValue = LiteralsSqlExpression(assignmentSetClause.NewValue);
                     }
-                    else if (assignmentSetClause.NewValue is VariableReference variableReference) {
-                        setValue = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+                    else if (assignmentSetClause.NewValue is VariableReference) {
+                        setValue = LiteralsSqlExpression(assignmentSetClause.NewValue);
                     }
                     else {
                         setValue = $"~UNKNOWN ScalarExpression~";
                     }
 
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add(new UpdateTerm(\"{columnName}\", {setValue}));\n";
-
                 }
 
 
@@ -1759,27 +1744,20 @@ namespace SQLParser.Translators {
                     currentData.LeftTableName = childData1.TableName;
                     currentData.LeftColumnName = childData1.ColumnName;
                 }
-                else if (expression.FirstExpression is IntegerLiteral integerLiteral1) {
-                    firstExpression = $"SqlExpression.Number({integerLiteral1.Value})";
+                else if (expression.FirstExpression is IntegerLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is StringLiteral stringLiteral1) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral1.Value, out DateTime date2)) {
-                        firstExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral1.Value}\"))";
-                    }
-                    else {
-                        firstExpression = $"SqlExpression.String(\"{stringLiteral1.Value}\")";
-                    }
+                else if (expression.FirstExpression is StringLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is NumericLiteral numericLiteral1) {
-                    firstExpression = $"SqlExpression.Number({numericLiteral1.Value})";
+                else if (expression.FirstExpression is NumericLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is NullLiteral nullLiteral1) {
-                    firstExpression = $"SqlExpression.Null()";
+                else if (expression.FirstExpression is NullLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is VariableReference variableReference1) {
-                    firstExpression = $"SqlExpression.Parameter(\"{variableReference1.Name}\")";
+                else if (expression.FirstExpression is VariableReference) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 } 
                 else if (expression.FirstExpression is FunctionCall functionCall1) {
                     Informations childData = currentData.CopyLite();
@@ -1803,28 +1781,20 @@ namespace SQLParser.Translators {
                     currentData.RightTableName = childData2.TableName;
                     currentData.RightColumnName = childData2.ColumnName;
                 }
-                else if (expression.SecondExpression is IntegerLiteral integerLiteral2) {
-                    secondExpression = $"SqlExpression.Number({integerLiteral2.Value})";
-
+                else if (expression.SecondExpression is IntegerLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is StringLiteral stringLiteral2) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral2.Value, out DateTime date2)) {
-                        secondExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral2.Value}\"))";
-
-                    } else {
-                        secondExpression = $"SqlExpression.String(\"{stringLiteral2.Value}\")";
-                    }
+                else if (expression.SecondExpression is StringLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is NumericLiteral numericLiteral2) {
-                    secondExpression = $"SqlExpression.Number({numericLiteral2.Value})";
+                else if (expression.SecondExpression is NumericLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is NullLiteral nullLiteral2) {
-                    secondExpression = $"SqlExpression.Null()";
+                else if (expression.SecondExpression is NullLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is VariableReference variableReference2) {
-                    secondExpression = $"SqlExpression.Parameter(\"{variableReference2.Name}\")";
+                else if (expression.SecondExpression is VariableReference) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
                 else {
                     secondExpression = "~UNKNOWN SecondExpression~";
@@ -1891,27 +1861,20 @@ namespace SQLParser.Translators {
 
                     currentData.SqlExpressionString = childData.SqlExpressionString;
                 }
-                else if (expression.Expression is IntegerLiteral integerLiteral) {
-                    currentData.SqlExpressionString = $"SqlExpression.Number({integerLiteral.Value})";
+                else if (expression.Expression is IntegerLiteral) {
+                    currentData.SqlExpressionString = LiteralsSqlExpression(expression.Expression);
                 }
                 else if (expression.Expression is StringLiteral stringLiteral) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral.Value, out DateTime date1)) {
-                        currentData.SqlExpressionString = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
-
-                    } else {
-                        currentData.SqlExpressionString = $"SqlExpression.String(\"{stringLiteral.Value}\")";
-                    }
+                    currentData.SqlExpressionString = LiteralsSqlExpression(expression.Expression);
                 }
                 else if (expression.Expression is NumericLiteral numericLiteral) {
-                    currentData.SqlExpressionString = $"SqlExpression.Number({numericLiteral.Value})";
+                    currentData.SqlExpressionString = LiteralsSqlExpression(expression.Expression);
                 }
                 else if (expression.Expression is NullLiteral nullLiteral) {
-                    currentData.SqlExpressionString = $"SqlExpression.Null()";
+                    currentData.SqlExpressionString = LiteralsSqlExpression(expression.Expression);
                 }
                 else if (expression.Expression is VariableReference variableReference) {
-                    currentData.SqlExpressionString = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+                    currentData.SqlExpressionString = LiteralsSqlExpression(expression.Expression);
                 }
                 else {
                     currentData.SqlExpressionString = "~UKNOWN BooleanIsNullExpression~";
@@ -2029,27 +1992,20 @@ namespace SQLParser.Translators {
                     result += ColumnReferenceExpressionParse(columnReferenceExpression1, childData);
                     firstExpression = childData.SqlExpressionString;
                 }
-                else if (expression.FirstExpression is IntegerLiteral integerLiteral1) {
-                    firstExpression = $"SqlExpression.Number({integerLiteral1.Value})";
+                else if (expression.FirstExpression is IntegerLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is StringLiteral stringLiteral1) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral1.Value, out DateTime date1)) {
-                        firstExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral1.Value}\"))";
-
-                    } else {
-                        firstExpression = $"SqlExpression.String(\"{stringLiteral1.Value}\")";
-                    }
+                else if (expression.FirstExpression is StringLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is NumericLiteral numericLiteral1) {
-                    firstExpression = $"SqlExpression.Number({numericLiteral1.Value})";
+                else if (expression.FirstExpression is NumericLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is NullLiteral nullLiteral1) {
-                    firstExpression = $"SqlExpression.Null()";
+                else if (expression.FirstExpression is NullLiteral) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
-                else if (expression.FirstExpression is VariableReference variableReference1) {
-                    firstExpression = $"SqlExpression.Parameter(\"{variableReference1.Name}\")";
+                else if (expression.FirstExpression is VariableReference) {
+                    firstExpression = LiteralsSqlExpression(expression.FirstExpression);
                 }
                 else {
                     firstExpression = "~UNKNOWN ScalarExpression~";
@@ -2063,28 +2019,20 @@ namespace SQLParser.Translators {
                     result += ColumnReferenceExpressionParse(columnReferenceExpression2, childData);
                     secondExpression = childData.SqlExpressionString;
                 }
-                else if (expression.SecondExpression is IntegerLiteral integerLiteral2) {
-                    secondExpression = $"SqlExpression.Number({integerLiteral2.Value})";
-
+                else if (expression.SecondExpression is IntegerLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is StringLiteral stringLiteral2) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral2.Value, out DateTime date2)) {
-                        secondExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral2.Value}\"))";
-
-                    } else {
-                        secondExpression = $"SqlExpression.String(\"{stringLiteral2.Value}\")";
-                    }
+                else if (expression.SecondExpression is StringLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is NumericLiteral numericLiteral2) {
-                    secondExpression = $"SqlExpression.Number({numericLiteral2.Value})";
+                else if (expression.SecondExpression is NumericLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is NullLiteral nullLiteral2) {
-                    secondExpression = $"SqlExpression.Null()";
+                else if (expression.SecondExpression is NullLiteral) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 }
-                else if (expression.SecondExpression is VariableReference variableReference2) {
-                    secondExpression = $"SqlExpression.Parameter(\"{variableReference2.Name}\")";
+                else if (expression.SecondExpression is VariableReference) {
+                    secondExpression = LiteralsSqlExpression(expression.SecondExpression);
                 } 
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     Informations childData = currentData.CopyLite();
@@ -2103,27 +2051,20 @@ namespace SQLParser.Translators {
                     result += ColumnReferenceExpressionParse(columnReferenceExpression3, childData);
                     thirdExpression = childData.SqlExpressionString;
                 }
-                else if (expression.ThirdExpression is IntegerLiteral integerLiteral3) {
-                    thirdExpression = $"SqlExpression.Number({integerLiteral3.Value})";
+                else if (expression.ThirdExpression is IntegerLiteral) {
+                    thirdExpression = LiteralsSqlExpression(expression.ThirdExpression);
                 }
-                else if (expression.ThirdExpression is StringLiteral stringLiteral3) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral3.Value, out DateTime date3)) {
-                        thirdExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral3.Value}\"))";
-
-                    } else {
-                        thirdExpression = $"SqlExpression.String(\"{stringLiteral3.Value}\")";
-                    }
+                else if (expression.ThirdExpression is StringLiteral) {
+                    thirdExpression = LiteralsSqlExpression(expression.ThirdExpression);
                 }
-                else if (expression.ThirdExpression is NumericLiteral numericLiteral3) {
-                    thirdExpression = $"SqlExpression.Number({numericLiteral3.Value})";
+                else if (expression.ThirdExpression is NumericLiteral) {
+                    thirdExpression = LiteralsSqlExpression(expression.ThirdExpression);
                 }
                 else if (expression.ThirdExpression is NullLiteral nullLiteral3) {
-                    thirdExpression = $"SqlExpression.Null()";
+                    thirdExpression = LiteralsSqlExpression(expression.ThirdExpression);
                 }
-                else if (expression.ThirdExpression is VariableReference variableReference3) {
-                    thirdExpression = $"SqlExpression.Parameter(\"{variableReference3.Name}\")";
+                else if (expression.ThirdExpression is VariableReference) {
+                    thirdExpression = LiteralsSqlExpression(expression.ThirdExpression);
                 } 
                 else if (expression.ThirdExpression is FunctionCall functionCall3) {
                     Informations childData = currentData.CopyLite();
@@ -2239,27 +2180,20 @@ namespace SQLParser.Translators {
                     result += ColumnReferenceExpressionParse(columnReferenceExpression1, childData);
                     searchExpression = childData.SqlExpressionString;
                 }
-                else if (expression.Expression is IntegerLiteral integerLiteral) {
-                    searchExpression = $"SqlExpression.Number({integerLiteral.Value})";
+                else if (expression.Expression is IntegerLiteral) {
+                    searchExpression = LiteralsSqlExpression(expression.Expression);
                 }
-                else if (expression.Expression is StringLiteral stringLiteral) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        searchExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
-
-                    } else {
-                        searchExpression = $"SqlExpression.String(\"{stringLiteral.Value}\")";
-                    }
+                else if (expression.Expression is StringLiteral) {
+                    searchExpression = LiteralsSqlExpression(expression.Expression);
                 }
-                else if (expression.Expression is NumericLiteral numericLiteral) {
-                    searchExpression = $"SqlExpression.Number({numericLiteral.Value})";
+                else if (expression.Expression is NumericLiteral) {
+                    searchExpression = LiteralsSqlExpression(expression.Expression);
                 }
                 else if (expression.Expression is NullLiteral nullLiteral) {
-                    searchExpression = $"SqlExpression.Null()";
+                    searchExpression = LiteralsSqlExpression(expression.Expression);
                 }
                 else if (expression.Expression is VariableReference variableReference) {
-                    searchExpression = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+                    searchExpression = LiteralsSqlExpression(expression.Expression);
                 }
                 else {
                     searchExpression = "~UNKNOWN ScalarExpression~";
@@ -2648,27 +2582,20 @@ namespace SQLParser.Translators {
                     result += ColumnReferenceExpressionParse(columnReferenceExpression1, childData);
                     elseExpression = childData.SqlExpressionString;
                 }
-                else if (expression.ElseExpression is IntegerLiteral integerLiteral) {
-                    elseExpression = $"SqlExpression.Number({integerLiteral.Value})";
+                else if (expression.ElseExpression is IntegerLiteral) {
+                    elseExpression = LiteralsSqlExpression(expression.ElseExpression);
                 }
-                else if (expression.ElseExpression is StringLiteral stringLiteral) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        elseExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
-
-                    } else {
-                        elseExpression = $"SqlExpression.String(\"{stringLiteral.Value}\")";
-                    }
+                else if (expression.ElseExpression is StringLiteral) {
+                    elseExpression = LiteralsSqlExpression(expression.ElseExpression);
                 }
-                else if (expression.ElseExpression is NumericLiteral numericLiteral) {
-                    elseExpression = $"SqlExpression.Number({numericLiteral.Value})";
+                else if (expression.ElseExpression is NumericLiteral) {
+                    elseExpression = LiteralsSqlExpression(expression.ElseExpression);
                 }
-                else if (expression.ElseExpression is NullLiteral nullLiteral) {
-                    elseExpression = $"SqlExpression.Null()";
+                else if (expression.ElseExpression is NullLiteral) {
+                    elseExpression = LiteralsSqlExpression(expression.ElseExpression);
                 }
-                else if (expression.ElseExpression is VariableReference variableReference) {
-                    elseExpression = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+                else if (expression.ElseExpression is VariableReference) {
+                    elseExpression = LiteralsSqlExpression(expression.ElseExpression);
                 }
                 else if (expression.ElseExpression is CastCall castCall) {
                     Informations childData = currentData.CopyLite();
@@ -2725,24 +2652,17 @@ namespace SQLParser.Translators {
                 if (expression.Expression is IntegerLiteral integerLiteral) {
                     currentData.TermString = $"SqlExpression.Number({pros}{integerLiteral.Value})";
                 } 
-                else if (expression.Expression is StringLiteral stringLiteral) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        currentData.TermString = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
-
-                    } else {
-                        currentData.TermString = $"SqlExpression.String(\"{stringLiteral.Value}\")";
-                    }
+                else if (expression.Expression is StringLiteral) {
+                    currentData.TermString = LiteralsSqlExpression(expression.Expression);
                 } 
                 else if (expression.Expression is NumericLiteral numericLiteral) {
                     currentData.TermString = $"SqlExpression.Number({pros}{numericLiteral.Value})";
                 } 
-                else if (expression.Expression is NullLiteral nullLiteral) {
-                    currentData.TermString = $"SqlExpression.Null()";
+                else if (expression.Expression is NullLiteral) {
+                    currentData.TermString = LiteralsSqlExpression(expression.Expression);
                 } 
-                else if (expression.Expression is VariableReference variableReference) {
-                    currentData.TermString = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+                else if (expression.Expression is VariableReference) {
+                    currentData.TermString = LiteralsSqlExpression(expression.Expression);
                 }
             } catch {
                 currentData.TermString = "~UnaryExpressionParse ERROR~";
@@ -2846,27 +2766,20 @@ namespace SQLParser.Translators {
                     result += ColumnReferenceExpressionParse(columnReferenceExpression1, childData);
                     sqlExpression = childData.SqlExpressionString;
                 }
-                else if (expression.ThenExpression is IntegerLiteral integerLiteral) {
-                    sqlExpression = $"SqlExpression.Number({integerLiteral.Value})";
+                else if (expression.ThenExpression is IntegerLiteral) {
+                    sqlExpression = LiteralsSqlExpression(expression.ThenExpression);
                 }
                 else if (expression.ThenExpression is StringLiteral stringLiteral) {
-
-                    // check if the string is date
-                    if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
-                        sqlExpression = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
-
-                    } else {
-                        sqlExpression = $"SqlExpression.String(\"{stringLiteral.Value}\")";
-                    }
+                    sqlExpression = LiteralsSqlExpression(expression.ThenExpression);
                 }
-                else if (expression.ThenExpression is NumericLiteral numericLiteral) {
-                    sqlExpression = $"SqlExpression.Number({numericLiteral.Value})";
+                else if (expression.ThenExpression is NumericLiteral) {
+                    sqlExpression = LiteralsSqlExpression(expression.ThenExpression);
                 }
-                else if (expression.ThenExpression is NullLiteral nullLiteral) {
-                    sqlExpression = $"SqlExpression.Null()";
+                else if (expression.ThenExpression is NullLiteral) {
+                    sqlExpression = LiteralsSqlExpression(expression.ThenExpression);
                 }
-                else if (expression.ThenExpression is VariableReference variableReference) {
-                    sqlExpression = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+                else if (expression.ThenExpression is VariableReference) {
+                    sqlExpression = LiteralsSqlExpression(expression.ThenExpression);
                 }
                 else if (expression.ThenExpression is CastCall castCall) {
                     sqlExpression = $"SqlExpression.Parameter(~SqlOM doesnt support CastCall~)";
@@ -3013,6 +2926,41 @@ namespace SQLParser.Translators {
                 currentData.TermString = "~UNDEVELOPED DropTableStatement~";
             } catch {
                 currentData.TermString = "~DropTableStatement ERROR~";
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Special method to parse the literals as SqlExpression. This function is not included in ITranslator interface.
+        /// Parses the IntegerLiteral, StringLiteral, NumericLiteral, NullLiteral and VariableReference
+        /// </summary>
+        /// <returns></returns>
+        public virtual string LiteralsSqlExpression(Object expression) {
+
+            string result = "";
+
+            if (expression is IntegerLiteral integerLiteral) {
+                result = $"SqlExpression.Number({integerLiteral.Value})";
+            } 
+            else if (expression is StringLiteral stringLiteral) {
+
+                // check if the string is date
+                if (DateTime.TryParse(stringLiteral.Value, out DateTime date)) {
+                    result = $"SqlExpression.Date(Convert.ToDateTime(\"{stringLiteral.Value}\"))";
+
+                } else {
+                    result = $"SqlExpression.String(\"{stringLiteral.Value}\")";
+                }
+            } 
+            else if (expression is NumericLiteral numericLiteral) {
+                result = $"SqlExpression.Number({numericLiteral.Value})";
+            } 
+            else if (expression is NullLiteral) {
+                result = $"SqlExpression.Null()";
+            } 
+            else if (expression is VariableReference variableReference) {
+                result = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
             }
 
             return result;
