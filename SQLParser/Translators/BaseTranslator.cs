@@ -972,7 +972,7 @@ namespace SQLParser.Translators {
                     all = "";
                 }
 
-                result = $"{firstQueryExpression}\n{type}{all}\n{secondQueryExpression}";
+                result = $"{firstQueryExpression}\n{Indentation(Data.Level)}{type}{all}\n{Indentation(Data.Level)}{secondQueryExpression}";
             }
             catch {
                 result = "~ParenthesisExpression ERROR~";

@@ -75,7 +75,7 @@ namespace SQLParser.Translators {
             internal static int tableIndex = 0;
             internal static int whereClauseIndex = 0;
             internal static int caseClauseIndex = 0;
-            internal static bool unionIsCreated = false;
+            internal static int unionIndex = 0;
 
             public static int NextTableIndex() {
                 return ++tableIndex;
@@ -89,11 +89,14 @@ namespace SQLParser.Translators {
             public static int NextCaseClauseIndex() {
                 return ++caseClauseIndex;
             }
+            public static int NextUnionIndex() {
+                return ++unionIndex;
+            }
 
             public int IndentationSize = 4;
 
             public Informations Parent = null; // the direct parent of the object
-            public Informations BelongsTo = null;    // the expression parent of the parent. Keeps the variable name that belongs the object
+            public Informations BelongsTo = null;    // the expression parent of the parent.
             public int Level = 0; // how deep is the object in the tree
             public string VariableName = "";  // the variable name. It is used to create a new SqlOm object as SelectQuery or WhereClause etc and get a name
             public string FunctionName = "";  // used in columns when there is a function
@@ -108,6 +111,7 @@ namespace SQLParser.Translators {
             public string RightColumnName = "";
             public string SqlExpressionString = "";
             public string TermString = "";
+            public string UnionName = "";   // the variable name of the union that belongs to
 
             /// <summary>
             /// create a new Informations object with some basic properties equals of another.
@@ -164,7 +168,7 @@ namespace SQLParser.Translators {
             Informations.tableIndex = 0;
             Informations.whereClauseIndex = 0;
             Informations.caseClauseIndex = 0;
-            Informations.unionIsCreated = false;
+            Informations.unionIndex = 0;
         }
 
         public virtual FlowDocument GetFlowDocument(string text) {
@@ -797,16 +801,11 @@ namespace SQLParser.Translators {
                 else if (expression is BinaryQueryExpression binaryQueryExpression) {
                     Informations childData = currentData.CopyLite();
 
-                    // SqlOM supports only one level for unions
-                    if (!Informations.unionIsCreated) {
-                        Informations.unionIsCreated = true;
+                    string unionName = $"union{Informations.NextUnionIndex()}";
+                    childData.VariableName = unionName;
 
-                        result += $"{Indentation(currentData.Level)}SqlUnion union = new SqlUnion();\n";
-                        result += BinaryQueryExpressionParse(binaryQueryExpression, childData);
-                    }
-                    else {
-                        result = "~SqlOM doesn support nested unions~\n";
-                    }
+                    result += $"{Indentation(currentData.Level)}SqlUnion {unionName} = new SqlUnion();\n";
+                    result += BinaryQueryExpressionParse(binaryQueryExpression, childData);
 
                     currentData.TermString = childData.TermString;
                     currentData.SqlExpressionString = childData.SqlExpressionString;
@@ -843,23 +842,24 @@ namespace SQLParser.Translators {
                         childData.Level++;
 
                         result += QuerySpecificationParse(querySpecification1, childData);
-                        result += $"{Indentation(currentData.Level)}union.Add({childData.VariableName}, {modifier});\n";
+                        result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Add({childData.VariableName}, {modifier});\n";
                     }
                     else if (expression.FirstQueryExpression is QueryParenthesisExpression queryParenthesisExpression1) {
                         Informations childData = currentData.CopyLite();
                         childData.Level++;
 
                         result += QueryParenthesisExpressionParse(queryParenthesisExpression1, childData);
-                        result += $"{Indentation(currentData.Level)}union.Add({childData.VariableName}, {modifier});\n";
+                        result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Add({childData.VariableName}, {modifier});\n";
 
                     }
                     else if (expression.FirstQueryExpression is BinaryQueryExpression binaryQueryExpression1) {
                         Informations childData = currentData.CopyLite();
+                        childData.VariableName = currentData.VariableName;
 
                         result += BinaryQueryExpressionParse(binaryQueryExpression1, childData);
                     }
                     else {
-                        result += $"{Indentation(currentData.Level)}union.Add(~UNKNOWN QueryExpression~, {modifier});\n";
+                        result += $"{Indentation(currentData.Level)}{currentData.UnionName}.Add(~UNKNOWN QueryExpression~, {modifier});\n";
                     }
 
 
@@ -868,17 +868,15 @@ namespace SQLParser.Translators {
                         childData.Level++;
 
                         result += QuerySpecificationParse(querySpecification2, childData);
-                        result += $"{Indentation(currentData.Level)}union.Add({childData.VariableName}, {modifier});\n";
+                        result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Add({childData.VariableName}, {modifier});\n";
                     }
                     else if (expression.SecondQueryExpression is QueryParenthesisExpression queryParenthesisExpression2) {
                         Informations childData = currentData.CopyLite();
                         childData.Level++;
 
                         result += QueryParenthesisExpressionParse(queryParenthesisExpression2, childData);
-                        result += $"{Indentation(currentData.Level)}union.Add({childData.VariableName}, {modifier});\n";
-                    }
-                    else if (expression.SecondQueryExpression is BinaryQueryExpression binaryQueryExpression2) {
-                        result += $"{Indentation(currentData.Level)}union.Add(~SqlOM doesn support nested unions~, {modifier});\n";
+                        string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                        result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Add({variableName}, {modifier});\n";
                     }
                     else {
                         result += $"{Indentation(currentData.Level)}union.Add(~UNKNOWN QueryExpression~, {modifier});\n";
@@ -1231,7 +1229,7 @@ namespace SQLParser.Translators {
 
                             columnName += ")";
 
-                            result += $"{currentData.VariableName}.Columns.Add({columnName});\n";
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({columnName});\n";
                         }
                         else if (expression is StringLiteral stringLiteral) {
                             string columnName = $"new SelectColumn(SqlExpression.String(\"{stringLiteral.Value}\")";
@@ -1255,7 +1253,7 @@ namespace SQLParser.Translators {
 
                             columnName += ")";
 
-                            result += $"{currentData.VariableName}.Columns.Add({columnName});\n";
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({columnName});\n";
                         }
                         else if (expression is NullLiteral nullLiteral1) {
                             string columnName = $"new SelectColumn(SqlExpression.Null()";
@@ -1267,7 +1265,7 @@ namespace SQLParser.Translators {
 
                             columnName += ")";
 
-                            result += $"{currentData.VariableName}.Columns.Add({columnName});\n";
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({columnName});\n";
                         }
                         else if (expression is VariableReference variableReference) {
                             string columnName = $"new SelectColumn(SqlExpression.Parameter(\"{variableReference.Name}\")";
@@ -1279,7 +1277,7 @@ namespace SQLParser.Translators {
 
                             columnName += ")";
 
-                            result += $"{currentData.VariableName}.Columns.Add({columnName});\n";
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({columnName});\n";
                         }
                         else if (expression is FunctionCall functionCall) {
 
