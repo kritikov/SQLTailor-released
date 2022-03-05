@@ -952,7 +952,8 @@ namespace SQLParser.Translators {
 
                             result += QueryExpressionParse(queryDerivedTable.QueryExpression, childData);
 
-                            result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({childData.VariableName}, \"{alias}\");\n";
+                            string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                            result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
 
                             // BaseName
                             if (currentData.BaseTable == "") {
@@ -2351,7 +2352,8 @@ namespace SQLParser.Translators {
                     string alias = queryDerivedTable1.Alias.Value;
 
                     result += QueryExpressionParse(queryDerivedTable1.QueryExpression, childData);
-                    result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({childData.VariableName}, \"{alias}\");\n";
+                    string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                    result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
                     currentData.LeftTableName = alias;
                 }
                 else if (expression.FirstTableReference is QualifiedJoin qualifiedJoin1) {
@@ -2377,7 +2379,8 @@ namespace SQLParser.Translators {
                     string alias = queryDerivedTable2.Alias.Value;
 
                     result += QueryExpressionParse(queryDerivedTable2.QueryExpression, childData);
-                    result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({childData.VariableName}, \"{alias}\");\n";
+                    string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                    result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
                     currentData.RightTableName = alias;
                 }
                 else if (expression.SecondTableReference is QualifiedJoin qualifiedJoin2) {
