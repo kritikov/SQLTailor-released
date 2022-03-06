@@ -875,7 +875,7 @@ namespace SQLParser.Translators {
                         childData.Level++;
 
                         result += QueryParenthesisExpressionParse(queryParenthesisExpression2, childData);
-                        string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                        string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
                         result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Add({variableName}, {modifier});\n";
                     }
                     else {
@@ -952,7 +952,7 @@ namespace SQLParser.Translators {
 
                             result += QueryExpressionParse(queryDerivedTable.QueryExpression, childData);
 
-                            string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                            string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
                             result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
 
                             // BaseName
@@ -2352,7 +2352,7 @@ namespace SQLParser.Translators {
                     string alias = queryDerivedTable1.Alias.Value;
 
                     result += QueryExpressionParse(queryDerivedTable1.QueryExpression, childData);
-                    string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                    string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
                     result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
                     currentData.LeftTableName = alias;
                 }
@@ -2379,7 +2379,7 @@ namespace SQLParser.Translators {
                     string alias = queryDerivedTable2.Alias.Value;
 
                     result += QueryExpressionParse(queryDerivedTable2.QueryExpression, childData);
-                    string variableName = childData.VariableName.StartsWith("union") ? $"translate({childData.VariableName})" : childData.VariableName;
+                    string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
                     result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
                     currentData.RightTableName = alias;
                 }
