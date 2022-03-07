@@ -181,4 +181,10 @@
         </Style.Resources>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="InformationsTextBlock">
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="DarkCyan"/>
+    </Style>
+    
 </ResourceDictionary>

@@ -1,0 +1,25 @@
+﻿<Window x:Class="SQLTailor.Views.TSQLTranslatorInformationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SQLTailor.Views"
+        mc:Ignorable="d"
+        Title="T-SQL Translator informations" Height="500" Width="700" WindowStartupLocation="CenterScreen" Background="#FFFDFCF7">
+    
+    <Grid Style="{StaticResource InformationsWindowGridStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about Microsoft T-SQL translator"/>
+        <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="This view becomes directly from the ScriptDOM library so it translates every sql expression. Use this view if you want a full parsed query." />
+                <TextBlock Text="The library provides a lot of format options but no code alterations can be done here." />
+                <TextBlock Text="Known issues" Style="{StaticResource TextBlockSection}"/>
+                <TextBlock Text="Complex CASE statements doesnt always appears properly." />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

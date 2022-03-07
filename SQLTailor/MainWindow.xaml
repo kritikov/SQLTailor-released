@@ -106,6 +106,7 @@
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
+                        <TextBlock Text="Infos and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="TSqlInformations_PreviewMouseUp" />
 
                         <StackPanel Grid.Column="2" Orientation="Vertical">
                             <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
@@ -198,7 +199,7 @@
                     </Grid.ColumnDefinitions>
 
                     <classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True"  
-                                                 Document="{Binding SQLStructureDocument, Mode=OneWay}"
+                                                 Document="{Binding BaseTranslationDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -207,6 +208,7 @@
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
+                        <TextBlock Text="Infos and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">

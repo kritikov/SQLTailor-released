@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using SQLTailor.Views;
 
 namespace SQLTailor {
     /// <summary>
@@ -396,12 +397,12 @@ namespace SQLTailor {
         }
 
 
-        private FlowDocument sqlStructureDocument;
-        public FlowDocument SQLStructureDocument {
-            get => sqlStructureDocument;
+        private FlowDocument baseTranslationDocument;
+        public FlowDocument BaseTranslationDocument {
+            get => baseTranslationDocument;
             set {
-                sqlStructureDocument = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SQLStructureDocument"));
+                baseTranslationDocument = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BaseTranslationDocument"));
             }
         }
 
@@ -497,7 +498,7 @@ namespace SQLTailor {
                 Parser.Process();
 
                 MicrosoftTSQLDocument = Parser.GetTSQLAsFlowDocument();
-                SQLStructureDocument = Parser.GetSQLStructureAsFlowDocument();
+                BaseTranslationDocument = Parser.GetBaseTranslationAsFlowDocument();
 
                 if (Parser.Options.UpdateQueryParametersList) {
                     QueryParameters.Clear();
@@ -513,7 +514,7 @@ namespace SQLTailor {
                 }
 
                 MicrosoftTSQLDocument.PageWidth = documentWidth;
-                SQLStructureDocument.PageWidth = documentWidth;
+                BaseTranslationDocument.PageWidth = documentWidth;
                 ReebSqlOMDocument.PageWidth = documentWidth;
 
                 FillErrorsList(Parser.Errors);
@@ -548,6 +549,20 @@ namespace SQLTailor {
                 Message = $"line: {error.Line}, Column: {error.Column}";
                 HighlightError(error, SQLSourceEditor.Document);
             }
+        }
+
+        private void TSqlInformations_PreviewMouseUp(object sender, MouseButtonEventArgs e) {
+
+            TSQLTranslatorInformationsWindow window = new TSQLTranslatorInformationsWindow();
+
+            if (window.ShowDialog() == true) { }
+        }
+
+        private void BaseTranslator_PreviewMouseUp(object sender, MouseButtonEventArgs e) {
+
+            BaseTranslatorInformationWindow window = new BaseTranslatorInformationWindow();
+
+            if (window.ShowDialog() == true) { }
         }
 
         #endregion
@@ -925,7 +940,9 @@ ADD Email varchar(255),
             }
         }
 
+
         #endregion
+
 
 
     }

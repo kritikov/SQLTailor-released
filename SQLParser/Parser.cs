@@ -136,7 +136,7 @@ namespace SQLParser {
         /// Transform the sql tree into plain text using the basic Translator
         /// </summary>
         /// <returns></returns>
-        public string GetSQLStructure() {
+        public string GetBaseTranslation() {
             string result = "";
 
             Visitor visitor = new Visitor();
@@ -185,8 +185,8 @@ namespace SQLParser {
         /// Transform the sql tree into a formatted text using the basic Translator
         /// </summary>
         /// <returns></returns>
-        public FlowDocument GetSQLStructureAsFlowDocument() {
-            string result = GetSQLStructure();
+        public FlowDocument GetBaseTranslationAsFlowDocument() {
+            string result = GetBaseTranslation();
             BaseTranslator translator = new BaseTranslator(Options);
             return translator.GetFlowDocument(result);
         }
