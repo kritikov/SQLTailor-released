@@ -1,0 +1,26 @@
+﻿<Window x:Class="SQLTailor.Views.SqlOMTranslatorInformationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SQLTailor.Views"
+        mc:Ignorable="d"
+        Title="SqlOM Translator informations" Height="500" Width="700" WindowStartupLocation="CenterScreen" Background="#FFFDFCF7">
+
+    <Grid Style="{StaticResource InformationsWindowGridStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about the SqlOM Translator"/>
+        <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="This view is created from the SqlOMTranslator class. The translator produces an SqlOM script in C# that creates the SQL query in the editor when ran." />
+                <TextBlock Text="SqlOM library creates only the most common queries as SELECT, UPDATE, INSERT etc, so the SqlOMTranslator can parse limited exrpessions." />
+                <TextBlock Text="Known issues" Style="{StaticResource TextBlockSection}"/>
+                <TextBlock Text="- When a table name appears multiple times in FROM expression or nested subqueries with no alias, muliple FromTerms are created with the same name . To avoid this, use the 'Select brackets' option that includes the Select contents in a block." />
+                <TextBlock Text="- Not all SQL exrpessions have corresponding objects in the SqlOM library. In these cases, the library uses the more general object SqlExpression.Raw that accepts as argument a plain sql text. To create this text, the SqlOMTranslator uses the parsing functions of the BaseTranslator class." />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

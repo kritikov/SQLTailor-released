@@ -218,7 +218,6 @@ namespace SQLTailor {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SqlVersion"));
             }
         }
-
         public bool UpdateQueryParametersList {
             get => Parser.Options.UpdateQueryParametersList;
             set {
@@ -226,7 +225,6 @@ namespace SQLTailor {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UpdateQueryParametersList"));
             }
         }
-
         public bool ReplaceQueryParametersWithValues {
             get => Parser.Options.ReplaceQueryParametersWithValues;
             set {
@@ -234,7 +232,6 @@ namespace SQLTailor {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ReplaceQueryParametersWithValues"));
             }
         }
-
         public int KeywordCasing {
             get => Parser.Options.KeywordCasing;
             set {
@@ -242,7 +239,6 @@ namespace SQLTailor {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KeywordCasing"));
             }
         }
-
         public bool SelectContentsInBrackets {
             get => Parser.Options.SelectContentsInBrackets;
             set {
@@ -250,7 +246,6 @@ namespace SQLTailor {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectContentsInBrackets"));
             }
         }
-
         public bool UseIndentation {
             get => Parser.Options.UseIndentation;
             set {
@@ -467,6 +462,8 @@ namespace SQLTailor {
             ReplaceQueryParametersWithValues = false;
             KeywordCasing = 1;
             SqlVersion = 7;
+            SelectContentsInBrackets = false;
+            UseIndentation = false;
 
             FillFixedQueries();
         }
@@ -561,6 +558,13 @@ namespace SQLTailor {
         private void BaseTranslator_PreviewMouseUp(object sender, MouseButtonEventArgs e) {
 
             BaseTranslatorInformationWindow window = new BaseTranslatorInformationWindow();
+
+            if (window.ShowDialog() == true) { }
+        }
+
+        private void SqlOMTranslator_PreviewMouseUp(object sender, MouseButtonEventArgs e) {
+
+            SqlOMTranslatorInformationWindow window = new SqlOMTranslatorInformationWindow();
 
             if (window.ShowDialog() == true) { }
         }

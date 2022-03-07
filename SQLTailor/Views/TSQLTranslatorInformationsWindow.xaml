@@ -15,10 +15,10 @@
         <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about Microsoft T-SQL translator"/>
         <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="This view becomes directly from the ScriptDOM library so it translates every sql expression. Use this view if you want a full parsed query." />
+                <TextBlock Text="This view becomes directly from the ScriptDOM library so it translates every SQL expression. Use this view if you want a full parsed query." />
                 <TextBlock Text="The library provides a lot of format options but no code alterations can be done here." />
                 <TextBlock Text="Known issues" Style="{StaticResource TextBlockSection}"/>
-                <TextBlock Text="Complex CASE statements doesnt always appears properly." />
+                <TextBlock Text="- Complex CASE statements doesnt always appears properly." />
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -106,7 +106,7 @@
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
-                        <TextBlock Text="Infos and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="TSqlInformations_PreviewMouseUp" />
+                        <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="TSqlInformations_PreviewMouseUp" />
 
                         <StackPanel Grid.Column="2" Orientation="Vertical">
                             <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
@@ -208,7 +208,7 @@
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
-                        <TextBlock Text="Infos and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
+                        <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
@@ -311,6 +311,7 @@
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
                         </StackPanel>
+                        <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="SqlOMTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">

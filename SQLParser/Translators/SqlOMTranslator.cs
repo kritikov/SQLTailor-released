@@ -2247,7 +2247,7 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.Subquery != null) {
                     BaseTranslator translator = new BaseTranslator();
-                    translator.Data.Level = currentData.Level + 1;
+                    translator.Data.Level = FormatOptions.UseIndentation ? currentData.Level + 1 : 1;
                     translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
                     string subQuery = translator.QueryExpressionParse(expression.Subquery.QueryExpression);
@@ -2294,11 +2294,10 @@ namespace SQLParser.Translators {
             try {
                 if (expression.Subquery is ScalarSubquery scalarSubquery) {
                     BaseTranslator translator = new BaseTranslator();
-                    translator.Data.Level = currentData.Level + 1;
+                    translator.Data.Level = FormatOptions.UseIndentation ? currentData.Level + 1 : 1;
                     translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
                     string subQuery = translator.QueryExpressionParse(scalarSubquery.QueryExpression);
-
                     currentData.VariableName = $"query{Informations.NextSubqueryIndex()}";
                     result += $"{translator.Indentation(translator.Data.Level - 1)}string {currentData.VariableName} = $@\"{subQuery}\";\n";
                 }
