@@ -76,6 +76,7 @@ namespace SQLParser.Translators {
             internal static int whereClauseIndex = 0;
             internal static int caseClauseIndex = 0;
             internal static int unionIndex = 0;
+            internal static Dictionary<string, string> tables = new Dictionary<string, string>();
 
             public static int NextTableIndex() {
                 return ++tableIndex;
@@ -156,6 +157,10 @@ namespace SQLParser.Translators {
             string indentation = "";
             string indentationMeasure = new string(' ', FormatOptions.IndentationSize);
 
+            if (!FormatOptions.UseIndentation) {
+                return indentation;
+            };
+
             for (int i = 1; i <= level; i++) {
                 indentation += indentationMeasure;
             }
@@ -169,6 +174,7 @@ namespace SQLParser.Translators {
             Informations.whereClauseIndex = 0;
             Informations.caseClauseIndex = 0;
             Informations.unionIndex = 0;
+            Informations.tables.Clear();
         }
 
         public virtual FlowDocument GetFlowDocument(string text) {
@@ -924,10 +930,13 @@ namespace SQLParser.Translators {
                 result += isDistinct ? $"{Indentation(currentData.Level)}{currentData.VariableName}.Distinct = true;\n" : "";
                 result += isTopSelection ? $"{Indentation(currentData.Level)}{currentData.VariableName}.Top = {isTopCount};\n" : "";
 
+                if (FormatOptions.SelectContentsInBrackets) {
+                    result += $"{Indentation(currentData.Level)}" + "{\n";
+                }
 
                 //// TABLES //////
 
-                IList<TableReference> tableReferences = querySpecification.FromClause?.TableReferences;
+                IList <TableReference> tableReferences = querySpecification.FromClause?.TableReferences;
                 if (tableReferences != null) {
                     foreach (TableReference table in tableReferences) {
                         if (table is NamedTableReference namedTableReference) {
@@ -1330,6 +1339,10 @@ namespace SQLParser.Translators {
                         //UNKNOWN COLUMN
                         result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(~UNKNOWN COLUMN~);\n";
                     }
+                }
+
+                if (FormatOptions.SelectContentsInBrackets) {
+                    result += $"{Indentation(currentData.Level)}" + "}\n";
                 }
             }
             catch {

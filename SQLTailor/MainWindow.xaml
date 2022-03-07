@@ -60,7 +60,7 @@
                                     </Grid.RowDefinitions>
                                     <CheckBox Grid.Row="0" Content="Use test query" IsChecked="{Binding UseFixedQuery, Mode=TwoWay}" HorizontalAlignment="Left"/>
                                     <ListView Grid.Row="1" ItemsSource="{Binding Queries}" VirtualizingStackPanel.IsVirtualizing="True" SelectionMode="Single"
-                                              SelectedIndex="10" MaxHeight="300" SelectionChanged="FixedQuerySelected" IsEnabled="{Binding UseFixedQuery, Mode=OneWay}">
+                                              SelectedIndex="13" MaxHeight="300" SelectionChanged="FixedQuerySelected" IsEnabled="{Binding UseFixedQuery, Mode=OneWay}">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Type, Mode=OneWay}"/>
@@ -277,7 +277,7 @@
                                           ToolTip="If checked then the list will be filled with the parameters of the query after analysing"/>
 
                                     <CheckBox Content="Use values of parameters" IsChecked="{Binding ReplaceQueryParametersWithValues, Mode=TwoWay}"
-                                          ToolTip="If checked then the parameters of the query will be replaced with the values of the corresponing parameters in the list"/>
+                                          ToolTip="If checked then the parameters of the query will be replaced with the values of the parameters in the list"/>
 
                                 </StackPanel>
                             </GroupBox>
@@ -344,10 +344,21 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Indentation Size"/>
-                                    <TextBox Grid.Row="0" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding IndentationSize, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Select brackets" 
+                                               ToolTip="Wrapping the Select contents in brackets prevents from duplicate creation of FromTerm when a table name exist more than once in subqueries with no alias"/>
+                                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding SelectContentsInBrackets, Mode=TwoWay}"/>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Use Indentation" 
+                                               ToolTip="Use Indentation"/>
+                                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding UseIndentation, Mode=TwoWay}"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Indentation Size"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1" Width="60" HorizontalAlignment="Left" Text="{Binding IndentationSize, Mode=TwoWay}"
+                                             IsEnabled="{Binding UseIndentation, Mode=OneWay}"/>
                                 </Grid>
                             </GroupBox>
 

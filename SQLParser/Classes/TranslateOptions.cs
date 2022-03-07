@@ -50,6 +50,10 @@ namespace SQLParser.Classes {
 
         public bool ReplaceQueryParametersWithValues { get; set; } = false;
 
+        public bool SelectContentsInBrackets { get; set; } = false;
+
+        public bool UseIndentation { get; set; } = true;
+
         //public SqlEngineType SqlEngineType { get; set; }
     }
 

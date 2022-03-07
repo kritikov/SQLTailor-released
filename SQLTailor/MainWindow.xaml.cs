@@ -242,6 +242,22 @@ namespace SQLTailor {
             }
         }
 
+        public bool SelectContentsInBrackets {
+            get => Parser.Options.SelectContentsInBrackets;
+            set {
+                Parser.Options.SelectContentsInBrackets = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectContentsInBrackets"));
+            }
+        }
+
+        public bool UseIndentation {
+            get => Parser.Options.UseIndentation;
+            set {
+                Parser.Options.UseIndentation = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UseIndentation"));
+            }
+        }
+
         //public SqlEngineType SqlEngineType { get; set; }
 
 
