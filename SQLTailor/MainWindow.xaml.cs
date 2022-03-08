@@ -748,12 +748,49 @@ WHERE ([ACDT2].[HEEAVATACCOUNT] = [ACCS].[HECODE] and [ACDT2].[HEACSMID] = [ACCS
             Queries.Add(new FixedQuery("select complex 2", query));
 
             query = $@"
-            SELECT[ACDT].[HEVTPERCENTAGE][VATPERC], [ACDT].[HEID], case when([ACDT].[ORDR] = 0) then 'Inflows' when([ACDT].[ORDR] = 1) then 'Inflows VAT Not Deductible' when([ACDT].[ORDR] = 2) then 'VAT Inflow' when([ACDT].[ORDR] = 10) then 'Outflows' when([ACDT].[ORDR] = 11) then 'VAT Outflow' else '' end[ORDRDESCR], case when([ACDT].[HEBEHAVIOUR] in ('0', '6') and[ACDT].[REALBEHAVIOUR] in ('0', '6', '7')) then cast(-1 as decimal(19, 7))*Trns.heBBalance else[HEBBALANCE] end[TRNSBALANCE], case when([ACDT].[HEBEHAVIOUR] in ('0') and[ACDT].[REALBEHAVIOUR] in ('0')) then cast(-1 as decimal(19, 7))*cast(Trns.heBBalance as decimal(19, 7)) * cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) when([ACDT].[HEBEHAVIOUR] in ('1')) then cast(Trns.heBBalance as decimal(19, 7))*cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) when([ACDT].[HEBEHAVIOUR] in ('0') and[ACDT].[REALBEHAVIOUR] in ('1')) then cast(Trns.heBBalance as decimal(19, 7))*cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) else 0 end[VATRESULT], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], [ACDT].[HEBEHAVIOUR], [ACDT].[ORDR], [ACDT].[BEHV]
+SELECT alias1.b as col7, alias1.c, case when(alias1.d = 0) then 'Value 1' when(alias1.d = 1) then 'Value 2' when(alias1.d = 2) then 'Value 3' when(alias1.d = 10) then 'Value 4' when(alias1.d = 11) then 'Value 5' else '' end as col1, case when(alias1.e in ('0', '6') and alias1.f in ('0', '6', '7')) then cast(-1 as decimal(19, 7))*alias1.x else col2 end as col6, case when(alias1.e in ('0') and alias1.f in ('0')) then cast(-1 as decimal(19, 7))*cast(Alias1.x as decimal(19, 7)) * cast(alias1.G as decimal(19, 7)) / cast(100 as decimal(19, 7)) when
+(alias1.e in ('1')) then cast(alias1.x as decimal(19, 7))*cast(alias1.G as decimal(19, 7)) / cast(100 as decimal(19, 7)) when(alias1.e in ('0') and alias1.f in ('1')) then cast(Alias1.x as decimal(19, 7))*cast(alias1.G as decimal(19, 7)) / cast(100 as decimal(19, 7)) else 0 end as col3, alias1.h, alias1.j, alias1.e, alias1.d, alias1.v
+FROM table1 as alias2 
+INNER JOIN table2  as alias3 on(alias2.t = alias3.c)
+INNER JOIN (SELECT isnull(alias4.b, 0) b, alias4.k, alias4.l, alias4.c, alias4.e, alias4.q, alias4.h, alias4.j, alias4.d, alias4.v, alias4.f
+FROM(
+       SELECT  isnull(alias1.b, 0)b, alias1.k, alias1.l, alias1.c, alias1.q, alias1.h, alias1.j, case when((alias6.e = 0 or (alias6.e = 1 and alias1.j is not null and alias1.h is not null))) then 0 when((alias6.e = 6 or(alias6.e = 7
+AND EXISTS(SELECT distinct 1 as col4
+FROM table3 as alias5 
+INNER JOIN table4 as alias6 on (alias5.m = alias6.c)
+WHERE (alias6.e = 1 and alias5.n = alias7.n and alias5.j = alias7.p and alias5.n = 'key 1'))))) then 6 when(alias6.e = 1) then 1 when(alias6.e = 7) then 7 else -1 end e, alias6.e as f, 10d, case when(alias6.e = 0) then 'Category 1' when(alias6.e = 1) then 'Category 2' when(alias6.e = 2) then 'Category 3' when(alias6.e = 3) then 'Category 4' when(alias6.e = 4) then 'Category 5' when(alias6.e = 5) then 'Category 6' when(alias6.e = 6) then 'Category 7' when(alias6.e = 7) then 'Category 8' when(alias6.e = 100) then 'Category 9' else null end as v
+FROM table3 as alias1 
+INNER JOIN table4 as alias6 on(alias1.m = alias6.c)
+INNER JOIN table5  as alias7 on(alias1.n = alias7.n and alias1.q = alias7.c)
+WHERE (alias1.n = 'key 1' and alias7.n = 'key 1' and(alias6.e = 0 or (alias6.e = 1 and alias1.j is not null )))
+
+UNION
+
+SELECT isnull(alias1.b, 0) b, alias1.k, alias1.l, alias1.c, alias1.q, alias1.h, alias1.j, case when((alias6.e = 0 or(alias6.e = 1 and alias1.j is not null and alias1.h is not null))) then 0 when ((alias6.e = 6 or (alias6.e = 7
+AND EXISTS (SELECT distinct 1 as col4
+FROM table3 as alias5 
+INNER JOIN table4 as alias6 on(alias5.m = alias6.c)
+WHERE (alias6.e = 1 and alias5.n = alias7.n and alias5.j = alias7.p and alias5.n = 'key 1'))))) then 6 when(alias6.e = 1) then 1 when (alias6.e = 7) then 7 else -1 end e, alias6.e as f, 11d, case when (alias6.e = 0) then 'Category 1' when (alias6.e = 1) then 'Category 2' when (alias6.e = 2) then 'Category 3' when (alias6.e = 3) then 'Category 4' when (alias6.e = 4) then 'Category 5' when (alias6.e = 5) then 'Category 6' when (alias6.e = 6) then 'Category 7' when (alias6.e = 7) then 'Category 8' when (alias6.e = 100) then 'Category 9' else null end v
+FROM table3 as alias1 
+INNER JOIN table4 as alias6 on(alias1.m = alias6.c)
+INNER JOIN table5 as alias7 on(alias1.n = alias7.n and alias1.q = alias7.c)
+WHERE (alias1.n = 'key 1' and alias7.n = 'key 1' and ((alias6.e = 6) or(alias6.e = 7
+AND EXISTS(SELECT top 1 1 as col5
+FROM table3 as alias8 
+WHERE (alias8.j = alias7.p and alias8.n = alias7.n))))) ) alias4 ) alias1 on(alias2.v = alias1.c)
+INNER JOIN table6 as alias8 on (alias3.r = alias8.c)
+WHERE (alias3.r = 'key 2' and alias3.s between isnull(alias1.k, alias3.s) and isnull(alias1.l, alias3.s) and alias1.e in ('0', '1', '6', '7') and alias2.n = 'key 1' and alias3.n = 'key 1' and alias3.s between '2022-01-02' and '2022-02-02')
+";
+            Queries.Add(new FixedQuery("select complex 3", query));
+
+
+            query = $@"
+SELECT[ACDT].[HEVTPERCENTAGE][VATPERC], [ACDT].[HEID], case when([ACDT].[ORDR] = 0) then 'Inflows' when([ACDT].[ORDR] = 1) then 'Inflows VAT Not Deductible' when([ACDT].[ORDR] = 2) then 'VAT Inflow' when([ACDT].[ORDR] = 10) then 'Outflows' when([ACDT].[ORDR] = 11) then 'VAT Outflow' else '' end[ORDRDESCR], case when([ACDT].[HEBEHAVIOUR] in ('0', '6') and[ACDT].[REALBEHAVIOUR] in ('0', '6', '7')) then cast(-1 as decimal(19, 7))*Trns.heBBalance else[HEBBALANCE] end[TRNSBALANCE], case when([ACDT].[HEBEHAVIOUR] in ('0') and[ACDT].[REALBEHAVIOUR] in ('0')) then cast(-1 as decimal(19, 7))*cast(Trns.heBBalance as decimal(19, 7)) * cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) when([ACDT].[HEBEHAVIOUR] in ('1')) then cast(Trns.heBBalance as decimal(19, 7))*cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) when([ACDT].[HEBEHAVIOUR] in ('0') and[ACDT].[REALBEHAVIOUR] in ('1')) then cast(Trns.heBBalance as decimal(19, 7))*cast(acdt.HEVTPERCENTAGE as decimal(19, 7)) / cast(100 as decimal(19, 7)) else 0 end[VATRESULT], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], [ACDT].[HEBEHAVIOUR], [ACDT].[ORDR], [ACDT].[BEHV]
 FROM[HEARTICLETRANSACTIONS][TRNS] WITH(NOLOCK)
 INNER JOIN[HEARTICLES] [ARTS] WITH(NOLOCK) on([TRNS].[HEARTSID] = [ARTS].[HEID])
 INNER JOIN(SELECT isnull([DETS].[HEVTPERCENTAGE], 0) [HEVTPERCENTAGE], [DETS].[HESTARTDATE], [DETS].[HEENDDATE], [DETS].[HEID], [DETS].[HEBEHAVIOUR], [DETS].[HEACCTID], [DETS].[HEVATACCOUNT], [DETS].[HEEAVATACCOUNT], [DETS].[ORDR], [DETS].[BEHV], [DETS].[REALBEHAVIOUR]
 FROM(
-       SELECT  isnull([ACDT].[HEVTPERCENTAGE], 0)[HEVTPERCENTAGE], [ACDT].[HESTARTDATE], [ACDT].[HEENDDATE], [ACDT].[HEID], [ACDT].[HEACCTID], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], case when(([KND].[HEBEHAVIOUR] = 0 or([KND].[HEBEHAVIOUR] = 1 and[ACDT].[HEEAVATACCOUNT] is not null and [ACDT].[HEVATACCOUNT] is not null))) then 0 when(([KND].[HEBEHAVIOUR] = 6 or([KND].[HEBEHAVIOUR] = 7
+SELECT  isnull([ACDT].[HEVTPERCENTAGE], 0)[HEVTPERCENTAGE], [ACDT].[HESTARTDATE], [ACDT].[HEENDDATE], [ACDT].[HEID], [ACDT].[HEACCTID], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], case when(([KND].[HEBEHAVIOUR] = 0 or([KND].[HEBEHAVIOUR] = 1 and[ACDT].[HEEAVATACCOUNT] is not null and [ACDT].[HEVATACCOUNT] is not null))) then 0 when(([KND].[HEBEHAVIOUR] = 6 or([KND].[HEBEHAVIOUR] = 7
 AND EXISTS(SELECT distinct 1[COL1]
 FROM[HEACCOUNTSDETAIL][EADET] WITH(NOLOCK)
 INNER JOIN[HEKINDACGL][KND] WITH(NOLOCK) on([EADET].[HEKINDID] = [KND].[HEID])
@@ -779,7 +816,7 @@ WHERE([ACDT2].[HEEAVATACCOUNT] = [ACCS].[HECODE] and[ACDT2].[HEACSMID] = [ACCS].
 INNER JOIN[HECOMPANIES] [COMP] WITH(NOLOCK) on([ARTS].[HECOMPID] = [COMP].[HEID])
 WHERE([ARTS].[HECOMPID] = 'b168a7be-3201-ea11-827f-d8cb8a162c61' and[ARTS].[HEDATE] between isnull([ACDT].[HESTARTDATE], [ARTS].[HEDATE]) and isnull([ACDT].[HEENDDATE], [ARTS].[HEDATE]) and[ACDT].[HEBEHAVIOUR] in ('0', '1', '6', '7') and[TRNS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ARTS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and[ARTS].[HEDATE] between '2022-01-02' and '2022-02-02')
 ";
-            Queries.Add(new FixedQuery("select complex 3", query));
+            Queries.Add(new FixedQuery("select complex 3 to delete", query));
 
             query = $@"INSERT INTO table_name (column0, column1, columnN) 
 VALUES 
