@@ -671,12 +671,35 @@ UNION
 (SELECT b
     FROM table2)
 UNION
+";
+            Queries.Add(new FixedQuery("union 1", query));
+
+            query = $@"SELECT a
+FROM table1
+UNION
+(SELECT b
+    FROM table2)
+UNION
 (SELECT c
     FROM table3
     UNION
     SELECT d
     FROM table4);";
-            Queries.Add(new FixedQuery("select with unions", query));
+            Queries.Add(new FixedQuery("union 2", query));
+
+            query = $@"SELECT a
+FROM table1
+UNION
+(SELECT b
+    FROM (SELECT c
+        FROM table3
+        UNION
+        SELECT d
+        FROM table4)
+    )
+";
+            Queries.Add(new FixedQuery("union 3", query));
+
 
             query = $@"SELECT a.Document, a.Date, a.Type, a.DocumentNumber, a.ID AS aID,
     b.InvoiceType, c.Kind
