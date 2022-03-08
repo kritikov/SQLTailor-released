@@ -18,8 +18,8 @@
                 <TextBlock Text="This view is created from the SqlOMTranslator class. The translator produces an SqlOM script in C# that creates the SQL query in the editor when ran." />
                 <TextBlock Text="SqlOM library creates only the most common queries as SELECT, UPDATE, INSERT etc, so the SqlOMTranslator can parse limited exrpessions." />
                 <TextBlock Text="Known issues" Style="{StaticResource TextBlockSection}"/>
-                <TextBlock Text="- When a table name appears multiple times in FROM expression or nested subqueries with no alias, muliple FromTerms are created with the same name . To avoid this, use the 'Select brackets' option that includes the Select contents in a block." />
-                <TextBlock Text="- Not all SQL exrpessions have corresponding objects in the SqlOM library. In these cases, the library uses the more general object SqlExpression.Raw that accepts as argument a plain sql text. To create this text, the SqlOMTranslator uses the parsing functions of the BaseTranslator class." />
+                <TextBlock Text="- When a table name appears multiple times with no alias, multiple FromTerms are created with the same name. To reduce the problem a bit, use the 'Select brackets' option that includes the Select contents in a block." />
+                <TextBlock Text="- Not all SQL exrpessions have corresponding objects in the SqlOM library. In these cases, the library uses the more general object SqlExpression.Raw that renders a plain sql text. To create this text, the SqlOMTranslator uses the parsing functions of the BaseTranslator class." />
             </StackPanel>
         </ScrollViewer>
     </Grid>

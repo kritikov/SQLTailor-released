@@ -881,7 +881,7 @@ namespace SQLParser.Translators {
                         childData.Level++;
 
                         result += QueryParenthesisExpressionParse(queryParenthesisExpression2, childData);
-                        string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
+                        string variableName = childData.VariableName.StartsWith("union") ? $"~UNSUPPORTED({childData.VariableName})~" : childData.VariableName;
                         result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Add({variableName}, {modifier});\n";
                     }
                     else {
@@ -961,7 +961,7 @@ namespace SQLParser.Translators {
 
                             result += QueryExpressionParse(queryDerivedTable.QueryExpression, childData);
 
-                            string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
+                            string variableName = childData.VariableName.StartsWith("union") ? $"new SqlServerRenderer().RenderUnion({childData.VariableName})" : childData.VariableName;
                             result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
 
                             // BaseName
@@ -2183,7 +2183,7 @@ namespace SQLParser.Translators {
 
             try {
                 string searchExpression = "";
-                string valuesList = "\"(";
+                string valuesList = "\"";
 
 
                 if (expression.Expression is ColumnReferenceExpression columnReferenceExpression1) {
@@ -2213,7 +2213,7 @@ namespace SQLParser.Translators {
 
                 if (expression.Values.Count > 0) {
                     foreach (ScalarExpression value in expression.Values) {
-                        if (valuesList != "\"(") {
+                        if (!valuesList.EndsWith("\"")) {
                             valuesList += ", ";
                         }
 
@@ -2243,7 +2243,7 @@ namespace SQLParser.Translators {
                         }
                     }
 
-                    valuesList += ")\"";
+                    valuesList += "\"";
                 }
                 else if (expression.Subquery != null) {
                     BaseTranslator translator = new BaseTranslator();
@@ -2364,7 +2364,7 @@ namespace SQLParser.Translators {
                     string alias = queryDerivedTable1.Alias.Value;
 
                     result += QueryExpressionParse(queryDerivedTable1.QueryExpression, childData);
-                    string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
+                    string variableName = childData.VariableName.StartsWith("union") ? $"new SqlServerRenderer().RenderUnion({childData.VariableName})" : childData.VariableName;
                     result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
                     currentData.LeftTableName = alias;
                 }
@@ -2391,7 +2391,7 @@ namespace SQLParser.Translators {
                     string alias = queryDerivedTable2.Alias.Value;
 
                     result += QueryExpressionParse(queryDerivedTable2.QueryExpression, childData);
-                    string variableName = childData.VariableName.StartsWith("union") ? $"~translate({childData.VariableName})~" : childData.VariableName;
+                    string variableName = childData.VariableName.StartsWith("union") ? $"new SqlServerRenderer().RenderUnion({childData.VariableName})" : childData.VariableName;
                     result += $"{Indentation(currentData.Level)}FromTerm {alias} = FromTerm.SubQuery({variableName}, \"{alias}\");\n";
                     currentData.RightTableName = alias;
                 }
