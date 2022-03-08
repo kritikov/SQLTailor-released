@@ -367,8 +367,7 @@
 
                             <GroupBox Header="Variations" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                 <StackPanel Orientation="Vertical">
-                                    <CheckBox Content="po Variation" IsChecked="{Binding PoVariation, Mode=TwoWay}"
-                                              ToolTip="This variation is a sample of a translator inheritance. The specific variaton inherits from the SqlOmTranslator class and adds the 'po' prefix on some objects"/>
+                                    <CheckBox Content="po Variation" IsChecked="{Binding PoVariation, Mode=TwoWay}"/>
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
