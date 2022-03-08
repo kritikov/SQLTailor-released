@@ -589,27 +589,27 @@ WHERE  table1.d = table2.f;";
             Queries.Add(new FixedQuery("select with join 1", query));
 
             query = $@"SELECT a    
-FROM (select a as col4 from table1) b
+FROM (select a as col1 from table1) b
     INNER JOIN TABLE2 ON c = f";
             Queries.Add(new FixedQuery("select with join 2", query));
 
-            query = $@"SELECT col1 
+            query = $@"SELECT a 
  FROM table1 INNER JOIN table2 ON a=2 and f='name'";
             Queries.Add(new FixedQuery("select with join 3", query));
 
             query = $@"SELECT CASE
-        WHEN table1.Sep in (1, 2, @ddddd) THEN '-'
-        WHEN table1.Sep = 1 and table2.f = 4 THEN 2
-        WHEN table1.Sep in (1, 2, 3) THEN '\'
+        WHEN table1.a in (1, 2, @ddddd) THEN '-'
+        WHEN table1.a = 1 and table1.b = 4 THEN 2
+        WHEN table1.a in (1, 2, 3) THEN '\'
         ELSE NULL
-    END AS aaa
+    END AS col1
 FROM table1
-WHERE t1.a = 3";
+WHERE table1.a = 3";
             Queries.Add(new FixedQuery("select with case", query));
 
             query = $@"SELECT a
 FROM table1
-WHERE ( a in (select b from t3) and (g<f) ) or c not between 1 and 5";
+WHERE ( a in (select b from table2) and (g < f) ) or c not between 1 and 5";
             Queries.Add(new FixedQuery("select with comlex where", query));
 
             query = $@"SELECT table1.a
@@ -617,18 +617,18 @@ FROM table1
 WHERE table1.b = @1111111 AND table1.c = @22222222";
             Queries.Add(new FixedQuery("select with parameters", query));
 
-            query = $@"SELECT col1 
+            query = $@"SELECT a 
 FROM table1
 WHERE EXISTS(
-    SELECT table2.Id
-    FROM UserRights AS table2)";
+    SELECT alias1.b
+    FROM table2 AS alias1)";
             Queries.Add(new FixedQuery("select with exists", query));
 
 
-            query = $@"SELECT DISTINCT TOP 5 table1.col1 as a, col2 as b, col3, col4, col5, (SELECT DISTINCT col3, col3 FROM table4) 
-FROM table1 as a, table2, (select a as col4 from table3) b
-    INNER JOIN TABLE4 ON A=B
-WHERE table1.ID = table2.ID AND table3 = 3 AND table4 = 4
+            query = $@"SELECT DISTINCT TOP 5 table1.a as col1, b as col2, c, d, e, (SELECT DISTINCT f, g FROM table4) 
+FROM table1 as alias1, table2, (select a as col4 from table3) b
+    INNER JOIN table4 ON a = b
+WHERE table1.a = table2.a AND table3.b = 3 AND table4.c = 4
 GROUP BY table1.a
 HAVING table1.b > 10
 ORDER BY table1.a DESC";
@@ -717,33 +717,33 @@ WHERE(a.CompanyID = 1000
     AND c.Kind = 0);";
             Queries.Add(new FixedQuery("select complex 1", query));
 
-            query = $@"SELECT isnull([DETS].[HEVTPERCENTAGE], 0) [HEVTPERCENTAGE], [DETS].[HESTARTDATE], 
-    [DETS].[HEENDDATE], [DETS].[HEID], [DETS].[HEBEHAVIOUR], [DETS].[HEACCTID], [DETS].[HEVATACCOUNT], 
-    [DETS].[HEEAVATACCOUNT], [DETS].[ORDR], [DETS].[BEHV], [DETS].[REALBEHAVIOUR]
+            query = $@"
+SELECT isnull(alias6.a, 0) a, alias6.b, alias6.c, alias6.m, alias6.d, alias6.e, alias6.f, alias6.g, alias6.h, alias6.j, alias6.k
 FROM (
-       SELECT  isnull([ACDT].[HEVTPERCENTAGE], 0) [HEVTPERCENTAGE], [ACDT].[HESTARTDATE], [ACDT].[HEENDDATE], [ACDT].[HEID], [ACDT].[HEACCTID], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], case when (([KND].[HEBEHAVIOUR] = 0 or ([KND].[HEBEHAVIOUR] = 1 and [ACDT].[HEEAVATACCOUNT] is not null and [ACDT].[HEVATACCOUNT] is not null ))) then 0 when (([KND].[HEBEHAVIOUR] = 6 or ([KND].[HEBEHAVIOUR] = 7
-AND EXISTS (SELECT distinct 1 [COL1]
-FROM [HEACCOUNTSDETAIL] [EADET] WITH(NOLOCK)
-INNER JOIN [HEKINDACGL] [KND] WITH(NOLOCK) on ([EADET].[HEKINDID] = [KND].[HEID])
-WHERE ([KND].[HEBEHAVIOUR] = 1 and [EADET].[HEACSMID] = [ACCS].[HEACSMID] and [EADET].[HEEAVATACCOUNT] = [ACCS].[HECODE] and [EADET].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894'))))) then 6 when ([KND].[HEBEHAVIOUR] = 1) then 1 when ([KND].[HEBEHAVIOUR] = 7) then 7 else -1 end [HEBEHAVIOUR], [KND].[HEBEHAVIOUR] [REALBEHAVIOUR], 10 [ORDR], case when ([KND].[HEBEHAVIOUR] = 0) then 'Outflow' when ([KND].[HEBEHAVIOUR] = 1) then 'Inflow' when ([KND].[HEBEHAVIOUR] = 2) then 'Customer' when ([KND].[HEBEHAVIOUR] = 3) then 'Supplier' when ([KND].[HEBEHAVIOUR] = 4) then 'Debtor' when ([KND].[HEBEHAVIOUR] = 5) then 'Creditor' when ([KND].[HEBEHAVIOUR] = 6) then 'VAT Outflow' when ([KND].[HEBEHAVIOUR] = 7) then 'VAT Inflow' when ([KND].[HEBEHAVIOUR] = 100) then 'Other' else null end [BEHV]
-FROM [HEACCOUNTSDETAIL] [ACDT] WITH(NOLOCK)
-INNER JOIN [HEKINDACGL] [KND] WITH(NOLOCK) on ([ACDT].[HEKINDID] = [KND].[HEID])
-INNER JOIN [HEACCOUNTS] [ACCS] WITH(NOLOCK) on ([ACDT].[HEACSMID] = [ACCS].[HEACSMID] and [ACDT].[HEACCTID] = [ACCS].[HEID])
-WHERE ([ACDT].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and [ACCS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and ([KND].[HEBEHAVIOUR] = 0 or ([KND].[HEBEHAVIOUR] = 1 and [ACDT].[HEEAVATACCOUNT] is not null )))
+       SELECT  isnull(alias3.a, 0) a, alias3.b, alias3.c, alias3.m, alias3.e, alias3.f, alias3.g, case when ((alias2.d = 0 or (alias2.d = 1 and alias3.g is not null and alias3.f is not null ))) then 0 when ((alias2.d = 6 or (alias2.d = 7
+AND EXISTS (SELECT distinct 1 as col1
+FROM table1 as alias1 
+INNER JOIN table2 as alias2  on (alias1.l = alias2.m)
+WHERE (alias2.d = 1 and alias1.n = alias4.n and alias1.g = alias4.p and alias1.n = 'key 1'))))) then 6 when (alias2.d = 1) then 1 when (alias2.d = 7) then 7 else -1 end d, alias2.d k, 10 h, case when (alias2.d = 0) then 'Category 1' when (alias2.d = 1) then 'Category 2' when (alias2.d = 2) then 'Category 3' when (alias2.d = 3) then 'Category 4' when (alias2.d = 4) then 'Category 5' when (alias2.d = 5) then 'Category 6' when (alias2.d = 6) then 'Category 7' when (alias2.d = 7) then 'Category 8' when (alias2.d = 100) then 'Category 9' else null end j
+FROM table1 as alias3 
+INNER JOIN table2alias2  on (alias3.l = alias2.m)
+INNER JOIN table3  as alias4  on (alias3.n = alias4.n and alias3.e = alias4.m)
+WHERE (alias3.n = 'key 1' and alias4.n = 'key 1' and (alias2.d = 0 or (alias2.d = 1 and alias3.g is not null )))
+
 UNION
 
-SELECT isnull([ACDT].[HEVTPERCENTAGE], 0) [HEVTPERCENTAGE], [ACDT].[HESTARTDATE], [ACDT].[HEENDDATE], [ACDT].[HEID], [ACDT].[HEACCTID], [ACDT].[HEVATACCOUNT], [ACDT].[HEEAVATACCOUNT], case when (([KND].[HEBEHAVIOUR] = 0 or ([KND].[HEBEHAVIOUR] = 1 and [ACDT].[HEEAVATACCOUNT] is not null and [ACDT].[HEVATACCOUNT] is not null ))) then 0 when (([KND].[HEBEHAVIOUR] = 6 or ([KND].[HEBEHAVIOUR] = 7
-AND EXISTS (SELECT distinct 1 [COL1]
-FROM [HEACCOUNTSDETAIL] [EADET] WITH(NOLOCK)
-INNER JOIN [HEKINDACGL] [KND] WITH(NOLOCK) on ([EADET].[HEKINDID] = [KND].[HEID])
-WHERE ([KND].[HEBEHAVIOUR] = 1 and [EADET].[HEACSMID] = [ACCS].[HEACSMID] and [EADET].[HEEAVATACCOUNT] = [ACCS].[HECODE] and [EADET].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894'))))) then 6 when ([KND].[HEBEHAVIOUR] = 1) then 1 when ([KND].[HEBEHAVIOUR] = 7) then 7 else -1 end [HEBEHAVIOUR], [KND].[HEBEHAVIOUR] [REALBEHAVIOUR], 11 [ORDR], case when ([KND].[HEBEHAVIOUR] = 0) then 'Outflow' when ([KND].[HEBEHAVIOUR] = 1) then 'Inflow' when ([KND].[HEBEHAVIOUR] = 2) then 'Customer' when ([KND].[HEBEHAVIOUR] = 3) then 'Supplier' when ([KND].[HEBEHAVIOUR] = 4) then 'Debtor' when ([KND].[HEBEHAVIOUR] = 5) then 'Creditor' when ([KND].[HEBEHAVIOUR] = 6) then 'VAT Outflow' when ([KND].[HEBEHAVIOUR] = 7) then 'VAT Inflow' when ([KND].[HEBEHAVIOUR] = 100) then 'Other' else null end [BEHV]
-FROM [HEACCOUNTSDETAIL] [ACDT] WITH(NOLOCK)
-INNER JOIN [HEKINDACGL] [KND] WITH(NOLOCK) on ([ACDT].[HEKINDID] = [KND].[HEID])
-INNER JOIN [HEACCOUNTS] [ACCS] WITH(NOLOCK) on ([ACDT].[HEACSMID] = [ACCS].[HEACSMID] and [ACDT].[HEACCTID] = [ACCS].[HEID])
-WHERE ([ACDT].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and [ACCS].[HEACSMID] = '474dae69-9644-e411-826d-50e549c96894' and (([KND].[HEBEHAVIOUR] = 6) or ([KND].[HEBEHAVIOUR] = 7
-AND EXISTS (SELECT top 1 1 [INDX]
-FROM [HEACCOUNTSDETAIL] [ACDT2] WITH(NOLOCK)
-WHERE ([ACDT2].[HEEAVATACCOUNT] = [ACCS].[HECODE] and [ACDT2].[HEACSMID] = [ACCS].[HEACSMID]))))) ) [DETS]
+SELECT isnull(alias3.a, 0) a, alias3.b, alias3.c, alias3.m, alias3.e, alias3.f, alias3.g, case when ((alias2.d = 0 or (alias2.d = 1 and alias3.g is not null and alias3.f is not null ))) then 0 when ((alias2.d = 6 or (alias2.d = 7
+AND EXISTS (SELECT distinct 1 as col1
+FROM table1 as alias1 
+INNER JOIN table2 as alias2  on (alias1.l = alias2.m)
+WHERE (alias2.d = 1 and alias1.n = alias4.n and alias1.g = alias4.p and alias1.n = 'key 1'))))) then 6 when (alias2.d = 1) then 1 when (alias2.d = 7) then 7 else -1 end d, alias2.d k, 11 h, case when (alias2.d = 0) then 'Category 1' when (alias2.d = 1) then 'Category 2' when (alias2.d = 2) then 'Category 3' when (alias2.d = 3) then 'Category 4' when (alias2.d = 4) then 'Category 5' when (alias2.d = 5) then 'Category 6' when (alias2.d = 6) then 'Category 7' when (alias2.d = 7) then 'Category 8' when (alias2.d = 100) then 'Category 9' else null end j
+FROM table1 as alias3 
+INNER JOIN table2 as alias2  on (alias3.l = alias2.m)
+INNER JOIN table3  as alias4  on (alias3.n = alias4.n and alias3.e = alias4.m)
+WHERE (alias3.n = 'key 1' and alias4.n = 'key 1' and ((alias2.d = 6) or (alias2.d = 7
+AND EXISTS (SELECT top 1 1 as col2
+FROM table1 as alias5 
+WHERE (alias5.g = alias4.p and alias5.n = alias4.n))))) ) alias6
 ";
             Queries.Add(new FixedQuery("select complex 2", query));
 
