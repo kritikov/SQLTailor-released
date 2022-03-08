@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SQLTailor"
         xmlns:classes="clr-namespace:SQLTailor.Classes"
         mc:Ignorable="d"
-        Title="SQL parser" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA">
+        Title="SQL Tailor" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA">
 
     <Window.Resources>
 
@@ -189,7 +189,7 @@
 
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock Text="Base Translator" ToolTip="General SQL format created by the BaseTranslator class. This format can be fully altered by code."/>
+                    <TextBlock Text="Base Translation" ToolTip="General SQL format created by the BaseTranslator class. This format can be fully altered by code."/>
                 </TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
