@@ -211,30 +211,6 @@
                         <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
-                            <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                                <Grid Style="{DynamicResource CriteriaGrid}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="3*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding SqlVersion, Mode=TwoWay}">
-                                        <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
-                                        <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
-                                        <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
-                                        <ComboBoxItem Tag="3">SQL Server 2012</ComboBoxItem>
-                                        <ComboBoxItem Tag="4">SQL Server 2014</ComboBoxItem>
-                                        <ComboBoxItem Tag="5">SQL Server 2016</ComboBoxItem>
-                                        <ComboBoxItem Tag="6">SQL Server 2017</ComboBoxItem>
-                                        <ComboBoxItem Tag="7">SQL Server 2019</ComboBoxItem>
-                                    </ComboBox>
-                                </Grid>
-                            </GroupBox>
                             <GroupBox Header="Format options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                 <Grid Style="{DynamicResource CriteriaGrid}">
                                     <Grid.ColumnDefinitions>
@@ -314,30 +290,6 @@
                         <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="SqlOMTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
-                            <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                                <Grid Style="{DynamicResource CriteriaGrid}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="3*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding SqlVersion, Mode=TwoWay}">
-                                        <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
-                                        <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
-                                        <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
-                                        <ComboBoxItem Tag="3">SQL Server 2012</ComboBoxItem>
-                                        <ComboBoxItem Tag="4">SQL Server 2014</ComboBoxItem>
-                                        <ComboBoxItem Tag="5">SQL Server 2016</ComboBoxItem>
-                                        <ComboBoxItem Tag="6">SQL Server 2017</ComboBoxItem>
-                                        <ComboBoxItem Tag="7">SQL Server 2019</ComboBoxItem>
-                                    </ComboBox>
-                                </Grid>
-                            </GroupBox>
                             
                             <GroupBox Header="Format options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                 <Grid Style="{DynamicResource CriteriaGrid}">
