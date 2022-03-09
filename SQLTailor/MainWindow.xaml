@@ -120,8 +120,9 @@
                                         <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version"/>
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedIndex="{Binding SqlVersion, Mode=TwoWay}">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL Server version" ToolTip="Then version of the script to be produced"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left"
+                                               ToolTip="Then version of the script to be produced" SelectedIndex="{Binding SqlVersion, Mode=TwoWay}">
                                         <ComboBoxItem Tag="1">SQL Server 2000</ComboBoxItem>
                                         <ComboBoxItem Tag="0">SQL Server 2005</ComboBoxItem>
                                         <ComboBoxItem Tag="2">SQL Server 2008</ComboBoxItem>
