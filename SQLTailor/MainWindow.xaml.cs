@@ -410,7 +410,7 @@ namespace SQLTailor {
             }
         }
 
-        private bool poVariation = true;
+        private bool poVariation = false;
         public bool PoVariation {
             get => poVariation;
 
@@ -463,7 +463,7 @@ namespace SQLTailor {
             KeywordCasing = 1;
             SqlVersion = 7;
             SelectContentsInBrackets = false;
-            UseIndentation = false;
+            UseIndentation = true;
 
             FillFixedQueries();
         }
