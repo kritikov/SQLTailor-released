@@ -1875,7 +1875,10 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.Expression is InPredicate inPredicate) {
                     result = $"({InPredicateParse(inPredicate)})";
-                }
+                } 
+                else if (expression.Expression is LikePredicate likePredicate) {
+                    result = $"({LikePredicateParse(likePredicate)})";
+                } 
                 else {
                     result = "~UNKNOWN BooleanExpression~";
                 }
@@ -2672,7 +2675,7 @@ namespace SQLParser.Translators {
             return result;
         }
 
-        public string DataTypeParse(DataTypeReference expression, object data = null) {
+        public virtual string DataTypeParse(DataTypeReference expression, object data = null) {
             string result;
 
             try {
@@ -2743,7 +2746,7 @@ namespace SQLParser.Translators {
             return result;
         }
 
-        public string ConstraintDefinitionParse(ConstraintDefinition expression, object data = null) {
+        public virtual string ConstraintDefinitionParse(ConstraintDefinition expression, object data = null) {
             string result = "";
 
             try {
@@ -2767,7 +2770,7 @@ namespace SQLParser.Translators {
             return result;
         }
 
-        public string AlterTableAddTableElementStatementParse(AlterTableAddTableElementStatement expression, object data = null) {
+        public virtual string AlterTableAddTableElementStatementParse(AlterTableAddTableElementStatement expression, object data = null) {
             string result;
 
             try {
@@ -2799,7 +2802,7 @@ namespace SQLParser.Translators {
             return result;
         }
 
-        public string ColumnDefinitionParse(ColumnDefinition expression, object data = null) {
+        public virtual string ColumnDefinitionParse(ColumnDefinition expression, object data = null) {
             string result;
 
             try {
@@ -2823,7 +2826,7 @@ namespace SQLParser.Translators {
             return result;
         }
 
-        public string AlterTableAlterColumnStatementParse(AlterTableAlterColumnStatement expression, object data = null) {
+        public virtual string AlterTableAlterColumnStatementParse(AlterTableAlterColumnStatement expression, object data = null) {
             string result;
 
             try {
@@ -2896,7 +2899,7 @@ namespace SQLParser.Translators {
             return result;
         }
 
-        public string DropTableStatementParse(DropTableStatement expression, object data = null) {
+        public virtual string DropTableStatementParse(DropTableStatement expression, object data = null) {
             string result = "";
 
             try {

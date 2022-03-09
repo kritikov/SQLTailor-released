@@ -19,7 +19,8 @@
                 <TextBlock Text="SqlOM library creates only the most common queries as SELECT, UPDATE, INSERT etc, so the SqlOMTranslator can parse limited exrpessions." />
                 <TextBlock Text="Known issues" Style="{StaticResource TextBlockSection}"/>
                 <TextBlock Text="- When a table name appears multiple times with no alias, multiple FromTerms are created with the same name. To reduce the problem a bit, use the 'Select brackets' option that includes the Select contents in a block." />
-                <TextBlock Text="- Not all SQL exrpessions have corresponding objects in the SqlOM library. In these cases, the library uses the more general object SqlExpression.Raw that renders a plain sql text. To create this text, the SqlOMTranslator uses the parsing functions of the BaseTranslator class." />
+                <TextBlock Text="- Not all SQL exrpessions have corresponding objects in the SqlOM library. In these cases, the library uses the more general method SqlExpression.Raw that renders a plain sql text. To create this text, the SqlOMTranslator uses the parsing functions of the BaseTranslator class." />
+                <TextBlock Text="- ScripDOM parses all operators as binary operators. For example, the expression 'a AND b AND c' is parsed as AND(a, AND(b, c)) and not as AND(a, b, c). For this reason, the WhereTerms and other expressions are constructed the same way." />
             </StackPanel>
         </ScrollViewer>
     </Grid>

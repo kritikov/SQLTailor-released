@@ -1976,7 +1976,14 @@ namespace SQLParser.Translators {
                     result += InPredicateParse(inPredicate, childData);
                     currentData.TermString = childData.TermString;
                     currentData.VariableName = childData.VariableName;
-                }
+                } 
+                else if (expression.Expression is LikePredicate likePredicate) {
+                    Informations childData = currentData.CopyLite();
+
+                    result += LikePredicateParse(likePredicate, childData);
+                    currentData.TermString = childData.TermString;
+                    currentData.VariableName = childData.VariableName;
+                } 
                 else {
                     result = "~UKNOWN BooleanParenthesisExpression~";
                 }
@@ -2278,7 +2285,12 @@ namespace SQLParser.Translators {
             Informations currentData = (Informations)data;
 
             try {
-                currentData.TermString = "~SqlOM doesn't supports Like~";
+                BaseTranslator translator = new BaseTranslator();
+                translator.Data.Level = FormatOptions.UseIndentation ? currentData.Level + 1 : 1;
+                translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+
+                string subQuery = translator.LikePredicateParse(expression);
+                currentData.TermString = $"WhereTerm.Raw(\"{subQuery}\")";
             }
             catch {
                 currentData.TermString = "~LikePredicate ERROR~";
@@ -2937,7 +2949,8 @@ namespace SQLParser.Translators {
 
             try {
                 currentData.TermString = "~UNDEVELOPED DropTableStatement~";
-            } catch {
+            } 
+            catch {
                 currentData.TermString = "~DropTableStatement ERROR~";
             }
 
@@ -2949,9 +2962,9 @@ namespace SQLParser.Translators {
         /// Parses the IntegerLiteral, StringLiteral, NumericLiteral, NullLiteral and VariableReference
         /// </summary>
         /// <returns></returns>
-        public virtual string LiteralsSqlExpression(Object expression) {
-
+        public virtual string LiteralsSqlExpression(Object expression, object data = null) {
             string result = "";
+            Informations currentData = (Informations)data;
 
             if (expression is IntegerLiteral integerLiteral) {
                 result = $"SqlExpression.Number({integerLiteral.Value})";
