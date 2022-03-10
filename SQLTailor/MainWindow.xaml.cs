@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using SQLTailor.Views;
+using System.Diagnostics;
 
 namespace SQLTailor {
     /// <summary>
@@ -971,9 +972,13 @@ ADD Email varchar(255),
         }
 
 
+
+
         #endregion
 
-
-
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e) {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
     }
 }
