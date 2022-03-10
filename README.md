@@ -4,7 +4,7 @@ It uses the Microsoft ScriptDOM library to parse the original query and then pro
 
 It currently provides three translations:
 
-Microsoft T-SQL: comes directly from the ScriptDOM library and formats the query given in T-SQL.
+Microsoft T-SQL: comes directly from the ScriptDOM library and formats the query in T-SQL.
 
 Base Translation: the basic translation of Tailor. Converts the most common queries and is used as a basis for other translators.
 
