@@ -1,6 +1,6 @@
-SQL Tailor is an open source parser for Windows that formats SQL queries. It is built in WPF and C# and can convert them in various versions of SQL or in scripts that produce SQL, such as the SqlOM library.
+SQL Tailor is an open source parser that formats SQL queries. It is built in WPF and C# and convert queries in various versions of SQL or in scripts that produce SQL, such as the SqlOM library.
 
-SQL Tailor uses the Microsoft ScriptDOM library to parse the original query. It then provides various translators who undertake to compose the resulting tokens in the desired versions.
+SQL Tailor uses the Microsoft ScriptDOM library to parse the original query. It then provides the translators who undertake to compose the resulting tokens in the desired versions.
 
 It currently provides three translations:
 
