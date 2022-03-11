@@ -22,3 +22,5 @@ The project SQLParser is responsible for the communication with ScriptDOM and fo
 - The translator has parsing functions for the token classes. For example, if the token is a SelectStatement class then the corresponding function is the SelectStatementParse. The traslator get the token and parses it with this function.
 - Every parsing function searches the elements of the token (usually is a tree wich contains other tokens) and for each of them calls their corresponing parsing functions based on their class. That means that the parsing functions are recursive.
 - The final result is a text but the tranlator can convert it to a FlowDocument with formatted words using its GetFlowDocument() method.
+
+If you want to work with the source you might have to install from the NuGet the Microsoft.SqlServer.TransactSql.ScriptDom.
