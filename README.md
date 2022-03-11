@@ -8,7 +8,7 @@ Microsoft T-SQL: comes directly from the ScriptDOM library and formats the query
 
 Base Translation: the basic translation of Tailor. Converts the most common queries and is used as a basis for other translators.
 
-SqlOM Translation: builds the script of the SqlOM library in C #, which if executed generates the given SQL query.
+SqlOM Translation: builds the script of the SqlOM library in C#, which if executed generates the given SQL query.
 
 A developer who wants a new variant of SQL can build a new translator without having to start all over. He may also use only the SQLParser that does the parsing instead of the entire application.
 
