@@ -16,7 +16,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem>
-                <TextBlock Foreground="DarkGreen">
+                <TextBlock Foreground="DarkGreen" >
                     <Run Text="{Binding Message}"/>
                 </TextBlock>
             </StatusBarItem>
