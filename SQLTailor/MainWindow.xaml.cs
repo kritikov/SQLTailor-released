@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using SQLTailor.Views;
 using System.Diagnostics;
+using System.Text;
 
 namespace SQLTailor {
     /// <summary>
@@ -402,12 +403,12 @@ namespace SQLTailor {
             }
         }
 
-        private FlowDocument reebSqlOMDocument;
-        public FlowDocument ReebSqlOMDocument {
-            get => reebSqlOMDocument;
+        private FlowDocument sqlOMDocument;
+        public FlowDocument SqlOMDocument {
+            get => sqlOMDocument;
             set {
-                reebSqlOMDocument = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ReebSqlOMDocument"));
+                sqlOMDocument = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SqlOMDocument"));
             }
         }
 
@@ -474,6 +475,10 @@ namespace SQLTailor {
 
         #region EVENTS
 
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            SQLSourceDocument = GetFlowDocument("");
+        }
+
         private void AnalyzeSql(object sender, RoutedEventArgs e) {
 
             if (string.IsNullOrWhiteSpace(sqlSource)) {
@@ -506,14 +511,14 @@ namespace SQLTailor {
                 }
 
                 if (PoVariation) {
-                    ReebSqlOMDocument = Parser.GetPoVariationAsFlowDocument();
+                    SqlOMDocument = Parser.GetPoVariationAsFlowDocument();
                 } else {
-                    ReebSqlOMDocument = Parser.GetSqlOMAsFlowDocument();
+                    SqlOMDocument = Parser.GetSqlOMAsFlowDocument();
                 }
 
                 MicrosoftTSQLDocument.PageWidth = documentWidth;
                 BaseTranslationDocument.PageWidth = documentWidth;
-                ReebSqlOMDocument.PageWidth = documentWidth;
+                SqlOMDocument.PageWidth = documentWidth;
 
                 FillErrorsList(Parser.Errors);
                 FillTokensList(Parser.GetTokensList());
@@ -568,6 +573,31 @@ namespace SQLTailor {
             SqlOMTranslatorInformationWindow window = new SqlOMTranslatorInformationWindow();
 
             if (window.ShowDialog() == true) { }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e) {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        private void ClearEditor(object sender, RoutedEventArgs e) {
+            SQLSourceDocument = GetFlowDocument("");
+        }
+
+        private void CopyFromEditor(object sender, RoutedEventArgs e) {
+            Copy(sqlSource);
+        }
+
+        private void CopyMicrosoftTSQL(object sender, RoutedEventArgs e) {
+            Copy(microsoftTSQLDocument);
+        }
+
+        private void CopyBaseTranslation(object sender, RoutedEventArgs e) {
+            Copy(baseTranslationDocument);
+        }
+
+        private void CopySqlOMTranslation(object sender, RoutedEventArgs e) {
+            Copy(SqlOMDocument);
         }
 
         #endregion
@@ -971,14 +1001,32 @@ ADD Email varchar(255),
             }
         }
 
+        /// <summary>
+        /// copy a text in the clipboard
+        /// </summary>
+        /// <param name="text"></param>
+        private void Copy(string text) {
+            Clipboard.SetText(sqlSource);
+            Message = "query copied";
+        }
 
+        /// <summary>
+        /// copy a document flow in the clipboard
+        /// </summary>
+        /// <param name="document"></param>
+        private void Copy(FlowDocument document) {
+            TextRange range = new TextRange(document.ContentStart, document.ContentEnd);
+
+            using (Stream stream = new MemoryStream()) {
+                range.Save(stream, DataFormats.Rtf);
+                Clipboard.SetData(DataFormats.Rtf, Encoding.UTF8.GetString((stream as MemoryStream).ToArray()));
+            }
+            Message = "query copied";
+        }
 
 
         #endregion
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e) {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
-        }
+        
     }
 }

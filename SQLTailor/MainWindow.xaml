@@ -4,13 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SQLTailor"
-        xmlns:classes="clr-namespace:SQLTailor.Classes"
+        xmlns:Classes="clr-namespace:SQLTailor.Classes"
         mc:Ignorable="d"
-        Title="SQL Tailor" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA">
-
-    <Window.Resources>
-
-    </Window.Resources>
+        Title="SQL Tailor" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA" Loaded="Window_Loaded">
 
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
@@ -20,7 +16,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem>
-                <TextBlock>
+                <TextBlock Foreground="DarkGreen">
                     <Run Text="{Binding Message}"/>
                 </TextBlock>
             </StatusBarItem>
@@ -38,14 +34,16 @@
                         <ColumnDefinition Width="3*" MaxWidth="300"/>
                     </Grid.ColumnDefinitions>
 
-                    <classes:BindableRichTextBox Grid.Row="1" IsReadOnly="False" Document="{Binding SQLSourceDocument, Mode=OneWay}" x:Name="SQLSourceEditor" 
+                    <Classes:BindableRichTextBox Grid.Row="1" IsReadOnly="False" Document="{Binding SQLSourceDocument, Mode=OneWay}" x:Name="SQLSourceEditor" 
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                     <DockPanel Grid.Column="2">
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
+                            <Button Content="Analyze" Click="AnalyzeSql"/>
+                            <Button Content="Copy" Click="CopyFromEditor"/>
+                            <Button Content="Clear" Click="ClearEditor"/>
                         </StackPanel>
 
                         <StackPanel>
@@ -60,7 +58,7 @@
                                     </Grid.RowDefinitions>
                                     <CheckBox Grid.Row="0" Content="Use test query" IsChecked="{Binding UseFixedQuery, Mode=TwoWay}" HorizontalAlignment="Left"/>
                                     <ListView Grid.Row="1" ItemsSource="{Binding Queries}" VirtualizingStackPanel.IsVirtualizing="True" SelectionMode="Single"
-                                              SelectedIndex="13" MaxHeight="300" SelectionChanged="FixedQuerySelected" IsEnabled="{Binding UseFixedQuery, Mode=OneWay}">
+                                              SelectedIndex="-1" MaxHeight="300" SelectionChanged="FixedQuerySelected" IsEnabled="{Binding UseFixedQuery, Mode=OneWay}">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Type, Mode=OneWay}"/>
@@ -96,7 +94,7 @@
                         <ColumnDefinition Width="3*" MaxWidth="400"/>
                     </Grid.ColumnDefinitions>
 
-                    <classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
+                    <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
                                                  Document="{Binding MicrosoftTSQLDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
@@ -104,7 +102,8 @@
 
                     <DockPanel Grid.Column="2" >
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
+                            <Button Content="Analyze" Click="AnalyzeSql"/>
+                            <Button Content="Copy" Click="CopyMicrosoftTSQL"/>
                         </StackPanel>
                         <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="TSqlInformations_PreviewMouseUp" />
 
@@ -199,7 +198,7 @@
                         <ColumnDefinition Width="3*" MaxWidth="300"/>
                     </Grid.ColumnDefinitions>
 
-                    <classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True"  
+                    <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True"  
                                                  Document="{Binding BaseTranslationDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
@@ -207,7 +206,8 @@
 
                     <DockPanel Grid.Column="2">
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
+                            <Button Content="Analyze" Click="AnalyzeSql"/>
+                            <Button Content="Copy" Click="CopyBaseTranslation"/>
                         </StackPanel>
                         <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
 
@@ -278,15 +278,16 @@
                         <ColumnDefinition Width="3*" MaxWidth="300"/>
                     </Grid.ColumnDefinitions>
 
-                    <classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
-                                                 Document="{Binding ReebSqlOMDocument, Mode=OneWay}"
+                    <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
+                                                 Document="{Binding SqlOMDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                     <DockPanel Grid.Column="2" >
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Padding="5" Margin="5" Content="Analyze query" Click="AnalyzeSql"/>
+                            <Button Content="Analyze" Click="AnalyzeSql"/>
+                            <Button Content="Copy" Click="CopySqlOMTranslation"/>
                         </StackPanel>
                         <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="SqlOMTranslator_PreviewMouseUp" />
 
@@ -341,7 +342,7 @@
                         <ColumnDefinition Width="3*" MaxWidth="300"/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView Grid.Column="0" ItemsSource="{Binding TokensView}" VirtualizingStackPanel.IsVirtualizing="True">
+                    <ListView Grid.Column="0" ItemsSource="{Binding TokensView}" VirtualizingStackPanel.IsVirtualizing="True" Background="White">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Line" DisplayMemberBinding="{Binding [0]}" Width="50"/>
@@ -407,7 +408,7 @@
                             <TextBlock Text="It uses the Microsoft ScriptDOM library to parse the original query and then provides the translators who compose the resulting tokens in the desired versions." />
                             <TextBlock Text="A developer who wants a new variant of SQL can build a new translator without having to start from scratch. He may also use only the SQLParser that does the parsing instead of the entire application." />
                             <TextBlock >
-                                <Run Text="SQL Tailor is currently in beta version. You can download the sources from Github at "/>
+                                <Run Text="SQL Tailor is currently in beta version. You can download new versions or the sources from Github at "/>
                                 <Hyperlink NavigateUri="https://github.com/kritikov/SQLTailor-released" RequestNavigate="Hyperlink_RequestNavigate">
                                     github.com/kritikov/SQLTailor-released
                                 </Hyperlink>
