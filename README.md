@@ -10,7 +10,7 @@ Base Translation: the basic translation of Tailor. Converts the most common quer
 
 SqlOM Translation: builds the script of the SqlOM library in C#, which if executed generates the given SQL query.
 
-A developer who wants a new variant of SQL can build a new translator without having to start all over. He may also use only the SQLParser that does the parsing instead of the entire application.
+A developer who wants a new variant of SQL can build a new translator without having to start from scratch. He may also use only the SQLParser that does the parsing instead of the entire application.
 
 
 *** FOR DEVELOPERS ***
