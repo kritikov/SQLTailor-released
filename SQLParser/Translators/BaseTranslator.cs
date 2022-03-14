@@ -297,6 +297,11 @@ namespace SQLParser.Translators {
             return document;
         }
 
+        /// <summary>
+        /// formats the final text to a Paragraph of FlowDocument with colors and styles
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         private Paragraph Format(string text) {
             Paragraph paragraph = new Paragraph();
 
@@ -1500,6 +1505,9 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is CastCall castCall1) {
                     firstExpression = CastCallParse(castCall1);
                 } 
+                else if (expression.FirstExpression is FunctionCall functionCall1) {
+                    firstExpression = FunctionCallParse(functionCall1);
+                } 
                 else {
                     firstExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -1527,6 +1535,9 @@ namespace SQLParser.Translators {
                 } 
                 else if (expression.SecondExpression is CastCall castCall2) {
                     secondExpression = CastCallParse(castCall2);
+                } 
+                else if (expression.SecondExpression is FunctionCall functionCall2) {
+                    secondExpression = FunctionCallParse(functionCall2);
                 } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";

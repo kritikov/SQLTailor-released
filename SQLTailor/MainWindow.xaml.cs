@@ -481,9 +481,9 @@ namespace SQLTailor {
 
         private void AnalyzeSql(object sender, RoutedEventArgs e) {
 
-            if (string.IsNullOrWhiteSpace(sqlSource)) {
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(sqlSource)) {
+            //    return;
+            //}
 
             try {
                 Mouse.OverrideCursor = Cursors.Wait;
@@ -585,7 +585,10 @@ namespace SQLTailor {
         }
 
         private void CopyFromEditor(object sender, RoutedEventArgs e) {
-            Copy(sqlSource);
+
+            FlowDocument document = SQLSourceEditor.Document;
+            string source = new TextRange(document.ContentStart, document.ContentEnd).Text;
+            Copy(source);
         }
 
         private void CopyMicrosoftTSQL(object sender, RoutedEventArgs e) {
@@ -1006,7 +1009,7 @@ ADD Email varchar(255),
         /// </summary>
         /// <param name="text"></param>
         private void Copy(string text) {
-            Clipboard.SetText(sqlSource);
+            Clipboard.SetText(text);
             Message = "query copied";
         }
 
@@ -1015,6 +1018,11 @@ ADD Email varchar(255),
         /// </summary>
         /// <param name="document"></param>
         private void Copy(FlowDocument document) {
+
+            if (document == null) {
+                document = new FlowDocument();
+            }
+
             TextRange range = new TextRange(document.ContentStart, document.ContentEnd);
 
             using (Stream stream = new MemoryStream()) {
@@ -1024,9 +1032,8 @@ ADD Email varchar(255),
             Message = "query copied";
         }
 
-
         #endregion
 
-        
+ 
     }
 }
