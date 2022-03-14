@@ -193,6 +193,11 @@ namespace SQLParser.Translators {
             return document;
         }
 
+        /// <summary>
+        /// formats the final text to a Paragraph of FlowDocument with colors and styles
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public virtual Paragraph Format(string text, ref bool isText) {
             Paragraph paragraph = new Paragraph();
 
