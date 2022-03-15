@@ -1965,7 +1965,10 @@ namespace SQLParser.Translators {
                     currentData.TermString = childData.TermString;
                 }
                 else if (expression.Expression is BooleanIsNullExpression booleanIsNullExpression) {
-                    result += "~UNDEVELOPED BooleanIsNullExpression~";
+                    Informations childData = currentData.CopyLite();
+
+                    result += BooleanIsNullExpressionParse(booleanIsNullExpression, childData);
+                    currentData.TermString = childData.TermString;
                 }
                 else if (expression.Expression is BooleanParenthesisExpression booleanParenthesisExpression) {
                     Informations childData = currentData.CopyLite();
