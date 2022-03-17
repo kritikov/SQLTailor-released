@@ -1791,6 +1791,11 @@ namespace SQLParser.Translators {
                     FunctionCallParse(functionCall1, childData);
                     firstExpression = childData.SqlExpressionString;
                 } 
+                else if (expression.FirstExpression is CoalesceExpression coalesceExpression1) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression1, childData);
+                    firstExpression = childData.SqlExpressionString;
+                } 
                 else {
                     firstExpression = "~UNKNOWN FirstExpression~";
                 }
@@ -1826,6 +1831,11 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     Informations childData = currentData.CopyLite();
                     FunctionCallParse(functionCall2, childData);
+                    secondExpression = childData.SqlExpressionString;
+                } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression2, childData);
                     secondExpression = childData.SqlExpressionString;
                 } 
                 else {
@@ -3020,9 +3030,12 @@ namespace SQLParser.Translators {
             Informations currentData = (Informations)data;
 
             try {
-                currentData.TermString = "~UNDEVELOPED CoalesceExpression~";
+                BaseTranslator translator = new BaseTranslator();
+                translator.Data.Level = currentData.Level + 1;
+                translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+                currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.CoalesceExpressionParse(expression)}\")";
             } catch {
-                currentData.TermString = "~CoalesceExpression ERROR~";
+                currentData.SqlExpressionString = "~CoalesceExpression ERROR~";
             }
 
             return result;
