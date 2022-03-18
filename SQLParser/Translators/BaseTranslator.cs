@@ -1399,7 +1399,7 @@ namespace SQLParser.Translators {
                 } 
                 else if (parameter is SearchedCaseExpression searchedCaseExpression) {
                     Data.Level++;
-                    result += $"{SearchedCaseExpressionParse(searchedCaseExpression)}";
+                    parameters += $"{SearchedCaseExpressionParse(searchedCaseExpression)}";
                     Data.Level--;
                 } 
                 else if (parameter is ParenthesisExpression parenthesisExpression) {
@@ -1493,9 +1493,12 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is ParenthesisExpression parenthesisExpression1) {
                     firstExpression = $"({ParenthesisExpressionParse(parenthesisExpression1)})";
                 } 
+                else if (expression.FirstExpression is IntegerLiteral integerLiteral1) {
+                    firstExpression = $"{integerLiteral1.Value}";
+                } 
                 else if (expression.FirstExpression is StringLiteral stringLiteral1) {
                     firstExpression = $"'{stringLiteral1.Value}'";
-                }
+                } 
                 else if (expression.FirstExpression is NumericLiteral numericLiteral1) {
                     firstExpression = $"{numericLiteral1.Value}";
                 }
