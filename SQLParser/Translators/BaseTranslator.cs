@@ -1399,7 +1399,7 @@ namespace SQLParser.Translators {
                 } 
                 else if (parameter is SearchedCaseExpression searchedCaseExpression) {
                     Data.Level++;
-                    result += $"{SearchedCaseExpressionParse(searchedCaseExpression)}";
+                    parameters += $"{SearchedCaseExpressionParse(searchedCaseExpression)}";
                     Data.Level--;
                 } 
                 else if (parameter is ParenthesisExpression parenthesisExpression) {
@@ -1422,6 +1422,9 @@ namespace SQLParser.Translators {
                 } 
                 else if (parameter is UnaryExpression unaryExpression) {
                     parameters += UnaryExpressionParse(unaryExpression);
+                } 
+                else if (parameter is FunctionCall functionCall) {
+                    parameters += FunctionCallParse(functionCall);
                 } 
                 else {
                     parameters += $"~UNKNOWN ScalarExpression~";
@@ -1490,9 +1493,12 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is ParenthesisExpression parenthesisExpression1) {
                     firstExpression = $"({ParenthesisExpressionParse(parenthesisExpression1)})";
                 } 
+                else if (expression.FirstExpression is IntegerLiteral integerLiteral1) {
+                    firstExpression = $"{integerLiteral1.Value}";
+                } 
                 else if (expression.FirstExpression is StringLiteral stringLiteral1) {
                     firstExpression = $"'{stringLiteral1.Value}'";
-                }
+                } 
                 else if (expression.FirstExpression is NumericLiteral numericLiteral1) {
                     firstExpression = $"{numericLiteral1.Value}";
                 }
@@ -1628,7 +1634,10 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.FirstExpression is BooleanTernaryExpression booleanTernaryExpression1) {
                     firstExpression = BooleanTernaryExpressionParse(booleanTernaryExpression1);
-                }
+                } 
+                else if (expression.FirstExpression is LikePredicate likePredicate1) {
+                    firstExpression = LikePredicateParse(likePredicate1);
+                } 
                 else {
                     firstExpression = "~UNKNOWN BooleanExpression~";
                 }
@@ -1661,7 +1670,10 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.SecondExpression is BooleanTernaryExpression booleanTernaryExpression2) {
                     secondExpression = BooleanTernaryExpressionParse(booleanTernaryExpression2);
-                }
+                } 
+                else if (expression.SecondExpression is LikePredicate likePredicate2) {
+                    secondExpression = LikePredicateParse(likePredicate2);
+                } 
                 else {
                     secondExpression = "~UNKNOWN BooleanExpression~";
                 }
@@ -1710,6 +1722,9 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.FirstExpression is FunctionCall functionCall1) {
                     firstExpression = FunctionCallParse(functionCall1);
+                } 
+                else if (expression.FirstExpression is CoalesceExpression coalesceExpression1) {
+                    firstExpression = CoalesceExpressionParse(coalesceExpression1);
                 } 
                 else {
                     firstExpression = "~UNKNOWN BooleanComparisonExpression~";
@@ -2030,20 +2045,25 @@ namespace SQLParser.Translators {
 
             try {
 
+                string collation = "";
+                if (expression.Collation != null) {
+                    collation = $" COLLATE {expression.Collation.Value} " ;
+                }
+
                 if (expression.ColumnType == ColumnType.Regular) {
                     MultiPartIdentifier identifier = expression.MultiPartIdentifier;
 
                     // single column name
                     if (identifier.Identifiers.Count == 1) {
-                        result = identifier.Identifiers[0].Value;
+                        result = $"{identifier.Identifiers[0].Value}{collation}";
                     }
                     // column name with table identifier
                     else if (identifier.Identifiers.Count == 2) {
-                        result = $"{identifier.Identifiers[0].Value}.{identifier.Identifiers[1].Value}";
+                        result = $"{identifier.Identifiers[0].Value}.{identifier.Identifiers[1].Value}{collation}";
                     }
                     // column with domain identifier
                     else if (identifier.Identifiers.Count == 3) {
-                        result = $"{identifier.Identifiers[0].Value}.{identifier.Identifiers[1].Value}.{identifier.Identifiers[2].Value}";
+                        result = $"{identifier.Identifiers[0].Value}.{identifier.Identifiers[1].Value}.{identifier.Identifiers[2].Value}{collation}";
                     }
                     else {
                         result = "~UKNOWN ColumnReferenceExpression~";
@@ -2174,7 +2194,7 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is NullLiteral nullLiteral1) {
                     firstExpression = $"NULL";
                 }
-                else if (expression.SecondExpression is VariableReference variableReference1) {
+                else if (expression.FirstExpression is VariableReference variableReference1) {
                     string variableName = FormatOptions.ReplaceQueryParametersWithValues ? GetQueryParameterFromList(variableReference1.Name) : variableReference1.Name;
 
                     firstExpression = $"{variableName}";
@@ -2182,7 +2202,10 @@ namespace SQLParser.Translators {
                     if (FormatOptions.UpdateQueryParametersList) {
                         InsertIntoQueryParametersList(variableReference1.Name);
                     }
-                }
+                } 
+                else if (expression.FirstExpression is FunctionCall functionCall1) {
+                    firstExpression = FunctionCallParse(functionCall1);
+                } 
                 else {
                     firstExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2213,7 +2236,10 @@ namespace SQLParser.Translators {
                     if (FormatOptions.UpdateQueryParametersList) {
                         InsertIntoQueryParametersList(variableReference2.Name);
                     }
-                }
+                } 
+                else if (expression.SecondExpression is FunctionCall functionCall2) {
+                    secondExpression = FunctionCallParse(functionCall2);
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2941,6 +2967,54 @@ namespace SQLParser.Translators {
 
             return result;
         }
+
+        public virtual string CoalesceExpressionParse(CoalesceExpression expression, object data = null) {
+            string result = "Coalesce";
+
+            try {
+                string parameters = "(";
+
+                foreach (var parameter in expression.Expressions) {
+                    if (parameters != "(") {
+                        parameters += ", ";
+                    }
+
+                    if (parameter is ColumnReferenceExpression columnReferenceExpression1) {
+                        parameters += $"{ColumnReferenceExpressionParse(columnReferenceExpression1)}";
+                    } 
+                    else if (parameter is IntegerLiteral integerLiteral) {
+                        parameters += $"{integerLiteral.Value}";
+                    } 
+                    else if (parameter is StringLiteral stringLiteral) {
+                        parameters += $"'{stringLiteral.Value}'";
+                    } 
+                    else if (parameter is NumericLiteral numericLiteral) {
+                        parameters = numericLiteral.Value;
+                    } 
+                    else if (parameter is NullLiteral nullLiteral) {
+                        parameters += $"NULL";
+                    } 
+                    else if (parameter is VariableReference variableReference) {
+                        string variableName = FormatOptions.ReplaceQueryParametersWithValues ? GetQueryParameterFromList(variableReference.Name) : variableReference.Name;
+
+                        parameters += $"{variableName}";
+
+                        if (FormatOptions.UpdateQueryParametersList) {
+                            InsertIntoQueryParametersList(variableReference.Name);
+                        }
+                    } else {
+                        parameters = "~UNKNOWN CoalesceParameter~";
+                    }
+                }
+
+                result += $"{parameters})";
+            } catch {
+                result = "~CoalesceExpression ERROR~";
+            }
+
+            return result;
+        }
+
         #endregion
 
     }

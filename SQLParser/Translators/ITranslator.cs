@@ -288,6 +288,15 @@ namespace SQLParser.Translators {
         /// <param name="data"></param>
         /// <returns></returns>
         string DropTableStatementParse(DropTableStatement expression, object data = null);
+
+        /// <summary>
+        /// Translates the COALESCE function
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        string CoalesceExpressionParse(CoalesceExpression expression, object data = null);
+
     }
 
 }

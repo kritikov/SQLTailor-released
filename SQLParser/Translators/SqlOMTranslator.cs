@@ -1675,6 +1675,11 @@ namespace SQLParser.Translators {
                     result += InPredicateParse(inPredicate1, childData);
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
                 } 
+                else if (expression.FirstExpression is LikePredicate likePredicate1) {
+                    Informations childData = currentData.CopyLite();
+                    result += LikePredicateParse(likePredicate1, childData);
+                    result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
+                } 
                 else {
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add(~UNKNOWN BooleanExpression~);\n";
                 }
@@ -1729,6 +1734,11 @@ namespace SQLParser.Translators {
                     result += InPredicateParse(inPredicate2, childData);
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
                 } 
+                else if (expression.SecondExpression is LikePredicate likePredicate2) {
+                    Informations childData = currentData.CopyLite();
+                    result += LikePredicateParse(likePredicate2, childData);
+                    result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add({childData.TermString});\n";
+                } 
                 else {
                     result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Terms.Add(~UNKNOWN BooleanExpression~);\n";
                 }
@@ -1781,6 +1791,11 @@ namespace SQLParser.Translators {
                     FunctionCallParse(functionCall1, childData);
                     firstExpression = childData.SqlExpressionString;
                 } 
+                else if (expression.FirstExpression is CoalesceExpression coalesceExpression1) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression1, childData);
+                    firstExpression = childData.SqlExpressionString;
+                } 
                 else {
                     firstExpression = "~UNKNOWN FirstExpression~";
                 }
@@ -1812,7 +1827,17 @@ namespace SQLParser.Translators {
                 }
                 else if (expression.SecondExpression is VariableReference) {
                     secondExpression = LiteralsSqlExpression(expression.SecondExpression);
-                }
+                } 
+                else if (expression.SecondExpression is FunctionCall functionCall2) {
+                    Informations childData = currentData.CopyLite();
+                    FunctionCallParse(functionCall2, childData);
+                    secondExpression = childData.SqlExpressionString;
+                } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression2, childData);
+                    secondExpression = childData.SqlExpressionString;
+                } 
                 else {
                     secondExpression = "~UNKNOWN SecondExpression~";
                 }
@@ -1965,7 +1990,10 @@ namespace SQLParser.Translators {
                     currentData.TermString = childData.TermString;
                 }
                 else if (expression.Expression is BooleanIsNullExpression booleanIsNullExpression) {
-                    result += "~UNDEVELOPED BooleanIsNullExpression~";
+                    Informations childData = currentData.CopyLite();
+
+                    result += BooleanIsNullExpressionParse(booleanIsNullExpression, childData);
+                    currentData.TermString = childData.TermString;
                 }
                 else if (expression.Expression is BooleanParenthesisExpression booleanParenthesisExpression) {
                     Informations childData = currentData.CopyLite();
@@ -2992,6 +3020,22 @@ namespace SQLParser.Translators {
             } 
             else if (expression is VariableReference variableReference) {
                 result = $"SqlExpression.Parameter(\"{variableReference.Name}\")";
+            }
+
+            return result;
+        }
+
+        public virtual string CoalesceExpressionParse(CoalesceExpression expression, object data = null) {
+            string result = "";
+            Informations currentData = (Informations)data;
+
+            try {
+                BaseTranslator translator = new BaseTranslator();
+                translator.Data.Level = currentData.Level + 1;
+                translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+                currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.CoalesceExpressionParse(expression)}\")";
+            } catch {
+                currentData.SqlExpressionString = "~CoalesceExpression ERROR~";
             }
 
             return result;
