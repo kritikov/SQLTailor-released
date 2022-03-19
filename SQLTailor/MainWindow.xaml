@@ -404,7 +404,7 @@
                     <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about the SQL Tailor"/>
                     <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="version: v1.0.3 beta" />
+                            <TextBlock Text="version: v1.0.2 beta" />
                             <TextBlock Text="SQL Tailor is an open source parser that formats SQL queries. It is built in WPF and C# and convert queries in various versions of SQL or in scripts that produce SQL, such as the SqlOM library." />
                             <TextBlock Text="It uses the Microsoft ScriptDOM library to parse the original query and then provides the translators who compose the resulting tokens in the desired versions." />
                             <TextBlock Text="A developer who wants a new variant of SQL can build a new translator without having to start from scratch. He may also use only the SQLParser that does the parsing instead of the entire application." />
