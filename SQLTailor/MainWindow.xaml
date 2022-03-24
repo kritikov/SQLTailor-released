@@ -195,7 +195,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"/>
                         <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                        <ColumnDefinition Width="3*" MaxWidth="400"/>
                     </Grid.ColumnDefinitions>
 
                     <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True"  
@@ -245,8 +245,8 @@
                                                         <ColumnDefinition Width="1*"/>
                                                         <ColumnDefinition Width="2*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding Key, Mode=OneWay}"/>
-                                                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"/>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Key, Mode=OneWay}" HorizontalAlignment="Right" Padding="3, 3, 5, 3"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}" Width="150" HorizontalAlignment="Left"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
