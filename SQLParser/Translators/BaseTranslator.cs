@@ -1432,7 +1432,15 @@ namespace SQLParser.Translators {
 
             }
 
-            result += $"({parameters})";
+            string uniqueRow = "";
+            if (expression.UniqueRowFilter == UniqueRowFilter.Distinct) {
+                uniqueRow = "Distinct ";
+            }
+            else if (expression.UniqueRowFilter == UniqueRowFilter.All) {
+                uniqueRow = "All ";
+            }
+
+            result += $"({uniqueRow}{parameters})";
 
             return result;
         }
