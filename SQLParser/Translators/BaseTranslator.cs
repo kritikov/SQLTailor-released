@@ -1522,6 +1522,9 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is FunctionCall functionCall1) {
                     firstExpression = FunctionCallParse(functionCall1);
                 } 
+                else if (expression.FirstExpression is UnaryExpression unaryExpression1) {
+                    firstExpression = UnaryExpressionParse(unaryExpression1);
+                } 
                 else {
                     firstExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -1552,6 +1555,9 @@ namespace SQLParser.Translators {
                 } 
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     secondExpression = FunctionCallParse(functionCall2);
+                } 
+                else if (expression.SecondExpression is UnaryExpression unaryExpression2) {
+                    secondExpression = UnaryExpressionParse(unaryExpression2);
                 } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
@@ -1585,7 +1591,7 @@ namespace SQLParser.Translators {
                     symbol = "~UNKNOWN BinaryExpressionType~";
                 }
 
-                result = $"{firstExpression}{symbol}{secondExpression}";
+                result = $"{firstExpression} {symbol} {secondExpression}";
             }
             catch {
                 result = "~BinaryExpression ERROR~";

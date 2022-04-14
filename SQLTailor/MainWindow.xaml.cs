@@ -412,7 +412,7 @@ namespace SQLTailor {
             }
         }
 
-        private bool poVariation = false;
+        private bool poVariation = true;
         public bool PoVariation {
             get => poVariation;
 
