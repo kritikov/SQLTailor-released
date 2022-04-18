@@ -69,6 +69,8 @@
     </Compile>
     <Compile Include="Classes\ReservedWord.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="Translators\MSSQLTranslator.cs" />
+    <Compile Include="Translators\MySQLTranslator.cs" />
     <Compile Include="Translators\PoVariationTranslator.cs" />
     <Compile Include="Translators\SqlOMTranslator.cs" />
     <Compile Include="Translators\BaseTranslator.cs" />

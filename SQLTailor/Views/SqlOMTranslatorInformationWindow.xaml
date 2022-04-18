@@ -5,17 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SQLTailor.Views"
         mc:Ignorable="d"
-        Title="SqlOM Translator informations" Height="500" Width="700" WindowStartupLocation="CenterScreen">
+        Title="Fluent scripts translation informations" Height="500" Width="700" WindowStartupLocation="CenterScreen">
 
     <Grid Style="{StaticResource InformationsWindowGridStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about the SqlOM Translator"/>
+        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about fluent scripts"/>
         <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="This view is created from the SqlOMTranslator class. The translator produces an SqlOM script in C# that creates the SQL query in the editor when ran." />
+                <TextBlock Text="This view is currently created only from the SqlOMTranslator class. The translator produces an SqlOM script in C# that creates the SQL query in the editor when ran." />
                 <TextBlock Text="SqlOM library creates only the most common queries as SELECT, UPDATE, INSERT etc, so the SqlOMTranslator can parse limited exrpessions." />
                 <TextBlock Text="Known issues" Style="{StaticResource TextBlockSection}"/>
                 <TextBlock Text="- When a table name appears multiple times with no alias, multiple FromTerms are created with the same name. To reduce the problem a bit, use the 'Select brackets' option that includes the Select contents in a block." />

@@ -276,6 +276,107 @@ namespace SQLParser {
             return translator.GetFlowDocument(result);
         }
 
+        /// <summary>
+        /// Transform the sql tree into plain text using the basic Translator
+        /// </summary>
+        /// <returns></returns>
+        public string GetMSSQLTranslation() {
+            string result = "";
+
+            Visitor visitor = new Visitor();
+            sqlTree.Accept(visitor);
+
+            if (Options.UpdateQueryParametersList) {
+                Options.QueryParameters.Clear();
+            }
+
+            MSSQLTranslator translator = new MSSQLTranslator(Options);
+
+            foreach (TSqlFragment statement in visitor.Statements) {
+                if (statement is SelectStatement selectStatement) {
+                    result += translator.SelectStatementParse(selectStatement);
+                } else if (statement is InsertStatement insertStatement) {
+                    result += translator.InsertSpecificationParse(insertStatement.InsertSpecification);
+                } else if (statement is UpdateStatement updateStatement) {
+                    result += translator.UpdateSpecificationParse(updateStatement.UpdateSpecification);
+                } else if (statement is DeleteStatement deleteStatement) {
+                    result += translator.DeleteSpecificationParse(deleteStatement.DeleteSpecification);
+                } else if (statement is CreateTableStatement createTableStatement) {
+                    result += translator.CreateTableStatementParse(createTableStatement);
+                } else if (statement is CreateViewStatement createViewStatement) {
+                    result += translator.CreateViewStatementParse(createViewStatement);
+                } else if (statement is AlterTableAddTableElementStatement alterTableAddTableElementStatement) {
+                    result += translator.AlterTableAddTableElementStatementParse(alterTableAddTableElementStatement);
+                } else if (statement is AlterTableAlterColumnStatement alterTableAlterColumnStatement) {
+                    result += translator.AlterTableAlterColumnStatementParse(alterTableAlterColumnStatement);
+                } else if (statement is DropTableStatement dropTableStatement) {
+                    result += translator.DropTableStatementParse(dropTableStatement);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Transform the sql tree into a formatted text using the basic Translator
+        /// </summary>
+        /// <returns></returns>
+        public FlowDocument GetMSSQLTranslationAsFlowDocument() {
+            string result = GetMSSQLTranslation();
+            MSSQLTranslator translator = new MSSQLTranslator(Options);
+            return translator.GetFlowDocument(result);
+        }
+
+        /// <summary>
+        /// Transform the sql tree into plain text using the basic Translator
+        /// </summary>
+        /// <returns></returns>
+        public string GetMySQLTranslation() {
+            string result = "";
+
+            Visitor visitor = new Visitor();
+            sqlTree.Accept(visitor);
+
+            if (Options.UpdateQueryParametersList) {
+                Options.QueryParameters.Clear();
+            }
+
+            MySQLTranslator translator = new MySQLTranslator(Options);
+
+            foreach (TSqlFragment statement in visitor.Statements) {
+                if (statement is SelectStatement selectStatement) {
+                    result += translator.SelectStatementParse(selectStatement);
+                } else if (statement is InsertStatement insertStatement) {
+                    result += translator.InsertSpecificationParse(insertStatement.InsertSpecification);
+                } else if (statement is UpdateStatement updateStatement) {
+                    result += translator.UpdateSpecificationParse(updateStatement.UpdateSpecification);
+                } else if (statement is DeleteStatement deleteStatement) {
+                    result += translator.DeleteSpecificationParse(deleteStatement.DeleteSpecification);
+                } else if (statement is CreateTableStatement createTableStatement) {
+                    result += translator.CreateTableStatementParse(createTableStatement);
+                } else if (statement is CreateViewStatement createViewStatement) {
+                    result += translator.CreateViewStatementParse(createViewStatement);
+                } else if (statement is AlterTableAddTableElementStatement alterTableAddTableElementStatement) {
+                    result += translator.AlterTableAddTableElementStatementParse(alterTableAddTableElementStatement);
+                } else if (statement is AlterTableAlterColumnStatement alterTableAlterColumnStatement) {
+                    result += translator.AlterTableAlterColumnStatementParse(alterTableAlterColumnStatement);
+                } else if (statement is DropTableStatement dropTableStatement) {
+                    result += translator.DropTableStatementParse(dropTableStatement);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Transform the sql tree into a formatted text using the basic Translator
+        /// </summary>
+        /// <returns></returns>
+        public FlowDocument GetMySQLTranslationAsFlowDocument() {
+            string result = GetMySQLTranslation();
+            MySQLTranslator translator = new MySQLTranslator(Options);
+            return translator.GetFlowDocument(result);
+        }
         #endregion
 
     }

@@ -5,22 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SQLTailor.Views"
         mc:Ignorable="d"
-        Title="Base Translator informations" Height="500" Width="700" WindowStartupLocation="CenterScreen">
+        Title="SQL script translation informations" Height="500" Width="700" WindowStartupLocation="CenterScreen">
 
     <Grid Style="{StaticResource InformationsWindowGridStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about the Base Translator"/>
+        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about this view"/>
         <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="This view is created from the BaseTranslator class. This translator produces a plain SQL text synthesizing the tokens that ScripDOM library produces after analysing the SQL expression in the editor." />
-                <TextBlock Text="Cause of this, the translation from the BaseTranslator can be fully altered by code to produce other SQL variations." />
-                <TextBlock Text="Still though, the BaseTranslator is designed to be used as a base for other translators. If you want a translator that produces SQL with little differences then is a better solution to create a new one by inheriting the BaseTranslator." />
+                <TextBlock Text="This view is created from the BaseTranslator class and its descentant translators as MSSQLTranslator or MySQLTranslator. These translators produce a plain SQL text synthesizing the tokens that ScripDOM library produces after analysing the SQL expression in the editor." />
+                <TextBlock Text="Cause of this, the translation can be fully altered by code to produce other SQL variations." />
+                <TextBlock Text="The BaseTranslator is designed to be used as a base for other translators. If you want a translator that produces SQL with little differences then is a better solution to create a new one by inheriting the BaseTranslator." />
                 <TextBlock Text="The BaseTranslator is also used from other translators -as SqlOM translator- when they dont support some SQL exrpessions or when they need plain SQL code." />
                 <TextBlock Text="Known issues" Style="{StaticResource TextBlockSection}"/>
-                <TextBlock Text="- For the monent, the BaseTranslator doesnt translate every SQL exrpession. When the ScriptDOM analyze the query uses over 1000 different classes for the tokens, and each one of them must be parsed in its own function. Currently, the BaseTranslator translates the most common to produce SELECT, INSERT etc." />
+                <TextBlock Text="- For the monent, these translators doesnt translate every SQL exrpession. When the ScriptDOM analyze the query uses over 1000 different classes for the tokens, and each one of them must be parsed in its own function. Currently, the BaseTranslator translates the most common to produce SELECT, INSERT etc." />
             </StackPanel>
         </ScrollViewer>
     </Grid>

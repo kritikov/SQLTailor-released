@@ -133,6 +133,7 @@ namespace SQLParser.Translators {
 
             new ReservedWord("LEFT", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("LIKE", Colors.DarkGreen, FontWeights.SemiBold),
+            new ReservedWord("LIMIT", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("LINENO", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("LOAD", Colors.DarkGreen, FontWeights.SemiBold),
 
@@ -226,7 +227,7 @@ namespace SQLParser.Translators {
             new ReservedWord("VALUES", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("VARYING", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("VIEW", Colors.DarkGreen, FontWeights.SemiBold),
-            new ReservedWord("varchar", Colors.DarkGreen, FontWeights.SemiBold),
+            new ReservedWord("VARCHAR", Colors.DarkGreen, FontWeights.SemiBold),
 
             new ReservedWord("WAITFOR", Colors.DarkGreen, FontWeights.SemiBold),
             new ReservedWord("WHEN", Colors.DarkGreen, FontWeights.SemiBold),
@@ -247,6 +248,7 @@ namespace SQLParser.Translators {
 
         };
 
+        public virtual string Quote { get; set; } = "'";
 
         #endregion
 
@@ -302,7 +304,7 @@ namespace SQLParser.Translators {
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        private Paragraph Format(string text) {
+        protected Paragraph Format(string text) {
             Paragraph paragraph = new Paragraph();
 
             int length = text.Length;
@@ -322,10 +324,10 @@ namespace SQLParser.Translators {
                     ReservedWord word = new ReservedWord("", Colors.Brown, FontWeights.Normal);
 
                     // check for text
-                    if (current[0] == '\'') {
+                    if (current[0] == Quote[0]) {
                         word.Text = current.Substring(1);
 
-                        int nextPos = word.Text.IndexOf('\'');
+                        int nextPos = word.Text.IndexOf(Quote[0]);
                         if (nextPos > 0) {
                             word.Text = current.Substring(0, nextPos + 2);
                         }
@@ -444,7 +446,7 @@ namespace SQLParser.Translators {
         /// Insert new parameters in the list with the query parameters
         /// </summary>
         /// <param name="parameter"></param>
-        private void InsertIntoQueryParametersList(string parameter) {
+        protected void InsertIntoQueryParametersList(string parameter) {
             if (!FormatOptions.QueryParameters.ContainsKey(parameter)) {
                 FormatOptions.QueryParameters.Add(parameter, parameter);
             }
@@ -456,7 +458,7 @@ namespace SQLParser.Translators {
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        private string GetQueryParameterFromList(string parameter) {
+        protected string GetQueryParameterFromList(string parameter) {
             string value = parameter;
 
             if (FormatOptions.QueryParameters.ContainsKey(parameter)) {
@@ -465,6 +467,17 @@ namespace SQLParser.Translators {
 
             return value;
 
+        }
+
+        /// <summary>
+        /// Return the corresponding SQL function. 
+        /// It is a separated function because some SQL functions are implemented 
+        /// differently in various databases
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <returns></returns>
+        protected virtual string GetFunctionName(string functionName) {
+            return functionName;
         }
 
         public virtual string InsertSpecificationParse(InsertSpecification expression, object data = null) {
@@ -523,7 +536,7 @@ namespace SQLParser.Translators {
                         }
 
                         if (value is StringLiteral stringLiteral) {
-                            rowValues += $"'{stringLiteral.Value}'";
+                            rowValues += $"{Quote}{stringLiteral.Value}{Quote}";
                         }
                         else if (value is IntegerLiteral integerLiteral) {
                             rowValues += $"{integerLiteral.Value}";
@@ -1065,7 +1078,7 @@ namespace SQLParser.Translators {
                             columns.Add(columnName);
                         }
                         else if (expression is StringLiteral stringLiteral) {
-                            string columnName = $"'{stringLiteral.Value}'";
+                            string columnName = $"{Quote}{stringLiteral.Value}{Quote}";
 
                             // check if there is an alias for the column
                             if (selectScalarExpression.ColumnName != null) {
@@ -1366,9 +1379,12 @@ namespace SQLParser.Translators {
 
             return result;
         }
-
+        
         public virtual string FunctionCallParse(FunctionCall expression, object data = null) {
-            string result = $"{expression.FunctionName.Value}";
+            string result;
+
+            string functionName = GetFunctionName(expression.FunctionName.Value);
+            result = $"{functionName}";
             string parameters = "";
 
             foreach (ScalarExpression parameter in expression.Parameters) {
@@ -1409,7 +1425,7 @@ namespace SQLParser.Translators {
                     parameters += integerLiteral.Value;
                 } 
                 else if (parameter is StringLiteral stringLiteral) {
-                    parameters += $"'{stringLiteral.Value}'";
+                    parameters += $"{Quote}{stringLiteral.Value}{Quote}";
                 } 
                 else if (parameter is NumericLiteral numericLiteral) {
                     parameters += $"{numericLiteral.Value}";
@@ -1505,7 +1521,7 @@ namespace SQLParser.Translators {
                     firstExpression = $"{integerLiteral1.Value}";
                 } 
                 else if (expression.FirstExpression is StringLiteral stringLiteral1) {
-                    firstExpression = $"'{stringLiteral1.Value}'";
+                    firstExpression = $"{Quote}{stringLiteral1.Value}{Quote}";
                 } 
                 else if (expression.FirstExpression is NumericLiteral numericLiteral1) {
                     firstExpression = $"{numericLiteral1.Value}";
@@ -1539,7 +1555,7 @@ namespace SQLParser.Translators {
                     secondExpression = integerLiteral2.Value;
                 }
                 else if (expression.SecondExpression is StringLiteral stringLiteral2) {
-                    secondExpression = $"'{stringLiteral2.Value}'";
+                    secondExpression = $"{Quote}{stringLiteral2.Value}{Quote}";
                 }
                 else if (expression.SecondExpression is NumericLiteral numericLiteral2) {
                     secondExpression = $"{numericLiteral2.Value}";
@@ -1717,7 +1733,7 @@ namespace SQLParser.Translators {
                     firstExpression = integerLiteral1.Value;
                 }
                 else if (expression.FirstExpression is StringLiteral stringLiteral1) {
-                    firstExpression = $"'{stringLiteral1.Value}'";
+                    firstExpression = $"{Quote}{stringLiteral1.Value}{Quote}";
                 }
                 else if (expression.FirstExpression is NumericLiteral numericLiteral1) {
                     firstExpression = $"{numericLiteral1.Value}";
@@ -1752,7 +1768,7 @@ namespace SQLParser.Translators {
                     secondExpression = integerLiteral2.Value;
                 }
                 else if (expression.SecondExpression is StringLiteral stringLiteral2) {
-                    secondExpression = $"'{stringLiteral2.Value}'";
+                    secondExpression = $"{Quote}{stringLiteral2.Value}{Quote}";
                 }
                 else if (expression.FirstExpression is NumericLiteral numericLiteral2) {
                     secondExpression = $"{numericLiteral2.Value}";
@@ -1834,7 +1850,7 @@ namespace SQLParser.Translators {
                     result = integerLiteral.Value;
                 }
                 else if (expression.Expression is StringLiteral stringLiteral) {
-                    result = $"'{stringLiteral.Value}'";
+                    result = $"{Quote}{stringLiteral.Value}{Quote}";
                 }
                 else if (expression.Expression is NumericLiteral numericLiteral) {
                     result = numericLiteral.Value;
@@ -1978,7 +1994,7 @@ namespace SQLParser.Translators {
                     secondExpression = integerLiteral2.Value;
                 }
                 else if (expression.SecondExpression is StringLiteral stringLiteral2) {
-                    secondExpression = $"'{stringLiteral2.Value}'";
+                    secondExpression = $"{Quote}{stringLiteral2.Value}{Quote}";
                 }
                 else if (expression.SecondExpression is NumericLiteral numericLiteral2) {
                     secondExpression = numericLiteral2.Value;
@@ -2010,7 +2026,7 @@ namespace SQLParser.Translators {
                     thirdExpression = integerLiteral3.Value;
                 }
                 else if (expression.ThirdExpression is StringLiteral stringLiteral3) {
-                    thirdExpression = $"'{stringLiteral3.Value}'";
+                    thirdExpression = $"{Quote}{stringLiteral3.Value}{Quote}";
                 }
                 else if (expression.ThirdExpression is NumericLiteral numericLiteral3) {
                     thirdExpression = numericLiteral3.Value;
@@ -2108,7 +2124,7 @@ namespace SQLParser.Translators {
                     result = integerLiteral1.Value;
                 }
                 else if (expression.Expression is StringLiteral stringLiteral1) {
-                    result = $"'{stringLiteral1.Value}'";
+                    result = $"{Quote}{stringLiteral1.Value}{Quote}";
                 }
                 else if (expression.Expression is NumericLiteral numericLiteral1) {
                     result = numericLiteral1.Value;
@@ -2141,7 +2157,7 @@ namespace SQLParser.Translators {
                             result += $"{ColumnReferenceExpressionParse(columnReferenceExpression2)}";
                         }
                         else if (value is StringLiteral stringLiteral) {
-                            result += $"'{stringLiteral.Value}'";
+                            result += $"{Quote}{stringLiteral.Value}{Quote}";
                         }
                         else if (value is IntegerLiteral integerLiteral) {
                             result += integerLiteral.Value;
@@ -2197,7 +2213,7 @@ namespace SQLParser.Translators {
                     firstExpression = BinaryExpressionParse(binaryExpression1);
                 }
                 else if (expression.FirstExpression is StringLiteral stringLiteral1) {
-                    firstExpression = $"'{stringLiteral1.Value}'";
+                    firstExpression = $"{Quote}{stringLiteral1.Value}{Quote}";
                 }
                 else if (expression.FirstExpression is IntegerLiteral integerLiteral1) {
                     firstExpression = integerLiteral1.Value;
@@ -2231,7 +2247,7 @@ namespace SQLParser.Translators {
                     secondExpression = BinaryExpressionParse(binaryExpression2);
                 }
                 else if (expression.SecondExpression is StringLiteral stringLiteral2) {
-                    secondExpression = $"'{stringLiteral2.Value}'";
+                    secondExpression = $"{Quote}{stringLiteral2.Value}{Quote}";
                 }
                 else if (expression.SecondExpression is IntegerLiteral integerLiteral2) {
                     secondExpression = integerLiteral2.Value;
@@ -2473,7 +2489,7 @@ namespace SQLParser.Translators {
                 }
 
                 if (expression.ElseExpression is StringLiteral stringLiteral) {
-                    result += $"\n{Indentation(Data.Level)} ELSE '{stringLiteral.Value}'";
+                    result += $"\n{Indentation(Data.Level)} ELSE {Quote}{stringLiteral.Value}{Quote}";
                 }
                 else if (expression.ElseExpression is IntegerLiteral integerLiteral) {
                     result += $"\n{Indentation(Data.Level)} ELSE {integerLiteral.Value}";
@@ -2524,7 +2540,7 @@ namespace SQLParser.Translators {
                 string value;
 
                 if (expression.Expression is StringLiteral stringLiteral) {
-                    value = $"'{stringLiteral.Value}'";
+                    value = $"{Quote}{stringLiteral.Value}{Quote}";
                 } 
                 else if (expression.Expression is IntegerLiteral integerLiteral) {
                     value = $"{integerLiteral.Value}";
@@ -2599,7 +2615,7 @@ namespace SQLParser.Translators {
                     result += $" THEN {ParenthesisExpressionParse(parenthesisExpression)}";
                 } 
                 else if (expression.ThenExpression is StringLiteral stringLiteral) {
-                    result += $" THEN '{stringLiteral.Value}'";
+                    result += $" THEN {Quote}{stringLiteral.Value}{Quote}";
                 }
                 else if (expression.ThenExpression is IntegerLiteral integerLiteral) {
                     result += $" THEN {integerLiteral.Value}";
@@ -2653,7 +2669,7 @@ namespace SQLParser.Translators {
                     parameter = SearchedCaseExpressionParse(searchedCaseExpression);
                 }
                 else if (expression.Parameter is StringLiteral stringLiteral) {
-                    parameter = $"'{stringLiteral.Value}'";
+                    parameter = $"{Quote}{stringLiteral.Value}{Quote}";
                 }
                 else if (expression.Parameter is IntegerLiteral integerLiteral) {
                     parameter = $"{integerLiteral.Value}";
@@ -2740,7 +2756,7 @@ namespace SQLParser.Translators {
                             }
 
                             if (parameter is StringLiteral stringLiteral) {
-                                result += $"'{stringLiteral.Value}'";
+                                result += $"{Quote}{stringLiteral.Value}{Quote}";
                             }
                             else if (parameter is IntegerLiteral integerLiteral) {
                                 result += $"{integerLiteral.Value}";
@@ -2768,7 +2784,7 @@ namespace SQLParser.Translators {
                             }
 
                             if (parameter is StringLiteral stringLiteral) {
-                                result += $"'{stringLiteral.Value}'";
+                                result += $"{Quote}{stringLiteral.Value}{Quote}";
                             }
                             else if (parameter is IntegerLiteral integerLiteral) {
                                 result += $"{integerLiteral.Value}";
@@ -3000,7 +3016,7 @@ namespace SQLParser.Translators {
                         parameters += $"{integerLiteral.Value}";
                     } 
                     else if (parameter is StringLiteral stringLiteral) {
-                        parameters += $"'{stringLiteral.Value}'";
+                        parameters += $"{Quote}{stringLiteral.Value}{Quote}";
                     } 
                     else if (parameter is NumericLiteral numericLiteral) {
                         parameters = numericLiteral.Value;
