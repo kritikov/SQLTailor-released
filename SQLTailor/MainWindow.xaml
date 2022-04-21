@@ -293,7 +293,7 @@
 
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock Text="Fluent script" ToolTip="C# code to create the query with libraries as the SqlOM. This format can be fully altered by code."/>
+                    <TextBlock Text="fluent script" ToolTip="C# code to create the query with libraries as the SqlOM. This format can be fully altered by code."/>
                 </TabItem.Header>
 
                 <Grid>
