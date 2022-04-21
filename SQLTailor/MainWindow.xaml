@@ -8,6 +8,11 @@
         mc:Ignorable="d"
         Title="SQL Tailor" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA" Loaded="Window_Loaded">
 
+    <Window.Resources>
+        <Classes:DatabaseTypeToInt x:Key="DatabaseTypeToInt" />
+        <Classes:FluentSQLTypeToInt x:Key="FluentSQLTypeToInt" />
+    </Window.Resources>
+
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <StatusBar.ItemsPanel>
@@ -189,13 +194,13 @@
 
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock Text="Base Translation" ToolTip="General SQL format created by the BaseTranslator class. This format can be fully altered by code."/>
+                    <TextBlock Text="SQL script" ToolTip="SQL format created by the BaseTranslator and its descendant classes as MSSQLTranslator or MySQLTranslator. This format can be fully altered by code."/>
                 </TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"/>
                         <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                        <ColumnDefinition Width="3*" MaxWidth="400"/>
                     </Grid.ColumnDefinitions>
 
                     <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True"  
@@ -212,6 +217,26 @@
                         <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
+                            <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SQL version" ToolTip="Then version of the script to be produced"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left"
+                                               ToolTip="Then version of the script to be produced" SelectedIndex="{Binding DatabaseVersion, Converter={StaticResource DatabaseTypeToInt}, Mode=TwoWay}">
+                                        <ComboBoxItem Tag="0">unspecified</ComboBoxItem>
+                                        <ComboBoxItem Tag="1">MS SQL</ComboBoxItem>
+                                        <ComboBoxItem Tag="2">MySQL</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                            </GroupBox>
                             <GroupBox Header="Format options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                 <Grid Style="{DynamicResource CriteriaGrid}">
                                     <Grid.ColumnDefinitions>
@@ -245,8 +270,8 @@
                                                         <ColumnDefinition Width="1*"/>
                                                         <ColumnDefinition Width="2*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding Key, Mode=OneWay}"/>
-                                                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"/>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Key, Mode=OneWay}" HorizontalAlignment="Right" Padding="3, 3, 5, 3"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}" Width="150" HorizontalAlignment="Left"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
@@ -268,7 +293,7 @@
 
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock Text="SqlOM" ToolTip="C# code to create the query with SqlOM format. This format can be fully altered by code."/>
+                    <TextBlock Text="fluent script" ToolTip="C# code to create the query with libraries as the SqlOM. This format can be fully altered by code."/>
                 </TabItem.Header>
 
                 <Grid>
@@ -292,6 +317,25 @@
                         <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="SqlOMTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
+                            
+                            <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <Grid Style="{DynamicResource CriteriaGrid}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Script version" ToolTip="Then version of the script to be produced"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Width="120" HorizontalAlignment="Left"
+                                               ToolTip="Then version of the script to be produced" SelectedIndex="{Binding FluentSQLVersion, Converter={StaticResource FluentSQLTypeToInt}, Mode=TwoWay}">
+                                        <ComboBoxItem Tag="0">SqlOM</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                            </GroupBox>
                             
                             <GroupBox Header="Format options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                 <Grid Style="{DynamicResource CriteriaGrid}">
@@ -404,7 +448,7 @@
                     <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about the SQL Tailor"/>
                     <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="version: v1.0.2 beta" />
+                            <TextBlock Text="version: v1.0.3 beta" />
                             <TextBlock Text="SQL Tailor is an open source parser that formats SQL queries. It is built in WPF and C# and convert queries in various versions of SQL or in scripts that produce SQL, such as the SqlOM library." />
                             <TextBlock Text="It uses the Microsoft ScriptDOM library to parse the original query and then provides the translators who compose the resulting tokens in the desired versions." />
                             <TextBlock Text="A developer who wants a new variant of SQL can build a new translator without having to start from scratch. He may also use only the SQLParser that does the parsing instead of the entire application." />

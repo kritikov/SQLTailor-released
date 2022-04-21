@@ -258,6 +258,23 @@ namespace SQLTailor {
 
         //public SqlEngineType SqlEngineType { get; set; }
 
+        private DatabaseType databaseVersion = DatabaseType.unspecified;
+        public DatabaseType DatabaseVersion {
+            get => databaseVersion;
+            set {
+                databaseVersion = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DatabaseVersion"));
+            }
+        }
+
+        private FluentSQLType fluentSQLVersion = FluentSQLType.SqlOM;
+        public FluentSQLType FluentSQLVersion {
+            get => fluentSQLVersion;
+            set {
+                fluentSQLVersion = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FluentSQLVersion"));
+            }
+        }
 
         public class SQLError : INotifyPropertyChanged {
 
@@ -412,7 +429,7 @@ namespace SQLTailor {
             }
         }
 
-        private bool poVariation = false;
+        private bool poVariation = true;
         public bool PoVariation {
             get => poVariation;
 
@@ -501,7 +518,15 @@ namespace SQLTailor {
                 Parser.Process();
 
                 MicrosoftTSQLDocument = Parser.GetTSQLAsFlowDocument();
-                BaseTranslationDocument = Parser.GetBaseTranslationAsFlowDocument();
+
+                if (DatabaseVersion == DatabaseType.MSSQL) {
+                    BaseTranslationDocument = Parser.GetMSSQLTranslationAsFlowDocument();
+                } else if (DatabaseVersion == DatabaseType.MySQL) {
+                    BaseTranslationDocument = Parser.GetMySQLTranslationAsFlowDocument();
+                } else {
+                    BaseTranslationDocument = Parser.GetBaseTranslationAsFlowDocument();
+                }
+                
 
                 if (Parser.Options.UpdateQueryParametersList) {
                     QueryParameters.Clear();
@@ -641,7 +666,7 @@ FROM table1
 WHERE table1.a = 3";
             Queries.Add(new FixedQuery("select with case", query));
 
-            query = $@"SELECT a
+            query = $@"SELECT LEN(a)
 FROM table1
 WHERE ( a in (select b from table2) and (g < f) ) or c not between 1 and 5";
             Queries.Add(new FixedQuery("select with comlex where", query));
