@@ -29,6 +29,7 @@ namespace SQLParser.Translators {
         public virtual string InsertQueryText { get; set; } = "InsertQuery";
         public virtual string UpdateQueryText { get; set; } = "UpdateQuery";
         public virtual string DeleteQueryText { get; set; } = "DeleteQuery";
+        public virtual string RendererText { get; set; } = "new SqlServerRenderer()";
 
         private List<ReservedWord> reservedWords = new List<ReservedWord>() {
             new ReservedWord("new", Colors.Blue, FontWeights.Normal),
@@ -2356,10 +2357,10 @@ namespace SQLParser.Translators {
                 }
 
                 if (currentData.Not == false) {
-                    currentData.TermString = $"WhereTerm.CreateExists(new SqlServerRenderer().RenderSelect({childData.VariableName}))";
+                    currentData.TermString = $"WhereTerm.CreateExists({RendererText}.RenderSelect({childData.VariableName}))";
                 }
                 else {
-                    currentData.TermString = $"WhereTerm.CreateNotExists(new SqlServerRenderer().RenderSelect({childData.VariableName}))";
+                    currentData.TermString = $"WhereTerm.CreateNotExists({RendererText}.RenderSelect({childData.VariableName}))";
                 }
             }
             catch {

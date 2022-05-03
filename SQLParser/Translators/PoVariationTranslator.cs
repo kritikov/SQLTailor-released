@@ -10,6 +10,7 @@ namespace SQLParser.Translators {
         public override string InsertQueryText { get => base.InsertQueryText; set => base.InsertQueryText = value; }
         public override string UpdateQueryText { get => base.UpdateQueryText; set => base.UpdateQueryText = value; }
         public override string DeleteQueryText { get => base.DeleteQueryText; set => base.DeleteQueryText = value; }
+        public override string RendererText { get => base.RendererText; set => base.RendererText = value; }
 
         #endregion
 
@@ -23,6 +24,7 @@ namespace SQLParser.Translators {
             InsertQueryText = "poInsertQuery";
             UpdateQueryText = "poUpdateQuery";
             DeleteQueryText = "poDeleteQuery";
+            RendererText = "AppContext.Db.SqlOmRender";
         }
 
         public PoVariationTranslator(TranslateOptions formatOptions) {
@@ -32,6 +34,7 @@ namespace SQLParser.Translators {
             InsertQueryText = "poInsertQuery";
             UpdateQueryText = "poUpdateQuery";
             DeleteQueryText = "poDeleteQuery";
+            RendererText = "AppContext.Db.SqlOmRender";
 
             this.FormatOptions = formatOptions;
         }
