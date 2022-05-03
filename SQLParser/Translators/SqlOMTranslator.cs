@@ -2335,26 +2335,31 @@ namespace SQLParser.Translators {
         public virtual string ExistsPredicateParse(ExistsPredicate expression, object data = null) {
             string result = "";
             Informations currentData = (Informations)data;
+            Informations childData = currentData.CopyLite(); ;
 
             try {
                 if (expression.Subquery is ScalarSubquery scalarSubquery) {
-                    BaseTranslator translator = new BaseTranslator();
-                    translator.Data.Level = FormatOptions.UseIndentation ? currentData.Level + 1 : 1;
-                    translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+                    //BaseTranslator translator = new BaseTranslator();
+                    //translator.Data.Level = FormatOptions.UseIndentation ? currentData.Level + 1 : 1;
+                    //translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                    string subQuery = translator.QueryExpressionParse(scalarSubquery.QueryExpression);
-                    currentData.VariableName = $"query{Informations.NextSubqueryIndex()}";
-                    result += $"{translator.Indentation(translator.Data.Level - 1)}string {currentData.VariableName} = $@\"{subQuery}\";\n";
+                    //string subQuery = translator.QueryExpressionParse(scalarSubquery.QueryExpression);
+                    //currentData.VariableName = $"query{Informations.NextSubqueryIndex()}";
+                    //result += $"{translator.Indentation(translator.Data.Level - 1)}string {currentData.VariableName} = $@\"{subQuery}\";\n";
+
+                    childData = currentData.CopyLite();
+                    childData.BelongsTo = currentData;
+                    result += QueryExpressionParse(scalarSubquery.QueryExpression, childData);
                 }
                 else {
                     currentData.VariableName = $"~UNKNOWN ScalarSubquery~";
                 }
 
                 if (currentData.Not == false) {
-                    currentData.TermString = $"WhereTerm.CreateExists({currentData.VariableName})";
+                    currentData.TermString = $"WhereTerm.CreateExists(new SqlServerRenderer().RenderSelect({childData.VariableName}))";
                 }
                 else {
-                    currentData.TermString = $"WhereTerm.CreateNotExists({currentData.VariableName})";
+                    currentData.TermString = $"WhereTerm.CreateNotExists(new SqlServerRenderer().RenderSelect({childData.VariableName}))";
                 }
             }
             catch {
