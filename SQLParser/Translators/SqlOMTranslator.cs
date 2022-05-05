@@ -1317,14 +1317,16 @@ namespace SQLParser.Translators {
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
                         }
                         else if (expression is BinaryExpression binaryExpression) {
+                            string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
+
                             Informations childData = currentData.CopyLite();
                             childData.BelongsTo = currentData;
+                            childData.Alias = alias;
 
                             BinaryExpressionParse(binaryExpression, childData);
 
-                            string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
 
-                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.SqlExpressionString}, \"{alias}\");\n";
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
                         }
                         else {
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(~UNKNOWN ScalarExpression~);\n";
@@ -1591,6 +1593,7 @@ namespace SQLParser.Translators {
                 string subQuery = translator.BinaryExpressionParse(expression);
 
                 currentData.SqlExpressionString = $"SqlExpression.Raw(\"{subQuery}\")";
+                currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
             }
             catch {
                 currentData.SqlExpressionString = "~BinaryExpression ERROR~";
