@@ -1050,11 +1050,12 @@ ADD Email varchar(255),
 
             TextRange range = new TextRange(document.ContentStart, document.ContentEnd);
 
-            using (Stream stream = new MemoryStream()) {
-                range.Save(stream, DataFormats.Rtf);
-                Clipboard.SetData(DataFormats.Rtf, Encoding.UTF8.GetString((stream as MemoryStream).ToArray()));
-            }
-            Message = "query copied";
+            Copy(range.Text);
+
+            //using (Stream stream = new MemoryStream()) {
+            //    range.Save(stream, DataFormats.Rtf);
+            //    Clipboard.SetData(DataFormats.Rtf, Encoding.UTF8.GetString((stream as MemoryStream).ToArray()));
+            //}
         }
 
         #endregion
