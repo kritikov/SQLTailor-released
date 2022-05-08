@@ -411,21 +411,21 @@ namespace SQLTailor {
         }
 
 
-        private FlowDocument baseTranslationDocument;
-        public FlowDocument BaseTranslationDocument {
-            get => baseTranslationDocument;
+        private FlowDocument sqlScriptDocument;
+        public FlowDocument SqlScriptDocument {
+            get => sqlScriptDocument;
             set {
-                baseTranslationDocument = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BaseTranslationDocument"));
+                sqlScriptDocument = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SqlScriptDocument"));
             }
         }
 
-        private FlowDocument sqlOMDocument;
-        public FlowDocument SqlOMDocument {
-            get => sqlOMDocument;
+        private FlowDocument fluentScriptDocument;
+        public FlowDocument FluentScriptDocument {
+            get => fluentScriptDocument;
             set {
-                sqlOMDocument = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SqlOMDocument"));
+                fluentScriptDocument = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FluentScriptDocument"));
             }
         }
 
@@ -496,6 +496,12 @@ namespace SQLTailor {
             SQLSourceDocument = GetFlowDocument("");
         }
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            // close all open windows when the applications is closing
+            Application.Current.Shutdown();
+        }
+
         private void AnalyzeSql(object sender, RoutedEventArgs e) {
 
             //if (string.IsNullOrWhiteSpace(sqlSource)) {
@@ -520,11 +526,11 @@ namespace SQLTailor {
                 MicrosoftTSQLDocument = Parser.GetTSQLAsFlowDocument();
 
                 if (DatabaseVersion == DatabaseType.MSSQL) {
-                    BaseTranslationDocument = Parser.GetMSSQLTranslationAsFlowDocument();
+                    SqlScriptDocument = Parser.GetMSSQLTranslationAsFlowDocument();
                 } else if (DatabaseVersion == DatabaseType.MySQL) {
-                    BaseTranslationDocument = Parser.GetMySQLTranslationAsFlowDocument();
+                    SqlScriptDocument = Parser.GetMySQLTranslationAsFlowDocument();
                 } else {
-                    BaseTranslationDocument = Parser.GetBaseTranslationAsFlowDocument();
+                    SqlScriptDocument = Parser.GetBaseTranslationAsFlowDocument();
                 }
                 
 
@@ -536,14 +542,14 @@ namespace SQLTailor {
                 }
 
                 if (PoVariation) {
-                    SqlOMDocument = Parser.GetPoVariationAsFlowDocument();
+                    FluentScriptDocument = Parser.GetPoVariationAsFlowDocument();
                 } else {
-                    SqlOMDocument = Parser.GetSqlOMAsFlowDocument();
+                    FluentScriptDocument = Parser.GetSqlOMAsFlowDocument();
                 }
 
                 MicrosoftTSQLDocument.PageWidth = documentWidth;
-                BaseTranslationDocument.PageWidth = documentWidth;
-                SqlOMDocument.PageWidth = documentWidth;
+                SqlScriptDocument.PageWidth = documentWidth;
+                FluentScriptDocument.PageWidth = documentWidth;
 
                 FillErrorsList(Parser.Errors);
                 FillTokensList(Parser.GetTokensList());
@@ -621,13 +627,30 @@ namespace SQLTailor {
         }
 
         private void CopyBaseTranslation(object sender, RoutedEventArgs e) {
-            Copy(baseTranslationDocument);
+            Copy(sqlScriptDocument);
         }
 
         private void CopySqlOMTranslation(object sender, RoutedEventArgs e) {
-            Copy(SqlOMDocument);
+            Copy(FluentScriptDocument);
         }
 
+        private void MicrosoftTSQLDocumentFloat_Click(object sender, RoutedEventArgs e)
+        {
+            FlowDocument document = CloneDocument(microsoftTSQLDocument);
+            FloatDocument(document, "Microsoft TSQL document");
+        }
+
+        private void BaseDocumentFloat_Click(object sender, RoutedEventArgs e)
+        {
+            FlowDocument document = CloneDocument(sqlScriptDocument);
+            FloatDocument(document, "SQL script");
+        }
+
+        private void SqlOMTranslationDocumentFloat_Click(object sender, RoutedEventArgs e)
+        {
+            FlowDocument document = CloneDocument(FluentScriptDocument);
+            FloatDocument(document, "fluent script");
+        }
         #endregion
 
 
@@ -1050,15 +1073,53 @@ ADD Email varchar(255),
 
             TextRange range = new TextRange(document.ContentStart, document.ContentEnd);
 
-            using (Stream stream = new MemoryStream()) {
-                range.Save(stream, DataFormats.Rtf);
-                Clipboard.SetData(DataFormats.Rtf, Encoding.UTF8.GetString((stream as MemoryStream).ToArray()));
-            }
-            Message = "query copied";
+            Copy(range.Text);
+
+            //using (Stream stream = new MemoryStream()) {
+            //    range.Save(stream, DataFormats.Rtf);
+            //    Clipboard.SetData(DataFormats.Rtf, Encoding.UTF8.GetString((stream as MemoryStream).ToArray()));
+            //}
         }
+
+        /// <summary>
+        /// create a clone of a flow document
+        /// </summary>
+        /// <param name="document"></param>
+        /// <returns>a FlowDocument</returns>
+        public FlowDocument CloneDocument(FlowDocument document)
+        {
+            if (document == null)
+            {
+                document = new FlowDocument();
+            }
+
+            TextRange range = new TextRange(document.ContentStart, document.ContentEnd);
+            MemoryStream stream = new MemoryStream();
+            System.Windows.Markup.XamlWriter.Save(range, stream);
+            range.Save(stream, DataFormats.XamlPackage);
+
+            FlowDocument clone = new FlowDocument();
+            TextRange range2 = new TextRange(clone.ContentEnd, clone.ContentEnd);
+            range2.Load(stream, DataFormats.XamlPackage);
+
+            return clone;
+        }
+
+        /// <summary>
+        /// display a FlowDocument in a new window
+        /// </summary>
+        /// <param name="document"></param>
+        private void FloatDocument(FlowDocument document, string title)
+        {
+            FloatDocument window = new FloatDocument(document);
+
+            window.Title = title;
+            window.Show();
+        }
+
 
         #endregion
 
- 
+        
     }
 }

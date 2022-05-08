@@ -29,6 +29,7 @@ namespace SQLParser.Translators {
         public virtual string InsertQueryText { get; set; } = "InsertQuery";
         public virtual string UpdateQueryText { get; set; } = "UpdateQuery";
         public virtual string DeleteQueryText { get; set; } = "DeleteQuery";
+        public virtual string RendererText { get; set; } = "new SqlServerRenderer()";
 
         private List<ReservedWord> reservedWords = new List<ReservedWord>() {
             new ReservedWord("new", Colors.Blue, FontWeights.Normal),
@@ -1316,14 +1317,16 @@ namespace SQLParser.Translators {
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
                         }
                         else if (expression is BinaryExpression binaryExpression) {
+                            string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
+
                             Informations childData = currentData.CopyLite();
                             childData.BelongsTo = currentData;
+                            childData.Alias = alias;
 
                             BinaryExpressionParse(binaryExpression, childData);
 
-                            string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
 
-                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.SqlExpressionString}, \"{alias}\");\n";
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
                         }
                         else {
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(~UNKNOWN ScalarExpression~);\n";
@@ -1371,7 +1374,7 @@ namespace SQLParser.Translators {
                 BaseTranslator translator = new BaseTranslator();
                 translator.Data.Level = currentData.Level + 1;
                 translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
-                currentData.TermString = $"new SelectColumn(SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\"), \"{currentData.Alias}\")";
+                currentData.TermString = $"new SelectColumn(SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\"), \"{currentData.Alias}\")";
 
                 if (function.ToLower() == "sum".ToLower()) {
                     functionEnum = $"SqlAggregationFunction.Sum";
@@ -1412,7 +1415,7 @@ namespace SQLParser.Translators {
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.CastCallParse(castCall)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.CastCallParse(castCall)}\")";
                     } 
                     else if (parameter is ColumnReferenceExpression columnReferenceExpression2) {
                         Informations childData = currentData.CopyLite();
@@ -1430,14 +1433,14 @@ namespace SQLParser.Translators {
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString = $"SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is ParenthesisExpression parenthesisExpression) {
                         translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\")";
                         currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
                     } 
                     else if (parameter is IntegerLiteral integerLiteral) {
@@ -1445,14 +1448,14 @@ namespace SQLParser.Translators {
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is StringLiteral stringLiteral) {
                         translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\")";
                         currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
                     } 
                     else if (parameter is NumericLiteral numericLiteral) {
@@ -1460,28 +1463,28 @@ namespace SQLParser.Translators {
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is NullLiteral nullLiteral) {
                         translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is BinaryExpression binaryExpression) {
                         translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.FunctionCallParse(expression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.FunctionCallParse(expression)}\")";
                     } 
                     else if (parameter is UnaryExpression unaryExpression) {
                         translator = new BaseTranslator();
                         translator.Data.Level = currentData.Level + 1;
                         translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                        currentData.SqlExpressionString += $"SqlExpression.Raw(\"{translator.UnaryExpressionParse(unaryExpression)}\")";
+                        currentData.SqlExpressionString += $"SqlExpression.Raw(@\"{translator.UnaryExpressionParse(unaryExpression)}\")";
                     } 
                     else {
                         result += $"(~UNKNOWN parameter~)";
@@ -1589,7 +1592,8 @@ namespace SQLParser.Translators {
 
                 string subQuery = translator.BinaryExpressionParse(expression);
 
-                currentData.SqlExpressionString = $"SqlExpression.Raw(\"{subQuery}\")";
+                currentData.SqlExpressionString = $"SqlExpression.Raw(@\"{subQuery}\")";
+                currentData.TermString = $"new SelectColumn({currentData.SqlExpressionString}, \"{currentData.Alias}\")";
             }
             catch {
                 currentData.SqlExpressionString = "~BinaryExpression ERROR~";
@@ -2335,26 +2339,31 @@ namespace SQLParser.Translators {
         public virtual string ExistsPredicateParse(ExistsPredicate expression, object data = null) {
             string result = "";
             Informations currentData = (Informations)data;
+            Informations childData = currentData.CopyLite(); ;
 
             try {
                 if (expression.Subquery is ScalarSubquery scalarSubquery) {
-                    BaseTranslator translator = new BaseTranslator();
-                    translator.Data.Level = FormatOptions.UseIndentation ? currentData.Level + 1 : 1;
-                    translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
+                    //BaseTranslator translator = new BaseTranslator();
+                    //translator.Data.Level = FormatOptions.UseIndentation ? currentData.Level + 1 : 1;
+                    //translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                    string subQuery = translator.QueryExpressionParse(scalarSubquery.QueryExpression);
-                    currentData.VariableName = $"query{Informations.NextSubqueryIndex()}";
-                    result += $"{translator.Indentation(translator.Data.Level - 1)}string {currentData.VariableName} = $@\"{subQuery}\";\n";
+                    //string subQuery = translator.QueryExpressionParse(scalarSubquery.QueryExpression);
+                    //currentData.VariableName = $"query{Informations.NextSubqueryIndex()}";
+                    //result += $"{translator.Indentation(translator.Data.Level - 1)}string {currentData.VariableName} = $@\"{subQuery}\";\n";
+
+                    childData = currentData.CopyLite();
+                    childData.BelongsTo = currentData;
+                    result += QueryExpressionParse(scalarSubquery.QueryExpression, childData);
                 }
                 else {
                     currentData.VariableName = $"~UNKNOWN ScalarSubquery~";
                 }
 
                 if (currentData.Not == false) {
-                    currentData.TermString = $"WhereTerm.CreateExists({currentData.VariableName})";
+                    currentData.TermString = $"WhereTerm.CreateExists({RendererText}.RenderSelect({childData.VariableName}))";
                 }
                 else {
-                    currentData.TermString = $"WhereTerm.CreateNotExists({currentData.VariableName})";
+                    currentData.TermString = $"WhereTerm.CreateNotExists({RendererText}.RenderSelect({childData.VariableName}))";
                 }
             }
             catch {
@@ -2848,7 +2857,7 @@ namespace SQLParser.Translators {
                     translator.Data.Level = currentData.Level + 1;
                     translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
 
-                    sqlExpression = $"SqlExpression.Raw(\"{translator.BinaryExpressionParse(binaryExpression)}\")";
+                    sqlExpression = $"SqlExpression.Raw(@\"{translator.BinaryExpressionParse(binaryExpression)}\")";
                 } 
                 else {
                     sqlExpression = "~UNKNOWN ScalarExpression~";
@@ -3033,7 +3042,7 @@ namespace SQLParser.Translators {
                 BaseTranslator translator = new BaseTranslator();
                 translator.Data.Level = currentData.Level + 1;
                 translator.FormatOptions.IndentationSize = FormatOptions.IndentationSize;
-                currentData.SqlExpressionString = $"SqlExpression.Raw(\"{translator.CoalesceExpressionParse(expression)}\")";
+                currentData.SqlExpressionString = $"SqlExpression.Raw(@\"{translator.CoalesceExpressionParse(expression)}\")";
             } catch {
                 currentData.SqlExpressionString = "~CoalesceExpression ERROR~";
             }

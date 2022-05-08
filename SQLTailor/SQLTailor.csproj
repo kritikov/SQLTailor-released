@@ -66,6 +66,9 @@
     <Compile Include="Views\BaseTranslatorInformationWindow.xaml.cs">
       <DependentUpon>BaseTranslatorInformationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FloatDocument.xaml.cs">
+      <DependentUpon>FloatDocument.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SqlOMTranslatorInformationWindow.xaml.cs">
       <DependentUpon>SqlOMTranslatorInformationWindow.xaml</DependentUpon>
     </Compile>
@@ -95,6 +98,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BaseTranslatorInformationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FloatDocument.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
