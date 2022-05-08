@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SQLTailor"
         xmlns:Classes="clr-namespace:SQLTailor.Classes"
         mc:Ignorable="d"
-        Title="SQL Tailor" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA" Loaded="Window_Loaded">
+        Title="SQL Tailor" Height="700" Width="1024" WindowStartupLocation="CenterScreen" Background="#FFEAEAEA" Loaded="Window_Loaded" Closed="Window_Closed">
 
     <Window.Resources>
         <Classes:DatabaseTypeToInt x:Key="DatabaseTypeToInt" />
@@ -99,9 +99,13 @@
                         <ColumnDefinition Width="3*" MaxWidth="400"/>
                     </Grid.ColumnDefinitions>
 
-                    <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Classes:BindableRichTextBox IsReadOnly="True" 
                                                  Document="{Binding MicrosoftTSQLDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+
+                        <Button Style="{StaticResource FloatDocument}" Content="*" Click="MicrosoftTSQLDocumentFloat_Click"/>
+                    </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
@@ -203,9 +207,13 @@
                         <ColumnDefinition Width="3*" MaxWidth="400"/>
                     </Grid.ColumnDefinitions>
 
-                    <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True"  
-                                                 Document="{Binding BaseTranslationDocument, Mode=OneWay}"
-                                                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Classes:BindableRichTextBox IsReadOnly="True"
+                                                     Document="{Binding SqlScriptDocument, Mode=OneWay}"
+                                                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+
+                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="BaseDocumentFloat_Click"/>
+                    </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
@@ -303,9 +311,13 @@
                         <ColumnDefinition Width="3*" MaxWidth="300"/>
                     </Grid.ColumnDefinitions>
 
-                    <Classes:BindableRichTextBox Grid.Column="0" Grid.Row="1" IsReadOnly="True" 
-                                                 Document="{Binding SqlOMDocument, Mode=OneWay}"
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Classes:BindableRichTextBox  IsReadOnly="True" 
+                                                 Document="{Binding FluentScriptDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+
+                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="SqlOMTranslationDocumentFloat_Click"/>
+                    </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 

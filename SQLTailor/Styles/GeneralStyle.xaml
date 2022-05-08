@@ -14,7 +14,7 @@
                 <Setter Property="FontSize" Value="13"/>
             </Style>
         </Style.Resources>
-        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Padding" Value="10, 15, 10, 10"/>
     </Style>
 
     <!--  buttons  -->
@@ -31,7 +31,17 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Background" Value="{StaticResource ButtonGradients}"/>
     </Style>
-    
+
+    <Style TargetType="{x:Type Button}" x:Key="FloatDocument">
+        <Setter Property="Padding" Value="7, 3, 6, 3" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="FontSize" Value="6"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Background" Value="{StaticResource ButtonGradients}"/>
+    </Style>
+
 
     <!-- Status bar -->
     <Style TargetType="{x:Type StatusBar}">
