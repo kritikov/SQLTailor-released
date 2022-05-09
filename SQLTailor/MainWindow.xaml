@@ -104,7 +104,7 @@
                                                  Document="{Binding MicrosoftTSQLDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button Style="{StaticResource FloatDocument}" Content="*" Click="MicrosoftTSQLDocumentFloat_Click"/>
+                        <Button Style="{StaticResource FloatDocument}" Content="*" Click="MicrosoftTSQLDocumentFloat_Click" ToolTip="display the script in a new windp"/>
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -212,7 +212,7 @@
                                                      Document="{Binding SqlScriptDocument, Mode=OneWay}"
                                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="BaseDocumentFloat_Click"/>
+                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="BaseDocumentFloat_Click" ToolTip="display the script in a new window"/>
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -316,7 +316,7 @@
                                                  Document="{Binding FluentScriptDocument, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="SqlOMTranslationDocumentFloat_Click"/>
+                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="SqlOMTranslationDocumentFloat_Click" ToolTip="display the script in a new window"/>
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
