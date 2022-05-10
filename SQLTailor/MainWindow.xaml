@@ -101,7 +101,7 @@
 
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Classes:BindableRichTextBox IsReadOnly="True" 
-                                                 Document="{Binding MicrosoftTSQLDocument, Mode=OneWay}"
+                                                 Document="{Binding MicrosoftTSQLViewer.Document, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                         <Button Style="{StaticResource FloatDocument}" Content="*" Click="MicrosoftTSQLDocumentFloat_Click" ToolTip="display the script in a new windp"/>
@@ -209,7 +209,7 @@
 
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Classes:BindableRichTextBox IsReadOnly="True"
-                                                     Document="{Binding SqlScriptDocument, Mode=OneWay}"
+                                                     Document="{Binding SqlScriptViewer.Document, Mode=OneWay}"
                                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                         <Button  Style="{StaticResource FloatDocument}" Content="*" Click="BaseDocumentFloat_Click" ToolTip="display the script in a new window"/>
@@ -313,7 +313,7 @@
 
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Classes:BindableRichTextBox  IsReadOnly="True" 
-                                                 Document="{Binding FluentScriptDocument, Mode=OneWay}"
+                                                 Document="{Binding FluentScriptViewer.Document, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                         <Button  Style="{StaticResource FloatDocument}" Content="*" Click="SqlOMTranslationDocumentFloat_Click" ToolTip="display the script in a new window"/>

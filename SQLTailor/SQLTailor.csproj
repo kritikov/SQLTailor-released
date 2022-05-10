@@ -62,6 +62,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\Converters.cs" />
+    <Compile Include="Classes\ResultsViewer.cs" />
     <Compile Include="Classes\Various.cs" />
     <Compile Include="Views\BaseTranslatorInformationWindow.xaml.cs">
       <DependentUpon>BaseTranslatorInformationWindow.xaml</DependentUpon>

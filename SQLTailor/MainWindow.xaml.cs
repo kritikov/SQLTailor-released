@@ -401,33 +401,9 @@ namespace SQLTailor {
             }
         }
 
-        private FlowDocument microsoftTSQLDocument;
-        public FlowDocument MicrosoftTSQLDocument {
-            get => microsoftTSQLDocument;
-            set {
-                microsoftTSQLDocument = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MicrosoftTSQLDocument"));
-            }
-        }
-
-
-        private FlowDocument sqlScriptDocument;
-        public FlowDocument SqlScriptDocument {
-            get => sqlScriptDocument;
-            set {
-                sqlScriptDocument = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SqlScriptDocument"));
-            }
-        }
-
-        private FlowDocument fluentScriptDocument;
-        public FlowDocument FluentScriptDocument {
-            get => fluentScriptDocument;
-            set {
-                fluentScriptDocument = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FluentScriptDocument"));
-            }
-        }
+        public ResultsViewer MicrosoftTSQLViewer { get; set; } = new ResultsViewer();
+        public ResultsViewer SqlScriptViewer { get; set; } = new ResultsViewer();
+        public ResultsViewer FluentScriptViewer { get; set; } = new ResultsViewer();
 
         private bool poVariation = true;
         public bool PoVariation {
@@ -494,6 +470,10 @@ namespace SQLTailor {
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             SQLSourceDocument = GetFlowDocument("");
+
+            MicrosoftTSQLViewer.Document.PageWidth = documentWidth;
+            SqlScriptViewer.Document.PageWidth = documentWidth;
+            FluentScriptViewer.Document.PageWidth = documentWidth;
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -523,14 +503,14 @@ namespace SQLTailor {
                 Parser.SQLSource = sqlSource;
                 Parser.Process();
 
-                MicrosoftTSQLDocument = Parser.GetTSQLAsFlowDocument();
+                MicrosoftTSQLViewer.Document = Parser.GetTSQLAsFlowDocument();
 
                 if (DatabaseVersion == DatabaseType.MSSQL) {
-                    SqlScriptDocument = Parser.GetMSSQLTranslationAsFlowDocument();
+                    SqlScriptViewer.Document = Parser.GetMSSQLTranslationAsFlowDocument();
                 } else if (DatabaseVersion == DatabaseType.MySQL) {
-                    SqlScriptDocument = Parser.GetMySQLTranslationAsFlowDocument();
+                    SqlScriptViewer.Document = Parser.GetMySQLTranslationAsFlowDocument();
                 } else {
-                    SqlScriptDocument = Parser.GetBaseTranslationAsFlowDocument();
+                    SqlScriptViewer.Document = Parser.GetBaseTranslationAsFlowDocument();
                 }
                 
 
@@ -542,14 +522,12 @@ namespace SQLTailor {
                 }
 
                 if (PoVariation) {
-                    FluentScriptDocument = Parser.GetPoVariationAsFlowDocument();
+                    FluentScriptViewer.Document = Parser.GetPoVariationAsFlowDocument();
                 } else {
-                    FluentScriptDocument = Parser.GetSqlOMAsFlowDocument();
+                    FluentScriptViewer.Document = Parser.GetSqlOMAsFlowDocument();
                 }
 
-                MicrosoftTSQLDocument.PageWidth = documentWidth;
-                SqlScriptDocument.PageWidth = documentWidth;
-                FluentScriptDocument.PageWidth = documentWidth;
+                
 
                 FillErrorsList(Parser.Errors);
                 FillTokensList(Parser.GetTokensList());
@@ -616,41 +594,38 @@ namespace SQLTailor {
         }
 
         private void CopyFromEditor(object sender, RoutedEventArgs e) {
-
             FlowDocument document = SQLSourceEditor.Document;
             string source = new TextRange(document.ContentStart, document.ContentEnd).Text;
-            Copy(source);
+            Clipboard.SetText(source);
         }
 
         private void CopyMicrosoftTSQL(object sender, RoutedEventArgs e) {
-            Copy(microsoftTSQLDocument);
+            MicrosoftTSQLViewer.CopyDocument();
         }
 
         private void CopyBaseTranslation(object sender, RoutedEventArgs e) {
-            Copy(sqlScriptDocument);
+            SqlScriptViewer.CopyDocument();
         }
 
         private void CopySqlOMTranslation(object sender, RoutedEventArgs e) {
-            Copy(FluentScriptDocument);
+            FluentScriptViewer.CopyDocument();
         }
 
         private void MicrosoftTSQLDocumentFloat_Click(object sender, RoutedEventArgs e)
         {
-            FlowDocument document = CloneDocument(microsoftTSQLDocument);
-            FloatDocument(document, "Microsoft TSQL document");
+            MicrosoftTSQLViewer.FloatDocument("Microsoft TSQL document");
         }
 
         private void BaseDocumentFloat_Click(object sender, RoutedEventArgs e)
         {
-            FlowDocument document = CloneDocument(sqlScriptDocument);
-            FloatDocument(document, "SQL script");
+            SqlScriptViewer.FloatDocument("SQL script");
         }
 
         private void SqlOMTranslationDocumentFloat_Click(object sender, RoutedEventArgs e)
         {
-            FlowDocument document = CloneDocument(FluentScriptDocument);
-            FloatDocument(document, "fluent script");
+            SqlScriptViewer.FloatDocument("fluent script");
         }
+
         #endregion
 
 
@@ -1050,71 +1025,6 @@ ADD Email varchar(255),
             foreach (QueryParameter parameter in QueryParameters) {
                 Parser.Options.QueryParameters.Add(parameter.Key, parameter.Value);
             }
-        }
-
-        /// <summary>
-        /// copy a text in the clipboard
-        /// </summary>
-        /// <param name="text"></param>
-        private void Copy(string text) {
-            Clipboard.SetText(text);
-            Message = "query copied";
-        }
-
-        /// <summary>
-        /// copy a document flow in the clipboard
-        /// </summary>
-        /// <param name="document"></param>
-        private void Copy(FlowDocument document) {
-
-            if (document == null) {
-                document = new FlowDocument();
-            }
-
-            TextRange range = new TextRange(document.ContentStart, document.ContentEnd);
-
-            Copy(range.Text);
-
-            //using (Stream stream = new MemoryStream()) {
-            //    range.Save(stream, DataFormats.Rtf);
-            //    Clipboard.SetData(DataFormats.Rtf, Encoding.UTF8.GetString((stream as MemoryStream).ToArray()));
-            //}
-        }
-
-        /// <summary>
-        /// create a clone of a flow document
-        /// </summary>
-        /// <param name="document"></param>
-        /// <returns>a FlowDocument</returns>
-        public FlowDocument CloneDocument(FlowDocument document)
-        {
-            if (document == null)
-            {
-                document = new FlowDocument();
-            }
-
-            TextRange range = new TextRange(document.ContentStart, document.ContentEnd);
-            MemoryStream stream = new MemoryStream();
-            System.Windows.Markup.XamlWriter.Save(range, stream);
-            range.Save(stream, DataFormats.XamlPackage);
-
-            FlowDocument clone = new FlowDocument();
-            TextRange range2 = new TextRange(clone.ContentEnd, clone.ContentEnd);
-            range2.Load(stream, DataFormats.XamlPackage);
-
-            return clone;
-        }
-
-        /// <summary>
-        /// display a FlowDocument in a new window
-        /// </summary>
-        /// <param name="document"></param>
-        private void FloatDocument(FlowDocument document, string title)
-        {
-            FloatDocument window = new FloatDocument(document);
-
-            window.Title = title;
-            window.Show();
         }
 
 
