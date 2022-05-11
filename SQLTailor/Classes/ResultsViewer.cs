@@ -16,11 +16,14 @@ namespace SQLTailor.Classes {
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private double documentWidth = 3000;
+
         private FlowDocument document = new FlowDocument();
         public FlowDocument Document {
             get => document;
             set {
                 document = value;
+                document.PageWidth = documentWidth;
                 UpdateSubscribers();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Document"));
             }
@@ -60,6 +63,8 @@ namespace SQLTailor.Classes {
             FlowDocument clone = new FlowDocument();
             TextRange range2 = new TextRange(clone.ContentEnd, clone.ContentEnd);
             range2.Load(stream, DataFormats.XamlPackage);
+
+            clone.PageWidth = document.PageWidth;
 
             return clone;
         }

@@ -470,10 +470,7 @@ namespace SQLTailor {
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             SQLSourceDocument = GetFlowDocument("");
-
-            MicrosoftTSQLViewer.Document.PageWidth = documentWidth;
-            SqlScriptViewer.Document.PageWidth = documentWidth;
-            FluentScriptViewer.Document.PageWidth = documentWidth;
+            
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -527,7 +524,9 @@ namespace SQLTailor {
                     FluentScriptViewer.Document = Parser.GetSqlOMAsFlowDocument();
                 }
 
-                
+                //MicrosoftTSQLViewer.Document.PageWidth = documentWidth;
+                //SqlScriptViewer.Document.PageWidth = documentWidth;
+                //FluentScriptViewer.Document.PageWidth = documentWidth;
 
                 FillErrorsList(Parser.Errors);
                 FillTokensList(Parser.GetTokensList());
