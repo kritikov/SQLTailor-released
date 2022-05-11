@@ -64,8 +64,8 @@
     <Compile Include="Classes\Converters.cs" />
     <Compile Include="Classes\ResultsViewer.cs" />
     <Compile Include="Classes\Various.cs" />
-    <Compile Include="Views\BaseTranslatorInformationWindow.xaml.cs">
-      <DependentUpon>BaseTranslatorInformationWindow.xaml</DependentUpon>
+    <Compile Include="Views\SQLScriptTranslatorInformationWindow.xaml.cs">
+      <DependentUpon>SQLScriptTranslatorInformationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DocumentViewer.xaml.cs">
       <DependentUpon>DocumentViewer.xaml</DependentUpon>
@@ -98,7 +98,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\BaseTranslatorInformationWindow.xaml">
+    <Page Include="Views\SQLScriptTranslatorInformationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -524,10 +524,6 @@ namespace SQLTailor {
                     FluentScriptViewer.Document = Parser.GetSqlOMAsFlowDocument();
                 }
 
-                //MicrosoftTSQLViewer.Document.PageWidth = documentWidth;
-                //SqlScriptViewer.Document.PageWidth = documentWidth;
-                //FluentScriptViewer.Document.PageWidth = documentWidth;
-
                 FillErrorsList(Parser.Errors);
                 FillTokensList(Parser.GetTokensList());
 
@@ -569,9 +565,9 @@ namespace SQLTailor {
             if (window.ShowDialog() == true) { }
         }
 
-        private void BaseTranslator_PreviewMouseUp(object sender, MouseButtonEventArgs e) {
+        private void SQLScriptTranslator_PreviewMouseUp(object sender, MouseButtonEventArgs e) {
 
-            BaseTranslatorInformationWindow window = new BaseTranslatorInformationWindow();
+            SQLScriptTranslatorInformationWindow window = new SQLScriptTranslatorInformationWindow();
 
             if (window.ShowDialog() == true) { }
         }
@@ -602,7 +598,7 @@ namespace SQLTailor {
             MicrosoftTSQLViewer.CopyDocument();
         }
 
-        private void CopyBaseTranslation(object sender, RoutedEventArgs e) {
+        private void CopySQLScriptTranslation(object sender, RoutedEventArgs e) {
             SqlScriptViewer.CopyDocument();
         }
 
@@ -615,7 +611,7 @@ namespace SQLTailor {
             MicrosoftTSQLViewer.FloatDocument("Microsoft TSQL document");
         }
 
-        private void BaseDocumentFloat_Click(object sender, RoutedEventArgs e)
+        private void SQLScriptDocumentFloat_Click(object sender, RoutedEventArgs e)
         {
             SqlScriptViewer.FloatDocument("SQL script");
         }
@@ -629,10 +625,9 @@ namespace SQLTailor {
             MicrosoftTSQLViewer.FloatLinkendDocument("linked Microsoft TSQL script");
         }
 
-        private void BaseDocumentLinkedFloat_Click(object sender, RoutedEventArgs e) {
+        private void SQLScriptDocumentLinkedFloat_Click(object sender, RoutedEventArgs e) {
             SqlScriptViewer.FloatLinkendDocument("linked SQL script");
         }
-
 
         private void SqlOMTranslationDocumentLinkedFloat_Click(object sender, RoutedEventArgs e) {
             FluentScriptViewer.FloatLinkendDocument("linked fluent script");
@@ -903,7 +898,6 @@ WHERE Country = 'Brazil';";
     column3 integer,
     column4 date not null)";
             Queries.Add(new FixedQuery("create table", query));
-
 
             query = $@"ALTER TABLE Customers
 ADD Email varchar(255),

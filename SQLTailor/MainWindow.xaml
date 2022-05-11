@@ -216,8 +216,8 @@
                                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="BaseDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
-                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="BaseDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="SQLScriptDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="SQLScriptDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
                         </StackPanel>
                     </Grid>
 
@@ -226,9 +226,9 @@
                     <DockPanel Grid.Column="2">
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Content="Analyze" Click="AnalyzeSql"/>
-                            <Button Content="Copy" Click="CopyBaseTranslation"/>
+                            <Button Content="Copy" Click="CopySQLScriptTranslation"/>
                         </StackPanel>
-                        <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
+                        <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="SQLScriptTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">

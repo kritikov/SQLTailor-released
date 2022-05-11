@@ -16,8 +16,8 @@ namespace SQLTailor.Views {
     /// <summary>
     /// Interaction logic for BaseTranslatorInformationWindow.xaml
     /// </summary>
-    public partial class BaseTranslatorInformationWindow : Window {
-        public BaseTranslatorInformationWindow() {
+    public partial class SQLScriptTranslatorInformationWindow : Window {
+        public SQLScriptTranslatorInformationWindow() {
             InitializeComponent();
         }
     }
