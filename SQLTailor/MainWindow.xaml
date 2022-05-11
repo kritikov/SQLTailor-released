@@ -104,7 +104,10 @@
                                                  Document="{Binding MicrosoftTSQLViewer.Document, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button Style="{StaticResource FloatDocument}" Content="*" Click="MicrosoftTSQLDocumentFloat_Click" ToolTip="display the script in a new windp"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="MicrosoftTSQLDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="MicrosoftTSQLDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
+                        </StackPanel>
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -212,7 +215,10 @@
                                                      Document="{Binding SqlScriptViewer.Document, Mode=OneWay}"
                                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="BaseDocumentFloat_Click" ToolTip="display the script in a new window"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="BaseDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="BaseDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
+                        </StackPanel>
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -316,7 +322,11 @@
                                                  Document="{Binding FluentScriptViewer.Document, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="SqlOMTranslationDocumentFloat_Click" ToolTip="display the script in a new window"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="SqlOMTranslationDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="SqlOMTranslationDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
+                        </StackPanel>
+                        
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>

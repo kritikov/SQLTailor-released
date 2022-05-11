@@ -21,9 +21,12 @@ namespace SQLTailor.Classes {
             get => document;
             set {
                 document = value;
+                UpdateSubscribers();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Document"));
             }
         }
+
+        private List<DocumentViewer> subscribers = new List<DocumentViewer>();
 
         #endregion
 
@@ -88,12 +91,58 @@ namespace SQLTailor.Classes {
         /// display the document as copy in a new window
         /// </summary>
         /// <param name="document"></param>
-        public void FloatDocument(string title) {
+        public DocumentViewer FloatDocument(string title) {
             FlowDocument newDocument = this.CloneDocument();
-            FloatDocument window = new FloatDocument(newDocument);
+            DocumentViewer window = new DocumentViewer(newDocument);
             window.Title = title;
             window.Show();
+
+            return window;
         }
+
+        public void FloatLinkendDocument(string title) {
+            FlowDocument newDocument = this.CloneDocument();
+            DocumentViewer viewer = new DocumentViewer(newDocument, this);
+            AddDocumentViewerSubscriber(viewer);
+            viewer.Title = title;
+            viewer.Show();
+        }
+
+
+        /// <summary>
+        /// subscribe a DocumentViewer to refresh its content when the original documents is changed
+        /// </summary>
+        /// <param name="viewer"></param>
+        public void AddDocumentViewerSubscriber(DocumentViewer viewer) {
+
+            if (!subscribers.Contains(viewer)) {
+                subscribers.Add(viewer);
+            }
+        }
+
+        /// <summary>
+        /// remove a DocumentViewer from the subscribers
+        /// </summary>
+        /// <param name="viewer"></param>
+        public void RemoveDocumentViewerSubscriber(DocumentViewer viewer) {
+            subscribers.Remove(viewer);
+        }
+
+
+        /// <summary>
+        /// update the documents in the subscribers
+        /// </summary>
+        private void UpdateSubscribers() {
+
+            if (subscribers.Count > 0) {
+                FlowDocument document = this.CloneDocument();
+
+                foreach (var viewer in subscribers) {
+                    viewer.UpdateContent(document);
+                }
+            }
+        }
+
 
         #endregion
     }

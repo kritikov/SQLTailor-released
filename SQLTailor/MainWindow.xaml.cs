@@ -623,7 +623,20 @@ namespace SQLTailor {
 
         private void SqlOMTranslationDocumentFloat_Click(object sender, RoutedEventArgs e)
         {
-            SqlScriptViewer.FloatDocument("fluent script");
+            FluentScriptViewer.FloatDocument("fluent script");
+        }
+
+        private void MicrosoftTSQLDocumentLinkedFloat_Click(object sender, RoutedEventArgs e) {
+            MicrosoftTSQLViewer.FloatLinkendDocument("linked Microsoft TSQL script");
+        }
+
+        private void BaseDocumentLinkedFloat_Click(object sender, RoutedEventArgs e) {
+            SqlScriptViewer.FloatLinkendDocument("linked SQL script");
+        }
+
+
+        private void SqlOMTranslationDocumentLinkedFloat_Click(object sender, RoutedEventArgs e) {
+            FluentScriptViewer.FloatLinkendDocument("linked fluent script");
         }
 
         #endregion
@@ -681,7 +694,6 @@ WHERE EXISTS(
     FROM table2 AS alias1)";
             Queries.Add(new FixedQuery("select with exists", query));
 
-
             query = $@"SELECT DISTINCT TOP 5 table1.a as col1, b as col2, c, d, e, (SELECT DISTINCT f, g FROM table4) 
 FROM table1 as alias1, table2, (select a as col4 from table3) b
     INNER JOIN table4 ON a = b
@@ -727,7 +739,6 @@ FROM table1
 UNION
 (SELECT b
     FROM table2)
-UNION
 ";
             Queries.Add(new FixedQuery("union 1", query));
 
@@ -1030,6 +1041,6 @@ ADD Email varchar(255),
 
         #endregion
 
-        
+       
     }
 }
