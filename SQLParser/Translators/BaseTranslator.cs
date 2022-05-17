@@ -1575,6 +1575,9 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is UnaryExpression unaryExpression2) {
                     secondExpression = UnaryExpressionParse(unaryExpression2);
                 } 
+                else if (expression.SecondExpression is ConvertCall convertCall2) {
+                    secondExpression = ConvertCallParse(convertCall2);
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2518,6 +2521,9 @@ namespace SQLParser.Translators {
                 else if (expression.ElseExpression is ColumnReferenceExpression columnReferenceExpression) {
                     result += $"\n{Indentation(Data.Level)} ELSE {ColumnReferenceExpressionParse(columnReferenceExpression)}";
                 } 
+                else if (expression.ElseExpression is BinaryExpression binaryExpression) {
+                    result += $"\n{Indentation(Data.Level)} ELSE {BinaryExpressionParse(binaryExpression)}";
+                } 
                 else {
                     result += $"\n{Indentation(Data.Level)} ELSE ~UNKNOWN ScalarExpression~";
                 }
@@ -2656,13 +2662,7 @@ namespace SQLParser.Translators {
             string result;
 
             try {
-                string dataType;
-                if (expression.DataType is SqlDataTypeReference) {
-                    dataType = expression.DataType.Name.BaseIdentifier.Value;
-                }
-                else {
-                    dataType = "~UNKNOWN DataType~";
-                }
+                string dataType = DataTypeParse(expression.DataType);
 
                 string parameter;
                 if (expression.Parameter is SearchedCaseExpression searchedCaseExpression) {
@@ -2698,6 +2698,9 @@ namespace SQLParser.Translators {
                 else if (expression.Parameter is ColumnReferenceExpression columnReferenceExpression) {
                     parameter = $" {ColumnReferenceExpressionParse(columnReferenceExpression)}";
                 } 
+                else if (expression.Parameter is ConvertCall convertCall) {
+                    parameter = $" {ConvertCallParse(convertCall)}";
+                } 
                 else {
                     parameter = "~UNKNOWN ScalarExpression~";
                 }
@@ -2705,6 +2708,52 @@ namespace SQLParser.Translators {
                 result = $"CAST({parameter} AS {dataType})";
             }
             catch {
+                result = "~SearchedCaseExpression ERROR~";
+            }
+
+            return result;
+        }
+
+        public virtual string ConvertCallParse(ConvertCall expression, object data = null) {
+            string result;
+
+            try {
+                string dataType = DataTypeParse(expression.DataType); 
+
+                string parameter;
+                if (expression.Parameter is SearchedCaseExpression searchedCaseExpression) {
+                    parameter = SearchedCaseExpressionParse(searchedCaseExpression);
+                } else if (expression.Parameter is StringLiteral stringLiteral) {
+                    parameter = $"{Quote}{stringLiteral.Value}{Quote}";
+                } else if (expression.Parameter is IntegerLiteral integerLiteral) {
+                    parameter = $"{integerLiteral.Value}";
+                } else if (expression.Parameter is NumericLiteral numericLiteral) {
+                    parameter = $"{numericLiteral.Value}";
+                } else if (expression.Parameter is NullLiteral nullLiteral) {
+                    parameter = $"NULL";
+                } else if (expression.Parameter is VariableReference variableReference) {
+                    string variableName = FormatOptions.ReplaceQueryParametersWithValues ? GetQueryParameterFromList(variableReference.Name) : variableReference.Name;
+
+                    parameter = $"{variableName}";
+
+                    if (FormatOptions.UpdateQueryParametersList) {
+                        InsertIntoQueryParametersList(variableReference.Name);
+                    }
+                } 
+                else if (expression.Parameter is CastCall castCall) {
+                    parameter = $" {CastCallParse(castCall)}";
+                } else if (expression.Parameter is ConvertCall convertCall) {
+                    parameter = $" {ConvertCallParse(convertCall)}";
+                } else if (expression.Parameter is UnaryExpression unaryExpression) {
+                    parameter = $" {UnaryExpressionParse(unaryExpression)}";
+                } else if (expression.Parameter is ColumnReferenceExpression columnReferenceExpression) {
+                    parameter = $" {ColumnReferenceExpressionParse(columnReferenceExpression)}";
+                } else {
+                    parameter = "~UNKNOWN ScalarExpression~";
+                }
+
+                result = $"CONVERT({dataType}, {parameter})";
+            } catch {
                 result = "~SearchedCaseExpression ERROR~";
             }
 

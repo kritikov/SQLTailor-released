@@ -2676,6 +2676,12 @@ namespace SQLParser.Translators {
                     result += UnaryExpressionParse(unaryExpression, childData);
                     elseExpression = childData.TermString;
                 } 
+                else if (expression.ElseExpression is BinaryExpression binaryExpression) {
+                    Informations childData = currentData.CopyLite();
+
+                    result += BinaryExpressionParse(binaryExpression, childData);
+                    elseExpression = childData.TermString;
+                } 
                 else {
                     elseExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2881,6 +2887,19 @@ namespace SQLParser.Translators {
             }
             catch {
                 currentData.TermString = "~CastCall ERROR~";
+            }
+
+            return result;
+        }
+
+        public virtual string ConvertCallParse(ConvertCall expression, object data = null) {
+            string result = "";
+            Informations currentData = (Informations)data;
+
+            try {
+                currentData.TermString = "~SqlOM doesn't supports CONVERT~";
+            } catch {
+                currentData.TermString = "~ConvertCall ERROR~";
             }
 
             return result;
