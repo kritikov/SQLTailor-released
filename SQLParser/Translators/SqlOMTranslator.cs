@@ -2680,7 +2680,7 @@ namespace SQLParser.Translators {
                     Informations childData = currentData.CopyLite();
 
                     result += BinaryExpressionParse(binaryExpression, childData);
-                    elseExpression = childData.TermString;
+                    elseExpression = childData.SqlExpressionString;
                 } 
                 else {
                     elseExpression = "~UNKNOWN ScalarExpression~";
