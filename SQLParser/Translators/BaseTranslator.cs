@@ -603,15 +603,15 @@ namespace SQLParser.Translators {
                 string target;
                 List<string> columns = new List<string>();
                 List<string> whereConditions = new List<string>();
-
+                List<string> tables = new List<string>();
 
                 //// TARGET /////
 
-                TableReference table = expression.Target;
-                if (table is NamedTableReference namedTableReference) {
-                    target = NamedTableReferenceParse(namedTableReference);
+                TableReference targetTable = expression.Target;
+                if (targetTable is NamedTableReference namedTableReference1) {
+                    target = NamedTableReferenceParse(namedTableReference1);
                 }
-                else if (table is QueryDerivedTable queryDerivedTable) {
+                else if (targetTable is QueryDerivedTable queryDerivedTable) {
                     this.Data.Level++;
                     target = $"({QueryExpressionParse(queryDerivedTable.QueryExpression, true)})";
                     this.Data.Level--;
@@ -621,11 +621,38 @@ namespace SQLParser.Translators {
                         target += $" AS {queryDerivedTable.Alias?.Value}";
                     }
                 }
-                else if (table is QualifiedJoin qualifiedJoin) {
+                else if (targetTable is QualifiedJoin qualifiedJoin) {
                     target = QualifiedJoinParse(qualifiedJoin);
                 }
                 else {
                     target = $"~UNKNOWN TableReference~";
+                }
+
+
+                //// TABLES //////
+
+                IList<TableReference> tableReferences = expression.FromClause?.TableReferences;
+                if (tableReferences != null) {
+                    foreach (TableReference table in tableReferences) {
+                        if (table is NamedTableReference namedTableReference2) {
+                            tables.Add(NamedTableReferenceParse(namedTableReference2));
+                        } else if (table is QueryDerivedTable queryDerivedTable) {
+                            this.Data.Level++;
+                            string tableName = $"({QueryExpressionParse(queryDerivedTable.QueryExpression, true)})";
+                            this.Data.Level--;
+
+                            // check if the table has an alias
+                            if (queryDerivedTable.Alias != null) {
+                                tableName += $" AS {queryDerivedTable.Alias?.Value}";
+                            }
+
+                            tables.Add(tableName);
+                        } else if (table is QualifiedJoin qualifiedJoin) {
+                            tables.Add(QualifiedJoinParse(qualifiedJoin));
+                        } else {
+                            tables.Add($"~UNKNOWN TableReference~");
+                        }
+                    }
                 }
 
 
@@ -720,6 +747,15 @@ namespace SQLParser.Translators {
                 }
                 for (int i = 1; i < columns.Count; i++) {
                     result += $", \n{Indentation(Data.Level + 1)}{columns[i]}";
+                }
+
+                //tables
+                result += tables.Count > 0 ? $"\n{Indentation(Data.Level)}FROM " : "";
+                if (tables.Count > 0) {
+                    result += $"{tables[0]}";
+                }
+                for (int i = 1; i < tables.Count; i++) {
+                    result += $", \n{Indentation(Data.Level + 1)}{tables[i]}";
                 }
 
                 // where conditions
