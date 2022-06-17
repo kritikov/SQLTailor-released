@@ -2095,6 +2095,11 @@ namespace SQLParser.Translators {
                     result += FunctionCallParse(functionCall2, childData);
                     secondExpression = childData.SqlExpressionString;
                 } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression2, childData);
+                    secondExpression = childData.SqlExpressionString;
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2125,6 +2130,11 @@ namespace SQLParser.Translators {
                 else if (expression.ThirdExpression is FunctionCall functionCall3) {
                     Informations childData = currentData.CopyLite();
                     result += FunctionCallParse(functionCall3, childData);
+                    thirdExpression = childData.SqlExpressionString;
+                } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression3) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression3, childData);
                     thirdExpression = childData.SqlExpressionString;
                 } 
                 else {

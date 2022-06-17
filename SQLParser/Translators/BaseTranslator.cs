@@ -2053,6 +2053,9 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     secondExpression = FunctionCallParse(functionCall2);
                 } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    secondExpression = CoalesceExpressionParse(coalesceExpression2);
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2084,6 +2087,9 @@ namespace SQLParser.Translators {
                 } 
                 else if (expression.ThirdExpression is FunctionCall functionCall3) {
                     thirdExpression = FunctionCallParse(functionCall3);
+                } 
+                else if (expression.ThirdExpression is CoalesceExpression coalesceExpression3) {
+                    thirdExpression = CoalesceExpressionParse(coalesceExpression3);
                 } 
                 else {
                     thirdExpression = "~UNKNOWN ScalarExpression~";
