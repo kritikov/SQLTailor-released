@@ -1197,7 +1197,17 @@ namespace SQLParser.Translators {
                             }
 
                             columns.Add(columnName);
-                        }
+                        } 
+                        else if (expression is CoalesceExpression coalesceExpression) {
+                            string columnName = CoalesceExpressionParse(coalesceExpression);
+
+                            // check if there is an alias for the column
+                            if (selectScalarExpression.ColumnName != null) {
+                                columnName += $" AS {selectScalarExpression.ColumnName.Value}";
+                            }
+
+                            columns.Add(columnName);
+                        } 
                         else {
                             columns.Add("~UNKNOWN ScalarExpression~");
                         }
@@ -1809,10 +1819,10 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is StringLiteral stringLiteral2) {
                     secondExpression = $"{Quote}{stringLiteral2.Value}{Quote}";
                 }
-                else if (expression.FirstExpression is NumericLiteral numericLiteral2) {
+                else if (expression.SecondExpression is NumericLiteral numericLiteral2) {
                     secondExpression = $"{numericLiteral2.Value}";
                 }
-                else if (expression.FirstExpression is NullLiteral nullLiteral2) {
+                else if (expression.SecondExpression is NullLiteral nullLiteral2) {
                     secondExpression = $"NULL";
                 }
                 else if (expression.SecondExpression is VariableReference variableReference2) {
@@ -1827,6 +1837,9 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     secondExpression = FunctionCallParse(functionCall2);
                 } 
+                else if (expression.SecondExpression is UnaryExpression unaryExpression2) {
+                    secondExpression = UnaryExpressionParse(unaryExpression2);
+                }
                 else {
                     secondExpression = "~UNKNOWN BooleanComparisonExpression~";
                 }
