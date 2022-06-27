@@ -1325,9 +1325,19 @@ namespace SQLParser.Translators {
 
                             BinaryExpressionParse(binaryExpression, childData);
 
-
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
-                        }
+                        } 
+                        else if (expression is CoalesceExpression coalesceExpression) {
+                            string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
+
+                            Informations childData = currentData.CopyLite();
+                            childData.BelongsTo = currentData;
+                            childData.Alias = alias;
+
+                            CoalesceExpressionParse(coalesceExpression, childData);
+
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.SqlExpressionString});\n";
+                        } 
                         else {
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(~UNKNOWN ScalarExpression~);\n";
                         }

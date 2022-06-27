@@ -1805,6 +1805,9 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is CoalesceExpression coalesceExpression1) {
                     firstExpression = CoalesceExpressionParse(coalesceExpression1);
                 } 
+                else if (expression.FirstExpression is UnaryExpression unaryExpression1) {
+                    firstExpression = UnaryExpressionParse(unaryExpression1);
+                } 
                 else {
                     firstExpression = "~UNKNOWN BooleanComparisonExpression~";
                 }
@@ -1836,6 +1839,9 @@ namespace SQLParser.Translators {
                 } 
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     secondExpression = FunctionCallParse(functionCall2);
+                } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    secondExpression = CoalesceExpressionParse(coalesceExpression2);
                 } 
                 else if (expression.SecondExpression is UnaryExpression unaryExpression2) {
                     secondExpression = UnaryExpressionParse(unaryExpression2);
@@ -2033,6 +2039,9 @@ namespace SQLParser.Translators {
                 } 
                 else if (expression.FirstExpression is FunctionCall functionCall1) {
                     firstExpression = FunctionCallParse(functionCall1);
+                } 
+                else if (expression.FirstExpression is CoalesceExpression coalesceExpression1) {
+                    firstExpression = CoalesceExpressionParse(coalesceExpression1);
                 } 
                 else {
                     firstExpression = "~UNKNOWN ScalarExpression~";
