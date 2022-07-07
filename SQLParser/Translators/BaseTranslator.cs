@@ -689,7 +689,10 @@ namespace SQLParser.Translators {
                     } 
                     else if (assignmentSetClause.NewValue is ColumnReferenceExpression columnReferenceExpression2) {
                         columnName += $" = {ColumnReferenceExpressionParse(columnReferenceExpression2)}";
-                    }
+                    } 
+                    else if (assignmentSetClause.NewValue is SearchedCaseExpression searchedCaseExpression2) {
+                        columnName += $" = {SearchedCaseExpressionParse(searchedCaseExpression2)}";
+                    } 
                     else {
                         columnName += $" = ~UNKNOWN ScalarExpression~";
                     }

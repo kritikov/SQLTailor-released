@@ -507,6 +507,12 @@ namespace SQLParser.Translators {
                     else if (assignmentSetClause.NewValue is VariableReference) {
                         setValue = LiteralsSqlExpression(assignmentSetClause.NewValue);
                     }
+                    else if (assignmentSetClause.NewValue is SearchedCaseExpression searchedCaseExpression) {
+                        Informations childData = currentData.CopyLite();
+
+                        result += SearchedCaseExpressionParse(searchedCaseExpression, childData);
+                        setValue = childData.SqlExpressionString;
+                    } 
                     else {
                         setValue = $"~UNKNOWN ScalarExpression~";
                     }
