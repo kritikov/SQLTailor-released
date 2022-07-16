@@ -243,6 +243,14 @@ namespace SQLParser.Translators {
         string CastCallParse(CastCall expression, object data = null);
 
         /// <summary>
+        /// Translates a CONVERT into a string
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        string ConvertCallParse(ConvertCall expression, object data = null);
+
+        /// <summary>
         /// Translates an ORDER BY expression into a formatted string
         /// </summary>
         /// <param name="expression"></param>

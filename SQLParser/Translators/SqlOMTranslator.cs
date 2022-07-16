@@ -507,6 +507,12 @@ namespace SQLParser.Translators {
                     else if (assignmentSetClause.NewValue is VariableReference) {
                         setValue = LiteralsSqlExpression(assignmentSetClause.NewValue);
                     }
+                    else if (assignmentSetClause.NewValue is SearchedCaseExpression searchedCaseExpression) {
+                        Informations childData = currentData.CopyLite();
+
+                        result += SearchedCaseExpressionParse(searchedCaseExpression, childData);
+                        setValue = childData.SqlExpressionString;
+                    } 
                     else {
                         setValue = $"~UNKNOWN ScalarExpression~";
                     }
@@ -1325,9 +1331,19 @@ namespace SQLParser.Translators {
 
                             BinaryExpressionParse(binaryExpression, childData);
 
-
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.TermString});\n";
-                        }
+                        } 
+                        else if (expression is CoalesceExpression coalesceExpression) {
+                            string alias = selectScalarExpression.ColumnName != null ? selectScalarExpression.ColumnName.Value : "";
+
+                            Informations childData = currentData.CopyLite();
+                            childData.BelongsTo = currentData;
+                            childData.Alias = alias;
+
+                            CoalesceExpressionParse(coalesceExpression, childData);
+
+                            result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add({childData.SqlExpressionString});\n";
+                        } 
                         else {
                             result += $"{Indentation(currentData.Level)}{currentData.VariableName}.Columns.Add(~UNKNOWN ScalarExpression~);\n";
                         }
@@ -2095,6 +2111,11 @@ namespace SQLParser.Translators {
                     result += FunctionCallParse(functionCall2, childData);
                     secondExpression = childData.SqlExpressionString;
                 } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression2, childData);
+                    secondExpression = childData.SqlExpressionString;
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2125,6 +2146,11 @@ namespace SQLParser.Translators {
                 else if (expression.ThirdExpression is FunctionCall functionCall3) {
                     Informations childData = currentData.CopyLite();
                     result += FunctionCallParse(functionCall3, childData);
+                    thirdExpression = childData.SqlExpressionString;
+                } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression3) {
+                    Informations childData = currentData.CopyLite();
+                    CoalesceExpressionParse(coalesceExpression3, childData);
                     thirdExpression = childData.SqlExpressionString;
                 } 
                 else {
@@ -2676,6 +2702,12 @@ namespace SQLParser.Translators {
                     result += UnaryExpressionParse(unaryExpression, childData);
                     elseExpression = childData.TermString;
                 } 
+                else if (expression.ElseExpression is BinaryExpression binaryExpression) {
+                    Informations childData = currentData.CopyLite();
+
+                    result += BinaryExpressionParse(binaryExpression, childData);
+                    elseExpression = childData.SqlExpressionString;
+                } 
                 else {
                     elseExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2881,6 +2913,19 @@ namespace SQLParser.Translators {
             }
             catch {
                 currentData.TermString = "~CastCall ERROR~";
+            }
+
+            return result;
+        }
+
+        public virtual string ConvertCallParse(ConvertCall expression, object data = null) {
+            string result = "";
+            Informations currentData = (Informations)data;
+
+            try {
+                currentData.TermString = "~SqlOM doesn't supports CONVERT~";
+            } catch {
+                currentData.TermString = "~ConvertCall ERROR~";
             }
 
             return result;

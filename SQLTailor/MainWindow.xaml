@@ -101,10 +101,13 @@
 
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Classes:BindableRichTextBox IsReadOnly="True" 
-                                                 Document="{Binding MicrosoftTSQLDocument, Mode=OneWay}"
+                                                 Document="{Binding MicrosoftTSQLViewer.Document, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button Style="{StaticResource FloatDocument}" Content="*" Click="MicrosoftTSQLDocumentFloat_Click"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="MicrosoftTSQLDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="MicrosoftTSQLDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
+                        </StackPanel>
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -209,10 +212,13 @@
 
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Classes:BindableRichTextBox IsReadOnly="True"
-                                                     Document="{Binding SqlScriptDocument, Mode=OneWay}"
+                                                     Document="{Binding SqlScriptViewer.Document, Mode=OneWay}"
                                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="BaseDocumentFloat_Click"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="SQLScriptDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="SQLScriptDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
+                        </StackPanel>
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -220,9 +226,9 @@
                     <DockPanel Grid.Column="2">
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Content="Analyze" Click="AnalyzeSql"/>
-                            <Button Content="Copy" Click="CopyBaseTranslation"/>
+                            <Button Content="Copy" Click="CopySQLScriptTranslation"/>
                         </StackPanel>
-                        <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="BaseTranslator_PreviewMouseUp" />
+                        <TextBlock Text="Informations and known issues" DockPanel.Dock="Bottom" Style="{StaticResource InformationsTextBlock}" PreviewMouseUp="SQLScriptTranslator_PreviewMouseUp" />
 
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Parse options" HorizontalAlignment="Stretch" VerticalAlignment="Top">
@@ -313,10 +319,14 @@
 
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Classes:BindableRichTextBox  IsReadOnly="True" 
-                                                 Document="{Binding FluentScriptDocument, Mode=OneWay}"
+                                                 Document="{Binding FluentScriptViewer.Document, Mode=OneWay}"
                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
-                        <Button  Style="{StaticResource FloatDocument}" Content="*" Click="SqlOMTranslationDocumentFloat_Click"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button  Style="{StaticResource FloatDocument}" Content="[ ]" Click="SqlOMTranslationDocumentFloat_Click" ToolTip="display the script as copy in a new window"/>
+                            <Button  Style="{StaticResource FloatDocument}" Content="oo" Click="SqlOMTranslationDocumentLinkedFloat_Click" ToolTip="display the script in a new window and update it when the original is changed"/>
+                        </StackPanel>
+                        
                     </Grid>
 
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
@@ -460,7 +470,7 @@
                     <TextBlock Grid.Row="0" Style="{StaticResource TextBlockLabel}" Text="Informations about the SQL Tailor"/>
                     <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Stretch">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="version: v1.0.4 beta" />
+                            <TextBlock Text="version: v1.0.5 beta" />
                             <TextBlock Text="SQL Tailor is an open source parser that formats SQL queries. It is built in WPF and C# and convert queries in various versions of SQL or in scripts that produce SQL, such as the SqlOM library." />
                             <TextBlock Text="It uses the Microsoft ScriptDOM library to parse the original query and then provides the translators who compose the resulting tokens in the desired versions." />
                             <TextBlock Text="A developer who wants a new variant of SQL can build a new translator without having to start from scratch. He may also use only the SQLParser that does the parsing instead of the entire application." />
@@ -474,7 +484,7 @@
                                 <Run Text="created from Nick Kritikou"/>
                                 <LineBreak/>
                                 <Run Text="visit me at"/>
-                                <Hyperlink NavigateUri="https://nkode.gr/EN" RequestNavigate="Hyperlink_RequestNavigate">
+                                <Hyperlink NavigateUri="http://nkode.gr/EN" RequestNavigate="Hyperlink_RequestNavigate">
                                     nkode.gr
                                 </Hyperlink>
 

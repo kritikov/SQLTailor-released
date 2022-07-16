@@ -603,15 +603,15 @@ namespace SQLParser.Translators {
                 string target;
                 List<string> columns = new List<string>();
                 List<string> whereConditions = new List<string>();
-
+                List<string> tables = new List<string>();
 
                 //// TARGET /////
 
-                TableReference table = expression.Target;
-                if (table is NamedTableReference namedTableReference) {
-                    target = NamedTableReferenceParse(namedTableReference);
+                TableReference targetTable = expression.Target;
+                if (targetTable is NamedTableReference namedTableReference1) {
+                    target = NamedTableReferenceParse(namedTableReference1);
                 }
-                else if (table is QueryDerivedTable queryDerivedTable) {
+                else if (targetTable is QueryDerivedTable queryDerivedTable) {
                     this.Data.Level++;
                     target = $"({QueryExpressionParse(queryDerivedTable.QueryExpression, true)})";
                     this.Data.Level--;
@@ -621,11 +621,38 @@ namespace SQLParser.Translators {
                         target += $" AS {queryDerivedTable.Alias?.Value}";
                     }
                 }
-                else if (table is QualifiedJoin qualifiedJoin) {
+                else if (targetTable is QualifiedJoin qualifiedJoin) {
                     target = QualifiedJoinParse(qualifiedJoin);
                 }
                 else {
                     target = $"~UNKNOWN TableReference~";
+                }
+
+
+                //// TABLES //////
+
+                IList<TableReference> tableReferences = expression.FromClause?.TableReferences;
+                if (tableReferences != null) {
+                    foreach (TableReference table in tableReferences) {
+                        if (table is NamedTableReference namedTableReference2) {
+                            tables.Add(NamedTableReferenceParse(namedTableReference2));
+                        } else if (table is QueryDerivedTable queryDerivedTable) {
+                            this.Data.Level++;
+                            string tableName = $"({QueryExpressionParse(queryDerivedTable.QueryExpression, true)})";
+                            this.Data.Level--;
+
+                            // check if the table has an alias
+                            if (queryDerivedTable.Alias != null) {
+                                tableName += $" AS {queryDerivedTable.Alias?.Value}";
+                            }
+
+                            tables.Add(tableName);
+                        } else if (table is QualifiedJoin qualifiedJoin) {
+                            tables.Add(QualifiedJoinParse(qualifiedJoin));
+                        } else {
+                            tables.Add($"~UNKNOWN TableReference~");
+                        }
+                    }
                 }
 
 
@@ -662,7 +689,10 @@ namespace SQLParser.Translators {
                     } 
                     else if (assignmentSetClause.NewValue is ColumnReferenceExpression columnReferenceExpression2) {
                         columnName += $" = {ColumnReferenceExpressionParse(columnReferenceExpression2)}";
-                    }
+                    } 
+                    else if (assignmentSetClause.NewValue is SearchedCaseExpression searchedCaseExpression2) {
+                        columnName += $" = {SearchedCaseExpressionParse(searchedCaseExpression2)}";
+                    } 
                     else {
                         columnName += $" = ~UNKNOWN ScalarExpression~";
                     }
@@ -720,6 +750,15 @@ namespace SQLParser.Translators {
                 }
                 for (int i = 1; i < columns.Count; i++) {
                     result += $", \n{Indentation(Data.Level + 1)}{columns[i]}";
+                }
+
+                //tables
+                result += tables.Count > 0 ? $"\n{Indentation(Data.Level)}FROM " : "";
+                if (tables.Count > 0) {
+                    result += $"{tables[0]}";
+                }
+                for (int i = 1; i < tables.Count; i++) {
+                    result += $", \n{Indentation(Data.Level + 1)}{tables[i]}";
                 }
 
                 // where conditions
@@ -1161,7 +1200,17 @@ namespace SQLParser.Translators {
                             }
 
                             columns.Add(columnName);
-                        }
+                        } 
+                        else if (expression is CoalesceExpression coalesceExpression) {
+                            string columnName = CoalesceExpressionParse(coalesceExpression);
+
+                            // check if there is an alias for the column
+                            if (selectScalarExpression.ColumnName != null) {
+                                columnName += $" AS {selectScalarExpression.ColumnName.Value}";
+                            }
+
+                            columns.Add(columnName);
+                        } 
                         else {
                             columns.Add("~UNKNOWN ScalarExpression~");
                         }
@@ -1575,6 +1624,9 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is UnaryExpression unaryExpression2) {
                     secondExpression = UnaryExpressionParse(unaryExpression2);
                 } 
+                else if (expression.SecondExpression is ConvertCall convertCall2) {
+                    secondExpression = ConvertCallParse(convertCall2);
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -1756,6 +1808,9 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is CoalesceExpression coalesceExpression1) {
                     firstExpression = CoalesceExpressionParse(coalesceExpression1);
                 } 
+                else if (expression.FirstExpression is UnaryExpression unaryExpression1) {
+                    firstExpression = UnaryExpressionParse(unaryExpression1);
+                } 
                 else {
                     firstExpression = "~UNKNOWN BooleanComparisonExpression~";
                 }
@@ -1770,10 +1825,10 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is StringLiteral stringLiteral2) {
                     secondExpression = $"{Quote}{stringLiteral2.Value}{Quote}";
                 }
-                else if (expression.FirstExpression is NumericLiteral numericLiteral2) {
+                else if (expression.SecondExpression is NumericLiteral numericLiteral2) {
                     secondExpression = $"{numericLiteral2.Value}";
                 }
-                else if (expression.FirstExpression is NullLiteral nullLiteral2) {
+                else if (expression.SecondExpression is NullLiteral nullLiteral2) {
                     secondExpression = $"NULL";
                 }
                 else if (expression.SecondExpression is VariableReference variableReference2) {
@@ -1788,6 +1843,12 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     secondExpression = FunctionCallParse(functionCall2);
                 } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    secondExpression = CoalesceExpressionParse(coalesceExpression2);
+                } 
+                else if (expression.SecondExpression is UnaryExpression unaryExpression2) {
+                    secondExpression = UnaryExpressionParse(unaryExpression2);
+                }
                 else {
                     secondExpression = "~UNKNOWN BooleanComparisonExpression~";
                 }
@@ -1982,6 +2043,9 @@ namespace SQLParser.Translators {
                 else if (expression.FirstExpression is FunctionCall functionCall1) {
                     firstExpression = FunctionCallParse(functionCall1);
                 } 
+                else if (expression.FirstExpression is CoalesceExpression coalesceExpression1) {
+                    firstExpression = CoalesceExpressionParse(coalesceExpression1);
+                } 
                 else {
                     firstExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2014,6 +2078,9 @@ namespace SQLParser.Translators {
                 else if (expression.SecondExpression is FunctionCall functionCall2) {
                     secondExpression = FunctionCallParse(functionCall2);
                 } 
+                else if (expression.SecondExpression is CoalesceExpression coalesceExpression2) {
+                    secondExpression = CoalesceExpressionParse(coalesceExpression2);
+                } 
                 else {
                     secondExpression = "~UNKNOWN ScalarExpression~";
                 }
@@ -2045,6 +2112,9 @@ namespace SQLParser.Translators {
                 } 
                 else if (expression.ThirdExpression is FunctionCall functionCall3) {
                     thirdExpression = FunctionCallParse(functionCall3);
+                } 
+                else if (expression.ThirdExpression is CoalesceExpression coalesceExpression3) {
+                    thirdExpression = CoalesceExpressionParse(coalesceExpression3);
                 } 
                 else {
                     thirdExpression = "~UNKNOWN ScalarExpression~";
@@ -2518,6 +2588,9 @@ namespace SQLParser.Translators {
                 else if (expression.ElseExpression is ColumnReferenceExpression columnReferenceExpression) {
                     result += $"\n{Indentation(Data.Level)} ELSE {ColumnReferenceExpressionParse(columnReferenceExpression)}";
                 } 
+                else if (expression.ElseExpression is BinaryExpression binaryExpression) {
+                    result += $"\n{Indentation(Data.Level)} ELSE {BinaryExpressionParse(binaryExpression)}";
+                } 
                 else {
                     result += $"\n{Indentation(Data.Level)} ELSE ~UNKNOWN ScalarExpression~";
                 }
@@ -2656,13 +2729,7 @@ namespace SQLParser.Translators {
             string result;
 
             try {
-                string dataType;
-                if (expression.DataType is SqlDataTypeReference) {
-                    dataType = expression.DataType.Name.BaseIdentifier.Value;
-                }
-                else {
-                    dataType = "~UNKNOWN DataType~";
-                }
+                string dataType = DataTypeParse(expression.DataType);
 
                 string parameter;
                 if (expression.Parameter is SearchedCaseExpression searchedCaseExpression) {
@@ -2698,6 +2765,9 @@ namespace SQLParser.Translators {
                 else if (expression.Parameter is ColumnReferenceExpression columnReferenceExpression) {
                     parameter = $" {ColumnReferenceExpressionParse(columnReferenceExpression)}";
                 } 
+                else if (expression.Parameter is ConvertCall convertCall) {
+                    parameter = $" {ConvertCallParse(convertCall)}";
+                } 
                 else {
                     parameter = "~UNKNOWN ScalarExpression~";
                 }
@@ -2705,6 +2775,52 @@ namespace SQLParser.Translators {
                 result = $"CAST({parameter} AS {dataType})";
             }
             catch {
+                result = "~SearchedCaseExpression ERROR~";
+            }
+
+            return result;
+        }
+
+        public virtual string ConvertCallParse(ConvertCall expression, object data = null) {
+            string result;
+
+            try {
+                string dataType = DataTypeParse(expression.DataType); 
+
+                string parameter;
+                if (expression.Parameter is SearchedCaseExpression searchedCaseExpression) {
+                    parameter = SearchedCaseExpressionParse(searchedCaseExpression);
+                } else if (expression.Parameter is StringLiteral stringLiteral) {
+                    parameter = $"{Quote}{stringLiteral.Value}{Quote}";
+                } else if (expression.Parameter is IntegerLiteral integerLiteral) {
+                    parameter = $"{integerLiteral.Value}";
+                } else if (expression.Parameter is NumericLiteral numericLiteral) {
+                    parameter = $"{numericLiteral.Value}";
+                } else if (expression.Parameter is NullLiteral nullLiteral) {
+                    parameter = $"NULL";
+                } else if (expression.Parameter is VariableReference variableReference) {
+                    string variableName = FormatOptions.ReplaceQueryParametersWithValues ? GetQueryParameterFromList(variableReference.Name) : variableReference.Name;
+
+                    parameter = $"{variableName}";
+
+                    if (FormatOptions.UpdateQueryParametersList) {
+                        InsertIntoQueryParametersList(variableReference.Name);
+                    }
+                } 
+                else if (expression.Parameter is CastCall castCall) {
+                    parameter = $" {CastCallParse(castCall)}";
+                } else if (expression.Parameter is ConvertCall convertCall) {
+                    parameter = $" {ConvertCallParse(convertCall)}";
+                } else if (expression.Parameter is UnaryExpression unaryExpression) {
+                    parameter = $" {UnaryExpressionParse(unaryExpression)}";
+                } else if (expression.Parameter is ColumnReferenceExpression columnReferenceExpression) {
+                    parameter = $" {ColumnReferenceExpressionParse(columnReferenceExpression)}";
+                } else {
+                    parameter = "~UNKNOWN ScalarExpression~";
+                }
+
+                result = $"CONVERT({dataType}, {parameter})";
+            } catch {
                 result = "~SearchedCaseExpression ERROR~";
             }
 
