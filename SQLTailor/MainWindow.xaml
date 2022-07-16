@@ -484,7 +484,7 @@
                                 <Run Text="created from Nick Kritikou"/>
                                 <LineBreak/>
                                 <Run Text="visit me at"/>
-                                <Hyperlink NavigateUri="https://nkode.gr/EN" RequestNavigate="Hyperlink_RequestNavigate">
+                                <Hyperlink NavigateUri="http://nkode.gr/EN" RequestNavigate="Hyperlink_RequestNavigate">
                                     nkode.gr
                                 </Hyperlink>
 
